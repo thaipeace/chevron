@@ -1,0 +1,124 @@
+<div class="d-flex driver-performance-dialog = h-100" style="position: relative;">
+    <div class="panel tql-panel flex-row grid =">
+        <div class="panel-heading pr-0 d-flex justify-content-between align-items-baseline">
+            <div class="d-flex info-bar">
+                <hr class="info sleepactive">
+                <span class="ml-3">Sleep</span>
+                <hr class="info workactive ml-5">
+                <span class="ml-3">Work</span>
+            </div>
+            <span class="month text-white">{{displayMonth.format('MMMM') | uppercase  }}
+                {{displayMonth.format('YYYY') | uppercase  }}</span>
+            <div>
+                <button mat-icon-button (click)="getDriverSchedule();">
+                    <i class="fal fa-sync-alt text-white"></i>
+                </button>
+                <button mat-icon-button (click)="switchMonth(false)">
+                    <i class="fal fa-angle-left text-white"></i>
+                </button>
+                <button mat-icon-button (click)="switchMonth(true)">
+                    <i class="fal fa-angle-right text-white"></i>
+                </button>
+            </div>
+        </div>
+        <div [ngClass]="{'disabled-half': onLoading}" class="table-wrapper position-relative overflow-auto h-100"
+            #dailyDialogWrapper (mouseout)="mouseOut($event)">
+            <table class="tql-table driver-performance-table" #driverPerformanceTable>
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of headers; let i = index" class="text-center">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let week of driverSchedule; let i = index">
+                        <td (click)="openDriverProfileDailyDialog(day?.profileDate)" [ngClass]="{'in-month':day.day.month() == displayMonth.month(),
+              'in-month':day.day.month() == displayMonth.month()}" (mousemove)="mouseIn($event, day)"
+                            class="first-td p-0 hour-td" *ngFor="let day of week.days; let k = index">
+                            <div style="position: relative"
+                                [ngClass]="{'hovering': driverHourProfile && driverHourProfile.label == day.label}"
+                                class="pt-3 pb-3 h-100">
+                                <div [ngClass]="{'no-data':!day}"
+                                    class="d-flex align-items-stretch justify-content-between align-items-baseline status-bar">
+                                    <span class="date">{{day.day.date()}}</span>
+                                    <span *ngIf="day.status" class="Good">{{status[day.status]}}</span>
+                                </div>
+                                <div [ngClass]="{'leave-display':checkLeaveStatus(day.status)}"
+                                    *ngIf="!checkDayHaveSleepingTime(day.hours)" style="height: 28px"
+                                    class="d-flex justify-content-between align-items-baseline hours-slider sleeptime">
+                                </div>
+                                <div [ngClass]="{'leave-display':checkLeaveStatus(day.status)}"
+                                    *ngIf="checkDayHaveSleepingTime(day.hours)"
+                                    class="d-flex justify-content-between align-items-baseline hours-slider sleeptime">
+                                    <hr [ngClass]="{'sleepactive':time.isSleeping}" *ngFor="let time of day.hours">
+                                </div>
+                                <div [ngClass]="{'leave-display':checkLeaveStatus(day.status)}"
+                                    *ngIf="checkDayHaveWorkingTime(day.hours)"
+                                    class="d-flex justify-content-between align-items-baseline hours-slider worktime">
+                                    <hr [ngClass]="{'workactive':time.isWorking}" *ngFor="let time of day.hours">
+                                </div>
+                                <div [ngClass]="{'leave-display':checkLeaveStatus(day.status)}"
+                                    *ngIf="(checkDayHaveSleepingTime(day.hours) || checkDayHaveWorkingTime(day.hours))"
+                                    class="d-flex justify-content-between align-items-baseline hour-range">
+                                    <span>00:00</span>
+                                    <span>24:00</span>
+                                </div>
+                                <div *ngIf="currentTime.date() == day.day.date() && day.day.month() == currentTime.month()"
+                                    class="corner"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div #dailyDialog style="position: absolute; display: none;" class="driver-daily-dialog-wrapper"
+        [style.top.px]="top" [style.left.px]="left">
+        <div class='driver-daily-dialog'>
+            <div class="p-3">
+                <div class="panel tql-panel flex-row mr-3">
+                    <div class="panel-heading d-flex justify-content-between align-items-baseline">
+                        <div>
+                            <span class="title text-white">Driver name</span>
+                            <br><br>
+                            <span class="title name">{{driverOj?.fullName}}</span>
+                        </div>
+                        <div class="status">
+                            <span class="title text-white">Status</span>
+                            <br><br>
+                            <span class="title Good"
+                                *ngIf="driverHourProfile.status">{{status[driverHourProfile.status]}}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <table class="tql-table driver-daily-dialog-table">
+                            <tbody>
+                                <tr>
+                                    <td class="text-left text-white">Selected date</td>
+                                    <td class="text-left">{{driverHourProfile?.day.format("MMM DD, YYYY")}}</td>
+                                </tr>
+                                <tr *ngFor="let sleepingTime of driverHourProfile.sleepingTimeInRange; let i = index">
+                                    <td class="text-left text-white">Sleeping time {{i+1}}</td>
+                                    <td class="text-left value">
+                                        <strong class="mr-2">From:</strong>
+                                        <span class="mr-3">{{converseTime(sleepingTime.sleepStartTime)}}</span>
+                                        <strong class="mr-2">To:</strong>
+                                        <span>{{converseTime(sleepingTime.wakingUpTime)}}</span>
+                                    </td>
+                                </tr>
+                                <tr *ngFor="let workingTime of driverHourProfile.workingTimeInRange; let i = index">
+                                    <td class="text-left text-white">Working time {{i+1}}</td>
+                                    <td class="text-left value">
+                                        <strong class="mr-2">From:</strong>
+                                        <span class="mr-3">{{converseTime(workingTime.workingStartTime)}}</span>
+                                        <strong class="mr-2">To:</strong>
+                                        <span>{{converseTime(workingTime.workingEndTime)}}</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

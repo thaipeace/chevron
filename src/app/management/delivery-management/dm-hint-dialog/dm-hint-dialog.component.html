@@ -1,0 +1,40 @@
+<div [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">Delivery Information</span>
+      <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+    </div>
+  </div>
+
+  <div mat-dialog-content>
+    <div class="hint-wrapper">
+      <div>
+        <ul class="icon-group pl-0">
+          <li *ngFor="let icon of locationIcon" class="d-flex align-items-center">
+            <img src="{{icon?.urlIcon}}">
+            <span class="size-14 title">{{icon?.title}}</span>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <ul class="icon-group pl-0">
+          <li *ngFor="let icon of routeIcon" class="d-flex align-items-center">
+            <img src="{{icon?.urlIcon}}">
+            <span class="size-14 title">{{icon?.title}}</span>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <div class="icon-group table-icon">
+          <ng-container *ngFor="let icon of statusIcon">
+            <span class="h-34px">
+              <i class="fal {{icon?.faIcon}} size-16"></i>
+            </span>
+            <span class="title size-14" [ngStyle]="{'color': icon?.color}">{{icon?.title}}</span>
+            <span class="size-14 title">{{icon?.status}}</span>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

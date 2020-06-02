@@ -1,0 +1,52 @@
+<div [class.mat-elevation-z8]="true">
+	<div mat-dialog-title>
+		<div class="d-flex flex-row title align-items-center">
+			<span class="flex-grow-1">{{ isNew ? 'New User' : 'Edit User' }}</span>
+			<button class="close" mat-icon-button (click)="onCancel()">
+				<i class="fal fa-times"></i>
+			</button>
+		</div>
+	</div>
+
+	<div mat-dialog-content class="layout-dialog-form">
+		<form class="default-form custom-form" id="form-new-user" name="form" #f="ngForm"
+			(ngSubmit)="userForm.valid && doUpdate()">
+			<div class="item d-flex flex-wrap justify-content-center item-input-group"
+				*ngFor="let key of keys; last as isLast" [class.mb-0]="isLast">
+				<label class="label" for="input_{{ key }}">
+					<span>{{ key | mappingLabel }}</span>
+					<span class="required">*</span>
+				</label>
+				<ng-container [ngSwitch]="key">
+					<!-- ROLE -->
+					<ng-container *ngSwitchCase="'roleId'">
+						<div class="form-group" [ngClass]="{ 'disabled-half': !isNew }">
+							<select-menu [items]="roles" [bindLabel]="'_data.roleLabel'" [bindValue]="'_data.sysId'"
+								(change)="userForm.get(key).setValue($event.value)" [classes]="'control'"
+								[placeHolder]="'Select ' + (key | mappingLabel)" [formControl]="userForm.get(key)">
+							</select-menu>
+							<div *ngIf="f.submitted && userForm.get(key).invalid" class="error">
+								<small *ngIf="userForm.get(key).hasError('required')">* Field is required</small>
+							</div>
+						</div>
+					</ng-container>
+					<!-- DEFAULT -->
+					<ng-container *ngSwitchDefault>
+						<div class="form-group">
+							<input-field [input]="userForm.get(key)" [placeholder]="key" [isSubmit]="f.submitted">
+							</input-field>
+						</div>
+					</ng-container>
+				</ng-container>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="form-buttons">
+	<button mat-raised-button [class.mat-elevation-z8]="true" type="submit" class="btn btn-blue ml-10"
+		form="form-new-user">
+		<i class="fal fa-check"></i>
+		<span class="ml-2">{{ isNew ? 'New User' : 'Update' }}</span>
+	</button>
+</div>

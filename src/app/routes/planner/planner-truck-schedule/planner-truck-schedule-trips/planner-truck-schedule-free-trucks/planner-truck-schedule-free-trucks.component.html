@@ -1,0 +1,144 @@
+<div class="table-material truck-container mt-5" #freeTrucks>
+  <div class="d-flex justify-content-between">
+    <h4>Free trucks</h4>
+    <mat-paginator #freeTruckMatPaginator class="chevron-paginator ml-3" [length]="freeTruckTable?.data.length"
+      [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+    </mat-paginator>
+  </div>
+  <div class="tql-panel">
+    <perfect-scrollbar class="position-relative ar-scroll height-ar perfect-height">
+      <table mat-table style="border-collapse: unset;" [dataSource]="freeTruckTable" #freeTruckMatSort="matSort" matSort
+        class="mat-elevation-z8 bordered-table tql-table truck-schedule-table panel-time-range-wrapper" id="trip-table">
+        <ng-container matColumnDef="#">
+          <th mat-header-cell *matHeaderCellDef>
+            <ng-container *ngTemplateOutlet="index"></ng-container>
+            <ng-template #index><span>#</span></ng-template>
+          </th>
+          <td mat-cell *matCellDef="let element; let i=index">
+            <ng-container *ngTemplateOutlet="indexValue"></ng-container>
+            <ng-template #indexValue>
+              <div class="text-left">{{i + 1}}</div>
+            </ng-template>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="truckPlate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <ng-container *ngTemplateOutlet="truckPlate"></ng-container>
+            <ng-template #truckPlate><span>Truck Plate</span></ng-template>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <ng-container *ngTemplateOutlet="truckPlateValue"></ng-container>
+            <ng-template #truckPlateValue>
+              <div class="text-left">{{element.truckPlate}}</div>
+            </ng-template>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalCapacity">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <ng-container *ngTemplateOutlet="totalCapacity"></ng-container>
+            <ng-template #totalCapacity><span>Total Capacity</span></ng-template>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <ng-container *ngTemplateOutlet="totalCapacityValue"></ng-container>
+            <ng-template #totalCapacityValue>
+              <div class="text-left">{{element.totalCapacity}}</div>
+            </ng-template>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="truckState">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <ng-container *ngTemplateOutlet="truckState"></ng-container>
+            <ng-template #truckState><span>Truck State</span></ng-template>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <ng-container *ngTemplateOutlet="truckStateValue"></ng-container>
+            <ng-template #truckStateValue>
+              <div class="text-left">{{element.truckState}}</div>
+            </ng-template>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="safeLoadingPassDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <ng-container *ngTemplateOutlet="safeLoadingPassDate"></ng-container>
+            <ng-template #safeLoadingPassDate><span>Safe Loading Pass Date</span></ng-template>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <ng-container *ngTemplateOutlet="safeLoadingPassDateValue"></ng-container>
+            <ng-template #safeLoadingPassDateValue>
+              <div class="text-left">{{element.safeLoadingPassDate}}</div>
+            </ng-template>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="drivers">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <ng-container *ngTemplateOutlet="drivers"></ng-container>
+            <ng-template #drivers><span>Drivers</span></ng-template>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <ng-container *ngTemplateOutlet="driversV"></ng-container>
+            <ng-template #driversV>
+              <div class="text-left">
+                <div *ngFor="let driver of element.drivers" class="driver d-flex my-2">
+                  <div [class]="'mr-3 status-driver ' + driver.driverDailyStatus">{{driver.driverDailyStatus}}</div>
+                  <div class="title">{{driver.fullName}}</div>
+                </div>
+              </div>
+            </ng-template>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="timeLine">
+          <th mat-header-cell *matHeaderCellDef [ngStyle]="{'width': (timeRange.length * 100) + 'px'}">
+            <ng-container *ngTemplateOutlet="timeLine"></ng-container>
+            <ng-template #timeLine>
+              <div class="main-content">
+                <div class="wrapper px-3 h-100">
+                  <div class="time-range">
+                    <div class="labels">
+                      <div class="label" *ngFor="let item of timeRange">
+                        <span>{{item?.label}}</span>
+                      </div>
+                    </div>
+                    <div class="ticks-group">
+                      <ng-template ngFor let-item let-i="index" [ngForOf]="timeRange">
+                        <div class="ticks">
+                          <div class="tick"></div>
+                          <div class="tick"></div>
+                          <div class="tick"></div>
+                          <div class="tick"></div>
+                        </div>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <ng-container *ngTemplateOutlet="timeLineV"></ng-container>
+            <ng-template #timeLineV>
+              <ng-template ngFor let-driver [ngForOf]="element.drivers">
+                <div [class]="'d-flex justify-content-between my-2 timeLine timeLine__' + driver.driverDailyStatus">
+                  <div class="px-3 text-white">{{driver.driverDailyStatus==='A'?'00:00':'12:00'}}</div>
+                  <div class="px-3 text-white">{{driver.driverDailyStatus==='A'?'12:00':'24:00'}}</div>
+                </div>
+              </ng-template>
+            </ng-template>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsFreeTruck"></tr>
+        <tr mat-row class="truck-schedule-row" [class.selected]="selectedRow === row"
+          *matRowDef="let row; columns: displayedColumnsFreeTruck"></tr>
+      </table>
+      <div *ngIf="!freeTruckTable?.data.length" class="no-result p-3">
+        No data found
+      </div>
+    </perfect-scrollbar>
+  </div>
+</div>

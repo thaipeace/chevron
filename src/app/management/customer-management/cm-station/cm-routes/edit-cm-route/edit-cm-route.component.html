@@ -1,0 +1,98 @@
+<div [class.mat-elevation-z8]="true" class="edit">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">{{ isEdit ? 'Update Route' : 'New Route' }}</span>
+      <button class="close" mat-icon-button (click)="onCancel()">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+  </div>
+  <div mat-dialog-content class="dialog-content-full layout-dialog-form settings">
+    <form #editForm="ngForm" id='editForm' name="form">
+      <div class="infos">
+        <div class="row">
+          <div class="item col-6 item-required">
+            <label class="label" for="routeName">Route Name</label>
+            <div class="form-group">
+              <input class="form-control control no-radius-input" type="text" name="routeName" required
+                pattern="^(?!\s+$).+" [(ngModel)]="selectedItem.RouteName">
+            </div>
+          </div>
+          <div class="item col-6 item-required">
+            <label class="label" for="routeDesc">Description</label>
+            <div class="form-group">
+              <input class="form-control control no-radius-input" type="text" name="routeDesc" required
+                pattern="^(?!\s+$).+" [(ngModel)]="selectedItem.Description">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="item col-6">
+            <mat-checkbox [(ngModel)]="selectedItem.Active" name="active">Active</mat-checkbox>
+          </div>
+          <div class="item col-6">
+            <mat-checkbox [(ngModel)]="selectedItem.EscortRequired" name="escortRequired">EscortRequired</mat-checkbox>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="item px-3 w-100 col-6 item-required">
+            <label class="label d-block pb-3">Origin</label>
+            <div class="mb-3">
+              <div class="form-group">
+                <ng-select [items]="directionOrigin" bindLabel="name" bindValue="id" required
+                  [(ngModel)]="selectedItem.OriginType" name="originType" [clearable]="false"
+                  (change)="onTypeChange('Origin', 'OriginType', 'originColection')"></ng-select>
+              </div>
+              <div class="form-group" *ngIf="selectedItem.OriginType">
+                <ng-select [items]="originColection" bindLabel="name" bindValue="id" required
+                  [(ngModel)]="selectedItem.Origin" name="originRemoteEndpoint" [clearable]="false"></ng-select>
+              </div>
+            </div>
+          </div>
+          <div class="item px-3 w-100 col-6 item-required">
+            <label class="label d-block pb-3">Destination</label>
+            <div>
+              <div class="form-group">
+                <ng-select [items]="directionDestination" bindLabel="name" bindValue="id" required
+                  [(ngModel)]="selectedItem.DestinationType" name="destinationType" [clearable]="false"
+                  (change)="onTypeChange('Destination', 'DestinationType', 'destinationColection')"></ng-select>
+              </div>
+              <div class="form-group" *ngIf="selectedItem.DestinationType">
+                <ng-select [items]="destinationColection" bindLabel="name" bindValue="id" required
+                  [(ngModel)]="selectedItem.Destination" name="destinationRemoteEndpoint" [clearable]="false">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="item col-6">
+            <app-table-geo-small [points]="coordinates" (onPointChange)="onTableChange($event)" [isEditing]="true">
+            </app-table-geo-small>
+          </div>
+          <div class="pb-4 px-3 w-100 col-6">
+            <div class="text-white pb-3">Location</div>
+            <div class="map-mini w-100">
+              <app-mpm-terminal [readonly]="true" [points]="coordinates"></app-mpm-terminal>
+              <div (click)="onCoordinateOpenDialog()" class="hint d-flex align-items-center justify-content-center">
+                Click to open
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="d-flex justify-content-end mt-2 mb-1 footer form-buttons">
+  <button type="button" class="btn-i btn-i-icon btn-edit text-white" mat-raised-button [class.mat-elevation-z8]="true"
+    (click)="onCreate()" [disabled]="editForm.form.invalid" *ngIf="!isEdit"><i class="fas fa-vial"></i> Create
+  </button>
+  <button type="button" class="btn-i btn-i-icon btn-edit text-white" mat-raised-button [class.mat-elevation-z8]="true"
+    (click)="onUpdate()" [disabled]="editForm.form.invalid" *ngIf="isEdit"><i class="fas fa-vial"></i> Update
+  </button>
+</div>

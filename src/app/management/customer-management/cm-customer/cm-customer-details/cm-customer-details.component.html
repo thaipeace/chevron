@@ -1,0 +1,115 @@
+<div class="tab-container bg-blue-darkest h-100">
+  <mat-tab-group class="h-100">
+    <mat-tab label="Details">
+      <div class="d-flex overflow-hidden h-100">
+        <perfect-scrollbar class="flex-grow-1">
+          <ng-container [ngTemplateOutlet]="tableTemplate"></ng-container>
+        </perfect-scrollbar>
+        <div class="pl-2 pt-2">
+          <ng-container [ngTemplateOutlet]="mapTemplate"></ng-container>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Station List">
+      <app-cm-station-list
+        *ngIf="customer"
+        [customerId]="customer.getId()"
+        (refreshed)="onRefresh($event)"
+      ></app-cm-station-list>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+<ng-template #tableTemplate>
+  <table class="tql-table table-data-detail">
+    <thead class="stick">
+      <tr>
+        <th class="bg-blue-darkest">
+          <div class="text-white">Customer Name</div>
+          <div class="text-blue mt-2">{{ customer?.customerName }}</div>
+        </th>
+        <th class="bg-blue-darkest">
+          <div class="btn-group">
+            <button
+              mat-raised-button
+              *ngIf="edit"
+              class="p-0 s-36 btn-save"
+              matTooltip="Update"
+              (click)="enableSubmit() && onSave()"
+              [class.disabled-half]="!enableSubmit()"
+            >
+              <i class="fal fa-check ml-0"></i>
+            </button>
+            <button mat-raised-button *ngIf="!edit" class="p-0 s-36 btn-edit" matTooltip="Edit" (click)="onEdit()">
+              <i class="fal fa-edit ml-0"></i>
+            </button>
+            <button
+              mat-raised-button
+              *ngIf="edit"
+              class="p-0 s-36 btn-cancel ml-3"
+              matTooltip="Cancel"
+              (click)="onCancelEdit()"
+            >
+              <i class="fal fa-times"></i>
+            </button>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody *ngIf="!!customer">
+      <tr *ngFor="let item of ['customerAddress', 'emailAddress', 'contactNumber']">
+        <td>{{ item | mappingLabel }}</td>
+        <td *ngIf="!edit">{{ customerDetails.get(item).value }}</td>
+        <td *ngIf="edit" class="td-edit">
+          <ng-container [ngSwitch]="item">
+            <ng-container *ngSwitchCase="'contactNumber'">
+              <div class="p-i">
+                <contact-numbers
+                  [formArray]="contactNumber"
+                  type="details"
+                  class="w-100"
+                  wFull="true"
+                  isSubmitted="true"
+                ></contact-numbers>
+              </div>
+            </ng-container>
+            <ng-container *ngSwitchCase="'customerAddress'">
+              <text-field type="pickUpLocation" [input]="customerDetails.get(item)"></text-field>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              <text-field [input]="customerDetails.get(item)"></text-field>
+            </ng-container>
+          </ng-container>
+        </td>
+      </tr>
+      <tr
+        *ngFor="
+          let item of customer?._data
+            | keyValueOrder
+              : [
+                  'customerName',
+                  'createDate',
+                  'sysId',
+                  'UserName',
+                  'userName',
+                  'contactNumber',
+                  'customerAddress',
+                  'emailAddress'
+                ]
+              : ['lastUpdated']
+        "
+      >
+        <td>{{ item.key | mappingLabel }}</td>
+        <td>{{ item.value }}</td>
+      </tr>
+      <tr>
+        <td>Updated By</td>
+        <td>{{ customer?.userName }}</td>
+      </tr>
+    </tbody>
+  </table>
+</ng-template>
+
+<ng-template #mapTemplate>
+  <app-map-marker [stations]="stations"></app-map-marker>
+</ng-template>

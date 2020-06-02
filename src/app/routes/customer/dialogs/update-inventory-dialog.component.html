@@ -1,0 +1,84 @@
+<div [class.mat-elevation-z8]="true">
+  <form *ngIf="!!inventoryForm" [formGroup]="inventoryForm">
+    <div mat-dialog-title>
+      <div class="d-flex flex-row title align-items-center">
+        <span class="flex-grow-1">Update Inventory - {{ data.station.stationName }}</span>
+        <button class="close" mat-icon-button (click)="onNoClick()"><i class="fal fa-times"></i></button>
+      </div>
+    </div>
+    <div mat-dialog-content>
+      <table class="tql-table">
+        <thead>
+          <tr>
+            <th>Tank Number</th>
+            <th>Product Code</th>
+            <th>Inventory</th>
+            <th>Last Updated</th>
+            <th>Updated By</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="!!tanks">
+          <tr *ngFor="let tank of tanks | sortArray:'tankNumber'">
+            <td>{{ tank.tankNumber }}</td>
+            <td>{{ tank.productCode }}</td>
+            <td class="py-2">
+              <input class="w-100 bg-charcoal" placeholder="Inventory" type="number" [formControlName]="tank.sysId"
+                [id]="tank.sysId" />
+              <div class="d-flex flex-row pt-1">
+                <small>
+                  Dead-stock: <span class="text-white">{{ tank.deadStock }}</span> Litres</small>
+              </div>
+              <ng-container [ngTemplateOutlet]="inventoryErrorMsg" [ngTemplateOutletContext]="{
+                  tankCapacity: tank.tankCapacity,
+                  control: getInventoryControl(tank.sysId)
+                }">
+              </ng-container>
+            </td>
+            <td>{{ tank.lastUpdated }}</td>
+            <td>{{ tank.userName }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div>
+        <div class="pt-2">
+          <small> Comment <span style="color: rgba(255, 93, 106, 1)">*</span></small>
+          <textarea class=" mt-2 w-100" [formControl]="commentControl" rows="3"></textarea>
+        </div>
+        <div *ngIf="commentControl.invalid && commentControl.dirty" class="error text-left">
+          <small *ngIf="commentControl.hasError('required')">* Comment is required</small>
+        </div>
+      </div>
+
+    </div>
+  </form>
+</div>
+
+<div class="form-buttons d-flex justify-content-between">
+  <div>
+    <button *ngIf="userRoleName == 'Customer'" (click)="onNoClick()"
+      [routerLink]="['/customer', 'history', 'inventory']" mat-raised-button [class.mat-elevation-z8]="true"
+      style="background-color: #1cbfae;" class="btn btn-blue btn-historical">
+      <i class="fal fa-history"></i> Historical Inventories
+    </button>
+  </div>
+  <div>
+    <button mat-raised-button [class.mat-elevation-z8]="true" class="btn btn-blue btn-cancel btn-125"
+      (click)="onNoClick()">
+      Cancel
+    </button>
+    <button mat-raised-button [class.mat-elevation-z8]="true" (click)="onUpdateClick()"
+      class="btn btn-blue btn-update btn-125 ml-10 color-default"
+      [disabled]="inventoryForm.invalid || commentControl.invalid">
+      Update
+    </button>
+  </div>
+</div>
+
+<ng-template #inventoryErrorMsg let-control="control" let-tankCapacity="tankCapacity">
+  <div [class.error]="control.invalid" class="text-left pt-1">
+    <small *ngIf="control.hasError('min') || control.hasError('max')">* Inventory must be between 0 and
+      {{ tankCapacity }}.
+    </small>
+    <small *ngIf="control.hasError('required')">* Inventory is required.</small>
+  </div>
+</ng-template>

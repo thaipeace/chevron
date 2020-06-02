@@ -1,0 +1,37 @@
+<div [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">Cancel order - {{order?.salesOrderNumber}}</span>
+      <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+    </div>
+  </div>
+  <div mat-dialog-content>
+    <form class="d-flex input-group align-items-start flex-column justify-content-between" id="form" name="form" #ngForm="ngForm">
+      <span class="title">Comment* </span>
+      <textarea class="w-100" [formControl]="commentControl" rows="3"></textarea>
+      <div *ngIf="commentControl.invalid && ngForm.submitted" class="error text-left">
+        <small *ngIf="commentControl.hasError('required'); else templateElse">
+          * Comment is required
+        </small>
+        <ng-template #templateElse>
+          <small *ngIf="commentControl.hasError('whitespace')" class="text-danger">
+            * Field contain at least one character
+          </small>
+        </ng-template>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="form-buttons d-flex flex-row">
+  <div class="flex-grow-1">
+  </div>
+  <div>
+    <button mat-raised-button [class.mat-elevation-z8]="true" type="button" class="btn btn-cancel ml-3" (click)="onCancel()">Cancel
+        </button>
+    <button mat-raised-button [class.mat-elevation-z8]="true" form="form" type="submit" (click)="onSubmit()" class="btn btn-blue btn-reschedule ml-3">
+            Submit
+        </button>
+  </div>
+
+</div>

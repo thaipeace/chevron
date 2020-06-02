@@ -1,0 +1,65 @@
+[aria-label="calendar"] {
+  top: 50px !important;
+}
+
+.bs-datepicker {
+  &.theme-chevron {
+    background-color: $cl_charcoal;
+    box-shadow: none;
+    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 1px 3px 0 rgba(0, 0, 0, .12);
+
+    .bs-calendar-container {
+      .bs-datepicker-head {
+        background-color: $cl_blue;
+        border-radius: 0;
+        button[disabled]{
+          background-color: transparent;
+        }
+      }
+
+      .bs-datepicker-body {
+        border-color: $cl_text_grey;
+        border-radius: 0;
+
+        table {
+          th {
+            color: $cl_blue_wild;
+            font-weight: 300;
+          }
+
+          td {
+            color: white;
+            font-weight: 300;
+
+            span.is-other-month {
+              color: $cl_cadet;
+            }
+
+            span.selected {
+              background-color: $cl_light_sea_green;
+            }
+
+            &.week {
+              color: $cl_blue;
+            }
+          }
+
+          td.is-highlighted:not(.disabled):not(.selected) span,
+          td span.is-highlighted:not(.disabled):not(.selected) {
+            background-color: $cl_tangerine;
+          }
+
+          &.days {
+            td.active:not(.select-start):before,
+            td.in-range:not(.select-start):before,
+            span.active:not(.select-start):before,
+            span.in-range:not(.select-start):before {
+              background-color: $cl_text_grey;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+  

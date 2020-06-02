@@ -1,0 +1,59 @@
+@import "~src/sass/chevron/variables";
+
+.section-main {
+  .section-options {
+    .compact-wrapper {
+      background-color: $cl_charcoal;
+      width: 300px;
+    }
+  }
+
+  .wrapper-collapsed {
+    > * {
+      &:first-child {
+        padding: 0;
+        width: 0;
+      }
+    }
+  }
+
+  .hint-group {
+    position: relative;
+
+    .hint-panel {
+      position: absolute;
+      max-width: 500px;
+      width: 100vh;
+      right: 0;
+      top: 100%;
+      z-index: 1;
+    }
+  }
+}
+
+
+.terminal-collapse-group {
+  > .group {
+    > ul {
+      padding-left: 0 !important;
+    }
+
+    ul {
+      padding-left: 15px;
+
+      li {
+        line-height: 40px;
+      }
+    }
+  }
+
+  .border-bottom {
+    border-bottom: 1px solid $cl_cadet !important;
+  }
+
+
+}
+.terminal-icon {
+  width: 17px;
+  height: 16px;
+}

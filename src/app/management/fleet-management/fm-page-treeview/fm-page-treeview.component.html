@@ -1,0 +1,78 @@
+<div class="tree-view-group p-3 d-flex flex-row height-100 overflow-hidden">
+    <div class="side-content height-100" appToggleCollapse>
+        <div class="height-100 overflow-hidden bg-charcoal">
+            <app-chevron-treeview
+                [readonly]="true"
+                [searchControl]="searchControl"
+                [dataSource]="dataSource"
+                [treeControl]="treeControl"
+                [selectedNode]="selectedNode"
+                [hasChild]="hasChild"
+                [canRemove]="canRemove"
+                [promise]="promise"
+                (add)="onAddNew($event)"
+                (delete)="onDelete($event)"
+                (refresh)="onRefresh()"
+                treeOf="fm"
+                (toggleNode)="toggleNode($event)"
+                (selectedNodeChanged)="onSelectedNodeChanged($event)"
+            >
+            </app-chevron-treeview>
+        </div>
+    </div>
+    <div class="main-content pl-3 flex-grow-1 max-height-100" id="tree-view-panel">
+        <ng-container [ngSwitch]="selectedNode?.levelName">
+            <div class="tab-container bg-blue-darkest h-100" *ngSwitchCase="'Trucks'">
+                <mat-tab-group class="h-100">
+                    <mat-tab label="Truck List">
+                        <div class="d-flex overflow-hidden h-100">
+                            <perfect-scrollbar class="flex-grow-1">
+                                <app-fm-truck-list
+                                    [truckCompanyIds]="truckCompanyIds"
+                                    [readonly]="readonly"
+                                    (onPromise)="onRefreshDetails($event)"
+                                    [defaultCompanyId]="selectedNode?.companyName"
+                                ></app-fm-truck-list>
+                            </perfect-scrollbar>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+
+            <div class="tab-container bg-blue-darkest h-100" *ngSwitchCase="'Drivers'">
+                <mat-tab-group class="h-100">
+                    <mat-tab label="Driver List">
+                        <div class="d-flex overflow-hidden h-100">
+                            <perfect-scrollbar class="flex-grow-1">
+                                <app-fm-driver-list
+                                    [truckCompanyIds]="truckCompanyIds"
+                                    [readonly]="readonly"
+                                    (onPromise)="onRefreshDetails($event)"
+                                    [defaultCompanyId]="selectedNode?.companyName"
+                                ></app-fm-driver-list>
+                            </perfect-scrollbar>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+
+            <app-fm-company-details
+                [truckCompanyIds]="truckCompanyIds"
+                [readonly]="readonly"
+                [id]="selectedNode?.nodeId"
+                (onPromise)="onRefreshDetails($event)"
+                *ngSwitchCase="'Company'"
+            ></app-fm-company-details>
+            <app-fm-truck-details
+                [readonly]="readonly"
+                [id]="selectedNode?.nodeId"
+                *ngSwitchCase="'Truck'"
+            ></app-fm-truck-details>
+            <app-fm-driver-details
+                [readonly]="readonly"
+                [id]="selectedNode?.nodeId"
+                *ngSwitchCase="'Driver'"
+            ></app-fm-driver-details>
+        </ng-container>
+    </div>
+</div>

@@ -1,0 +1,134 @@
+<div [class.mat-elevation-z8]="true" class="edit">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">{{ isEdit ? 'Update Discharge Point' : 'New Discharge Point' }}</span>
+      <button class="close" mat-icon-button (click)="onCancel()">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+  </div>
+  <div mat-dialog-content class="dialog-content-full layout-dialog-form settings">
+    <form #editForm="ngForm" id='editForm' name="form">
+      <div class="infos">
+        <div class="row">
+          <div class="col-6">
+            <div class="item item-required">
+              <label class="label" for="dischargePointName">Discharge Point Name</label>
+              <div class="form-group">
+                <input class="form-control control no-radius-input" type="text" name="dischargePointName" required
+                  pattern="^(?!\s+$).+" [(ngModel)]="selectedItem.DischargePointName">
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="item item-required">
+              <label class="label" for="dischargepointIndex">Discharge Point Index</label>
+              <div class="form-group">
+                <input class="form-control control no-radius-input" type="number" name="dischargepointIndex" required
+                  [(ngModel)]="selectedItem.DischargePointIndex" min="1" step="1" pattern="\d*">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-4">
+            <div class="item item-required">
+              <label class="label" for="latitude">Lat</label>
+              <div class="form-group">
+                <input class="form-control control no-radius-input" type="number" name="latitude" required
+                  pattern="^(?!\s+$).+" [(ngModel)]="selectedItem.Latitude">
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="item item-required">
+              <label class="label" for="longitude">Lon</label>
+              <div class="form-group">
+                <input class="form-control control no-radius-input" type="number" name="longitude" required
+                  pattern="^(?!\s+$).+" [(ngModel)]="selectedItem.Longitude">
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="item item-required">
+              <label class="label" for="altitude">Alt</label>
+              <div class="form-group">
+                <input class="form-control control no-radius-input" type="number" name="altitude" required
+                  pattern="^(?!\s+$).+" [(ngModel)]="selectedItem.Altitude">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="item table-material">
+          <div class="d-flex justify-content-between">
+            <label class="label" for="tankAssociations">Tank Associations</label>
+            <i class="fal fa-question-circle ml-3 text-blue" appCopyGUID [key]="1"
+              [matTooltip]="'Tanks within a Discharge Point shall be indexed in respect to the tanks proximity to the tractor end of the truck, meaning ‘Tank 1’ shall be the tank closest to the tractor. Note: Typically the tank with index 1 contains diesel.'"></i>
+          </div>
+          <table mat-table [dataSource]="tableData" class="mat-elevation-z8 tql-table" matSort
+            matSortActive="tankNumber" matSortDirection="asc" matSortDisableClear>
+            <ng-container matColumnDef="#">
+              <th mat-header-cell *matHeaderCellDef>
+                <ng-container *ngTemplateOutlet="ind"></ng-container>
+                <ng-template #ind><span>#</span></ng-template>
+              </th>
+              <td mat-cell *matCellDef="let i = index">
+                <ng-container *ngTemplateOutlet="indV"></ng-container>
+                <ng-template #indV>
+                  <div class="text-left">{{i + 1}}</div>
+                </ng-template>
+              </td>
+            </ng-container>
+
+            <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+              <th mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="$event ? masterToggle() : null" [ngClass]="{'d-none': isAllTankNotAvailable()}"
+                  [checked]="selection.hasValue() && isAllSelected()"
+                  [indeterminate]="selection.hasValue() && !isAllSelected()">
+                </mat-checkbox>
+              </th>
+              <td mat-cell *matCellDef="let row">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                  [ngClass]="{'d-none': isTankNotAvailable(row)}" [checked]="selection.isSelected(row)">
+                </mat-checkbox>
+              </td>
+            </ng-container>
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="tankName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="tankNumber"><span>Tank Number</span></th>
+              <td mat-cell *matCellDef="let row">
+                <div class="text-left">{{row.tankNumber}}</div>
+              </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="dischargePointName">
+              <th mat-header-cell *matHeaderCellDef><span>Discharge Point Name</span></th>
+              <td mat-cell *matCellDef="let row">
+                <div class="text-left">{{row.dischargePointName ? row.dischargePointName : 'Unassigned'}}</div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+            </tr>
+          </table>
+
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="d-flex justify-content-end mt-2 mb-1 footer form-buttons">
+  <button type="button" class="btn-i btn-i-icon btn-edit text-white" mat-raised-button [class.mat-elevation-z8]="true"
+    (click)="onCreate()" [disabled]="editForm.form.invalid" *ngIf="!isEdit"><i class="fas fa-vial"></i> Create
+  </button>
+  <button type="button" class="btn-i btn-i-icon btn-edit text-white" mat-raised-button [class.mat-elevation-z8]="true"
+    (click)="onUpdate()" [disabled]="editForm.form.invalid" *ngIf="isEdit"><i class="fas fa-vial"></i> Update
+  </button>
+</div>

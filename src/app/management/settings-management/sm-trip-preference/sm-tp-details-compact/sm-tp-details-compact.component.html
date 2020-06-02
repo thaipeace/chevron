@@ -1,0 +1,93 @@
+<div class="compact-wrapper d-flex flex-column min-h-100">
+  <div class="title">
+    <div class=" d-flex align-items-center flex-row">
+      <span class="text flex-grow-1">Trip Preference - {{object?.name}}</span>
+      <button mat-icon-button (click)="close()" class="icon">
+        <mat-icon><i class="fal fa-times"></i></mat-icon>
+      </button>
+    </div>
+    <hr>
+  </div>
+  <div class="forms-control py-3">
+    <form
+      id="form-edit"
+      name="form"
+      #f="ngForm"
+      (ngSubmit)="formDOM.valid && onUpdate()"
+      *ngIf="!!formDOM"
+    >
+      <div class="pb-4" *ngFor="let key of keys" [ngSwitch]="key">
+        <!-- value -->
+        <ng-container *ngSwitchCase="'ModeOfUpdate'">
+          <div class="text-white pb-2">
+            Value
+          </div>
+          <div class="text-grey" [ngSwitch]="key" *ngIf="!isEditing">
+            {{formDOM.get(key).value || '[no data]'}}
+          </div>
+          <div [ngSwitch]="key" *ngIf="isEditing">
+            <input-field
+              [input]="formDOM.get(key)"
+              [type]="'select-menu'"
+              [arrayList]="modes"
+              [arrayListLabel]="'name'"
+              [arrayListValue]="'name'"
+              [placeholder]="'Enter '+key"
+              [isSubmit]="f.submitted"
+            ></input-field>
+          </div>
+        </ng-container>
+        <!-- description -->
+        <ng-container *ngSwitchCase="'Description'">
+          <div class="text-white pb-2">
+            {{key | mappingLabel}}
+          </div>
+          <div class="text-grey" [ngSwitch]="key" *ngIf="!isEditing">
+            {{formDOM.get(key).value || '[no data]'}}
+          </div>
+          <div [ngSwitch]="key" *ngIf="isEditing">
+            <input-field
+              [type]="'textarea'"
+              [input]="formDOM.get(key)"
+              [placeholder]="'Enter '+key"
+              [isSubmit]="f.submitted"
+            ></input-field>
+          </div>
+        </ng-container>
+        <!--    default    -->
+        <ng-container *ngSwitchDefault>
+          <div class="text-white pb-2">
+            {{key | mappingLabel}}
+          </div>
+          <div class="text-grey" [ngSwitch]="key" *ngIf="!isEditing">
+            {{formDOM.get(key).value || '[no data]'}}
+          </div>
+          <div [ngSwitch]="key" *ngIf="isEditing">
+            <input-field
+              [input]="formDOM.get(key)"
+              [placeholder]="'Enter '+key"
+              [isSubmit]="f.submitted"
+            ></input-field>
+          </div>
+        </ng-container>
+
+      </div>
+    </form>
+  </div>
+  <div class="flex-grow-1"></div>
+  <div class="footer text-right py-3">
+    <hr class="mb-3">
+    <button mat-raised-button *ngIf="!isEditing"
+            class=" btn-edit" (click)="onEdit()">
+      <i class="fal fa-edit ml-0 mr-1"></i> Edit
+    </button>
+    <button mat-raised-button *ngIf="isEditing"
+            class=" btn-cancel mr-3" (click)="onCancelEdit()">
+      <i class="far fa-ban mr-1"></i> Cancel
+    </button>
+    <button mat-raised-button *ngIf="isEditing"
+            class=" btn-save" type="submit" form="form-edit">
+      <i class="fal fa-check ml-0 mr-1"></i> Update
+    </button>
+  </div>
+</div>

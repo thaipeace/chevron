@@ -1,0 +1,44 @@
+<div class="d-flex flex-wrap">
+  <ng-container *ngIf="!isShowByProduct">
+    <ng-container *ngIf="!!tanks && tanks.length > 0; else noDataTemplate">
+      <ng-container *ngFor="let tank of tanks"
+                    [ngTemplateOutlet]="chartMeter"
+                    [ngTemplateOutletContext]="{ chartData: tank?.chart}">
+      </ng-container>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="isShowByProduct">
+    <ng-container *ngIf="!!products && products.length > 0; else noDataTemplate">
+      <ng-container
+        *ngFor="let tank of products | arrangeKeyValue : ['Euro4-97', 'Premium-95', 'B10-Diesel', 'Euro5-B7'] : 'ProductCode'"
+        [ngTemplateOutlet]="chartMeter"
+        [ngTemplateOutletContext]="{ chartData: tank?.chart}">
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #noDataTemplate>
+  <div class="d-flex justify-content-center py-3">
+    <em>{{hasNoData ? 'No data found' : 'Loading ...'}}</em>
+  </div>
+</ng-template>
+
+<ng-template #chartMeter let-data="chartData">
+  <div class="meter-wrapper d-flex justify-content-center align-items-center mx-4">
+    <ng-container *ngIf="!data?.hasError">
+      <app-chart-meter [name]="data.name" [title]="data.title" [random]="data.random" [min]="data.min" [max]="data.max"
+                       [unit]="data.unit" [value]="data.value" [valueName]="data.valueName"
+                       [plotBandRange]="data.plotBandRange"
+                       [color]="data.color" [subtitle]="data?.subtitle">
+      </app-chart-meter>
+    </ng-container>
+    <ng-container *ngIf="data?.hasError">
+      <div>
+        <div class="text-center mb-2">Data has errors</div>
+        <div class="text-center mb-2 product-code-title size-16 {{data?.title?.toLowerCase()}}"><b>{{data?.title}}</b></div>
+        <div class="text-center subtitle text-white" *ngIf="data?.subtitle"><b>{{data?.subtitle}}</b></div>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>

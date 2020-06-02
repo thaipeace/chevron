@@ -1,0 +1,24 @@
+<div class="form-group">
+  <div class="input-contact-number" *ngFor="let control of formArray.controls; let i = index">
+    <div class="input-box" [class.w-100]="wFull || widthtype == 'small'" [class.small]="widthtype == 'small'">
+      <input class="form-control control arb-input text-truncate" [formControl]="control" type="{{ type }}"
+        placeholder="{{ placeholder | mappingLabel }} {{ i + 1 }}" [class.w-100]="wFull || widthtype == 'small'"
+        [class.style-details]="border" />
+      <button *ngIf="formArray.controls.length > 1 && isCreateInsertable" class="btn btn-cancel btn-icon-add ml-2" (click)="onRemove(i)"
+        type="button">
+        <i class="fal fa-trash-alt color-default"></i>
+      </button>
+    </div>
+    <div *ngIf="isSubmitted && control.invalid" class="error">
+      <small *ngIf="control.hasError('required')">* Field is required</small>
+    </div>
+  </div>
+  <div class="d-flex text-default mt-1 justify-content-between input-custom-form"
+    [class.w-100]="wFull || widthtype == 'small'" [class.small]="widthtype == 'small'">
+    <small [class.error]="formArray.controls.length === length"><i>Maximum number: {{ length }}</i></small>
+    <button type="button" class="btn btn-icon-add btn-blue ml-3" [disabled]="canAddNew()" (click)="addControl()"
+      *ngIf="isCreateInsertable">
+      <i class="fal fa-user-plus"></i>
+    </button>
+  </div>
+</div>

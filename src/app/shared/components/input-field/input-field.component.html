@@ -1,0 +1,113 @@
+<ng-container [ngSwitch]="type">
+  <ng-container *ngSwitchCase="'pickUpLocation'">
+    <div class="location" (click)="pickUpLocation()">
+      <input
+        type="text"
+        class="w-100 non-typing"
+        [formControl]="input"
+        placeholder="{{ placeholder | mappingLabel }}"
+        pattern="^(?!\s+$).+"
+      />
+    </div>
+  </ng-container>
+  <ng-container *ngSwitchCase="'date'">
+    <input
+      type="text"
+      class="text-left date-picker w-100"
+      bsDatepicker
+      placement="left"
+      [ngModel]="input.value"
+      (ngModelChange)="input.setValue($event)"
+      [ngModelOptions]="{ standalone: true }"
+      [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+      pattern="^(?!\s+$).+"
+    />
+  </ng-container>
+  <ng-container *ngSwitchCase="'datetime'">
+    <div class="input-time-group">
+      <md2-datepicker
+        class="time-picker-spacing"
+        [ngModel]="input.value"
+        (ngModelChange)="input.setValue($event)"
+        [format]="'y-MM-dd (HH:mm)'"
+        [type]="'datetime'"
+        [openOnFocus]="true"
+        [ngModelOptions]="{ standalone: true }"
+      ></md2-datepicker>
+      <i class="fal fa-clock timer-pick-user-lock-icon"></i>
+    </div>
+  </ng-container>
+  <ng-container *ngSwitchCase="'radio-box'">
+    <div class="d-flex input-group align-items-start">
+      <mat-radio-group
+        [ngModel]="input.value"
+        (ngModelChange)="input.setValue($event)"
+        class="d-flex control input-custom-form"
+      >
+        <mat-radio-button class="mr-3" [value]="'true'">Yes</mat-radio-button>
+        <mat-radio-button [value]="'false'">No</mat-radio-button>
+      </mat-radio-group>
+    </div>
+  </ng-container>
+  <ng-container *ngSwitchCase="'select-menu'">
+    <select-menu
+      [items]="arrayList"
+      [bindLabel]="arrayListLabel"
+      [bindValue]="arrayListValue"
+      (change)="input.setValue($event.value)"
+      [ngModel]="input.value"
+      [placeHolder]="placeholder"
+    >
+    </select-menu>
+  </ng-container>
+  <ng-container *ngSwitchCase="'number'">
+    <input
+      type="number"
+      class="w-100"
+      [formControl]="input"
+      [min]="min != null ? min : undefined"
+      [max]="max != null ? max : undefined"
+      placeholder="{{ placeholder | mappingLabel }}"
+      digitOnly
+    />
+  </ng-container>
+  <ng-container *ngSwitchCase="'textarea'">
+    <textarea
+      class="w-100"
+      [formControl]="input"
+      [rows]="3"
+      placeholder="{{ placeholder | mappingLabel }}"
+      pattern="^(?!\s+$).+"
+    ></textarea>
+  </ng-container>
+  <ng-container *ngSwitchDefault>
+    <input
+      type="{{ type }}"
+      class="w-100"
+      [formControl]="input"
+      placeholder="{{ placeholder | mappingLabel }}"
+    />
+  </ng-container>
+</ng-container>
+<div *ngIf="isSubmit && input.invalid" class="error w-191">
+  <div [ngSwitch]="getFirstError(input.errors)">
+    <small *ngSwitchCase="'NaN'" class="text-danger"> * Not a number </small>
+    <small *ngSwitchCase="'required'" class="text-danger">
+      * Field is required
+    </small>
+    <small *ngSwitchCase="'whitespace'" class="text-danger">
+      * Can't contain only whitespace
+    </small>
+    <small *ngSwitchCase="'notSafe'" class="text-danger"> * Field can't contain "& <" </small>
+    <small *ngSwitchCase="'emailError'" class="text-danger">
+      * email is invalid
+    </small>
+    <small *ngSwitchCase="'telPhoneError'" class="text-danger">
+      * Tel is wrong format
+    </small>
+    <small *ngSwitchCase="'min'" class="text-danger"> * Minimum required number
+      is {{ min || input?.errors?.min?.min }} </small>
+    <small *ngSwitchCase="'max'" class="text-danger"> * Maximum required number
+      is {{ max || input?.errors?.max?.max }} </small>
+  </div>
+</div>

@@ -1,0 +1,225 @@
+<div class="tab-container bg-blue-darkest h-100">
+  <mat-tab-group class="h-100" (selectedTabChange)="tabChanged($event)">
+    <mat-tab label="Details">
+      <div class="d-flex overflow-hidden h-100">
+        <perfect-scrollbar class="flex-grow-1">
+          <ng-container [ngTemplateOutlet]="tableTemplate"></ng-container>
+        </perfect-scrollbar>
+        <div class="pl-2 pt-2 ">
+          <ng-container [ngTemplateOutlet]="mapTemplate"></ng-container>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Discharge Points">
+      <app-discharge-points *ngIf="station" [stationId]="station.getId()" [tanks]="station.tanks"
+        (refreshed)="onRefresh($event)">
+      </app-discharge-points>
+    </mat-tab>
+    <mat-tab label="Tank List" #tankListTab>
+      <app-cm-tank-list *ngIf="station && tankListTab.isActive" [stationId]="station.getId()"
+        (refreshed)="onRefresh($event)">
+      </app-cm-tank-list>
+    </mat-tab>
+    <mat-tab label="Inventory" #inventoryTab>
+      <app-station-inventory-details *ngIf="station && inventoryData && inventoryTab.isActive" [station]="station"
+        [prefix]="'station_details'" [type]="'currentInventory'"
+        [inventoryByProduct]="inventoryData?.products[station?.getId()]['data']"
+        [inventoryByTank]="inventoryData?.tanks[station?.getId()]['data']">
+      </app-station-inventory-details>
+      <app-im-history [stations]="[station]"></app-im-history>
+    </mat-tab>
+    <mat-tab label="Delivery Windows" #deliveryWindowTab>
+      <app-dm-windows [station]="station" *ngIf="deliveryWindowTab.isActive"></app-dm-windows>
+    </mat-tab>
+    <mat-tab label="Routes">
+      <app-cm-routes *ngIf="station" [stationId]="station.getId()" [terminals]="terminals"
+        (refreshed)="onRefresh($event)">
+      </app-cm-routes>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+<!--Template-->
+
+<ng-template #tableTemplate>
+  <table class="tql-table table-data-detail">
+    <thead class="stick">
+      <tr>
+        <th class="bg-blue-darkest">
+          <div class="text-white">Customer Name</div>
+          <div class="text-blue mt-2">{{ customer?.customerName }}</div>
+        </th>
+        <th class="bg-blue-darkest">
+          <div class="d-flex justify-content-between h-100">
+            <div>
+              <div class="text-white">Station Name</div>
+              <div class="text-blue mt-2">{{ station?.stationName }}</div>
+              <!-- <div *ngIf="edit" class="td-edit">
+            <text-field [input]="stationForm.get('stationName')"></text-field>
+          </div> -->
+            </div>
+            <div *ngIf="!readonly && !popupEdit" class="btn-group">
+              <button mat-raised-button *ngIf="edit" class="p-0 s-36 btn-save color-default ml-3"
+                [class.disabled-half]="!enableSave()" (click)="onSave()">
+                <i class="fal fa-check ml-0"></i>
+              </button>
+              <button mat-raised-button *ngIf="!edit" class="p-0 s-36 btn-edit color-default ml-3" (click)="onEdit()">
+                <i class="fal fa-edit ml-0"></i>
+              </button>
+              <button mat-raised-button *ngIf="edit" class="p-0 s-36 btn-cancel ml-3" (click)="onCancelEdit()">
+                <i class="fal fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody *ngIf="!!station">
+      <tr *ngFor="
+          let item of [
+            'stationName',
+            'shortName',
+            'streetAddress',
+            'stationType',
+            'contactNumber',
+            'distanceFromTerminal',
+            'estimatedHoursFromTerminal',
+            'truckSize',
+            'associatedTerminalId',
+            'associatedRegionId',
+            'deliveryPointGroupId'
+          ]
+        ">
+        <td>
+          <ng-container [ngSwitch]="item">
+            <ng-container *ngSwitchCase="'associatedTerminalId'">
+              <span>Associated Terminal</span>
+            </ng-container>
+            <ng-container *ngSwitchCase="'associatedRegionId'">
+              <span>Associated Region</span>
+            </ng-container>
+            <ng-container *ngSwitchCase="'deliveryPointGroupId'">
+              <span>Delivery Point Group</span>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              <span>{{ item | mappingLabel }}</span>
+            </ng-container>
+          </ng-container>
+        </td>
+
+        <td *ngIf="!edit">
+          <ng-container [ngSwitch]="item">
+            <ng-container *ngSwitchCase="'associatedTerminalId'">
+              <span>{{getTerminalName(stationForm.get(item).value)}}</span>
+            </ng-container>
+            <ng-container *ngSwitchCase="'associatedRegionId'">
+              <span>{{getRegionName(stationForm.get(item).value)}}</span>
+            </ng-container>
+            <ng-container *ngSwitchCase="'deliveryPointGroupId'">
+              <span>{{getDeliveryPointGroupName(stationForm.get(item).value)}}</span>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              <span>{{stationForm.get(item) ? stationForm.get(item).value : ''}}</span>
+            </ng-container>
+          </ng-container>
+        </td>
+
+        <td *ngIf="edit" class="td-edit">
+          <ng-container [ngSwitch]="item">
+            <ng-container *ngSwitchCase="'streetAddress'">
+              <text-field [input]="stationForm.get(item)" type="pickUpLocation"></text-field>
+            </ng-container>
+            <ng-container *ngSwitchCase="'contactNumber'">
+              <contact-numbers [formArray]="contactNumber" type="details" class="w-100" wFull="true" isSubmitted="true">
+              </contact-numbers>
+            </ng-container>
+            <ng-container *ngSwitchCase="['distanceFromTerminal', 'estimatedHoursFromTerminal', 'truckSize'].includes(item)
+              ? item : ''">
+              <text-field [input]="stationForm.get(item)" type="number"></text-field>
+            </ng-container>
+            <ng-container *ngSwitchCase="'deliveryPointGroupId'">
+              <ng-select [items]="deliveryPointGroups" bindValue="SysId" bindLabel="DeliveryPointGroupName"
+                class="with-border" required name="deliveryPointGroups" [clearable]="false" 
+                [(ngModel)]="station.deliveryPointGroupId"></ng-select>
+            </ng-container>
+            <ng-container *ngSwitchCase="'associatedTerminalId'">
+              <ng-select [items]="terminals" bindValue="TerminalId" bindLabel="TerminalName" class="with-border"
+                required name="terminals" [clearable]="false" [(ngModel)]="station.associatedTerminalId"
+                (change)="onChangeAssociatedTerminal($event)"></ng-select>
+            </ng-container>
+            <ng-container *ngSwitchCase="'associatedRegionId'">
+              <ng-select [items]="regionsFiltered" bindValue="RegionId" bindLabel="RegionName" class="with-border"
+                required name="regions" [clearable]="false" [(ngModel)]="station.associatedRegionId"
+                [disabled]="!station.associatedTerminalId"></ng-select>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              <text-field [input]="stationForm.get(item)"></text-field>
+            </ng-container>
+          </ng-container>
+        </td>
+      </tr>
+      <tr>
+        <td>Upload Journey</td>
+        <td>
+          <button disabled class="btn btn-icon text-white mr-2" matTooltip="Upload Journey">
+            <i class="fal fa-arrow-alt-to-top"></i>
+          </button>
+          Upload
+        </td>
+      </tr>
+      <tr *ngFor="
+          let item of station?._data
+            | keyValueOrder
+              : [
+                  'createDate',
+                  'sysId',
+                  'customerId',
+                  'geoPoint',
+                  'userName',
+                  'shortName',
+                  'streetAddress',
+                  'stationType',
+                  'contactNumber',
+                  'distanceFromTerminal',
+                  'estimatedHoursFromTerminal',
+                  'truckSize',
+                  'associatedTerminalId',
+                  'associatedRegionId',
+                  'terminalId',
+                  'DeliveryWindow',
+                  'deliveryPointGroupId',
+                  'Routes'
+                ]
+              : ['uploadJourney']
+        " [ngSwitch]="item?.key">
+        <ng-container *ngSwitchCase="'stationTank'">
+          <td>{{ item?.key | mappingLabel }}</td>
+          <td>{{ getTankNumber(item.value) }}</td>
+        </ng-container>
+
+        <ng-container *ngSwitchDefault>
+          <td>{{ item?.key | mappingLabel }}</td>
+          <td>{{ item.value }}</td>
+        </ng-container>
+      </tr>
+      <tr>
+        <td>PTO Required</td>
+        <td>
+          {{ isStationPTOReq }}
+        </td>
+      </tr>
+      <tr>
+        <td>Geo Point</td>
+        <td>{{ station?.geoPoint?.toString() }}</td>
+      </tr>
+      <tr>
+        <td>Updated By</td>
+        <td>{{ station?.userName }}</td>
+      </tr>
+    </tbody>
+  </table>
+</ng-template>
+
+<ng-template #mapTemplate>
+  <app-map-marker [stations]="station ? [station] : []"></app-map-marker>
+</ng-template>

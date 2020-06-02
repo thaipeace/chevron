@@ -1,0 +1,56 @@
+<div [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">New Help Document</span>
+      <button class="close" mat-icon-button (click)="onCancel()">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <div mat-dialog-content class="edit">
+    <div mat-dialog-content class="dialog-content-full layout-dialog-form settings" style="overflow: visible;">
+      <form #editForm="ngForm" name="form" id='editForm'>
+        <div class="infos">
+          <div class="row">
+            <div class="item col-12 item-required">
+              <label class="label" for="name">Name</label>
+              <div class="form-group">
+                <input class="form-control control no-radius-input" type="text" name="name" required
+                  pattern="^(?!\s+$).+" [(ngModel)]="selectedItem.name">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="item col-12 item-required">
+              <label class="label">Upload Document</label>
+              <div class="mt-2">
+                <app-upload-by-drop-component [inputTypes]="['pdf']" (onChange)="onFileUploaded($event)">
+                </app-upload-by-drop-component>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="item col-12 item-required">
+              <label class="label">Access Roles</label>
+              <div class="mt-2">
+                <app-table-select-advance [columnNames]="['roleLabel']" [dataArr]="roles"
+                  (selectedItemsChange)="onSelectedRolesChange($event)" [compareKey]="'sysId'"
+                  [showKey]="'roleLabel'" name="accessRole"></app-table-select-advance>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="form-buttons">
+  <button type="submit" class="btn btn-blue ml-10" (click)="onCreate()"
+    [ngClass]="{'disabled-half': editForm.form.invalid || editForm.form.pristine}">
+    <i class="fal fa-check"></i><span class="ml-2">Create New</span>
+  </button>
+</div>

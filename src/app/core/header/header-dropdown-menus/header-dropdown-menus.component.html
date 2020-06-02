@@ -1,0 +1,27 @@
+<div class="header-dropdown-menus-wrapper" [class.mat-elevation-z8]="true">
+  <div class="d-flex">
+    <ng-container *ngIf="column1?.length" [ngTemplateOutlet]="menuTmpl" [ngTemplateOutletContext]="{groups: column1}">
+    </ng-container>
+    <ng-container *ngIf="column2?.length" [ngTemplateOutlet]="menuTmpl" [ngTemplateOutletContext]="{groups: column2}">
+    </ng-container>
+    <ng-container *ngIf="column3?.length" [ngTemplateOutlet]="menuTmpl" [ngTemplateOutletContext]="{groups: column3}">
+    </ng-container>
+
+
+    <div class="d-flex flex-column"></div>
+  </div>
+</div>
+<ng-template #menuTmpl let-groups="groups">
+  <div class="d-flex flex-column flex-wrap">
+    <ng-container *ngFor="let group of groups">
+      <div class="group">
+        <div class="title">
+          <i class="fal fa-layer-group"></i>
+          <span>{{group?.name}}</span>
+        </div>
+        <div class="item" [class.active]="current?.route === item?.route" *ngFor="let item of group?.menus" [routerLink]="['/' + item['route']]"
+        (click)="onHide()">{{item.name}}</div>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>

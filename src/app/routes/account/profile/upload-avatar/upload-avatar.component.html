@@ -1,0 +1,32 @@
+<div mat-dialog-title>
+  <div class="d-flex flex-row title align-items-center">
+    <span class="flex-grow-1">Upload Avatar</span>
+    <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+  </div>
+</div>
+<div mat-dialog-content>
+  <form name="form" (ngSubmit)="f.form.valid && submit()" #f="ngForm" novalidate>
+    <div class="p-4">
+      <div class="avatar d-flex align-items-center justify-content-center cursor-pointer"
+           [ngStyle]="{'background-image': 'url('+tmpAvatar+')'}"
+           layout="row"
+           (click)="triggerUploadFile($event)"
+           layout-align="center center">
+        <i class="fal fa-upload" [ngClass]="{'hide': tmpAvatar}"></i>
+      </div>
+      <input type="file" class="form-control hide"
+             #uploadInput
+             (change)="onFileChange($event)" placeholder="Search for...">
+      <div class="text-center mt-2">
+        <div *ngFor="let error of errors">
+          <small class="error">{{error}}</small>
+        </div>
+      </div>
+    </div>
+    <div class=" justify-content-center d-flex">
+      <button matRipple type="submit" class="btn-blue"
+              [disabled]="currentAvatar == tmpAvatar">Update
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,23 @@
+@import "~src/sass/chevron/variables";
+
+.drop-content {
+  background-color: $cl_blue_medium_dark;
+  height: 100%;
+  border: $cl_cadet 2px dashed;
+
+  .text {
+    line-height: 25px;
+    font-weight: 300;
+  }
+
+  &.onDragOver {
+    border-color: $cl_blue !important;
+  }
+
+  .invisible {
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    position: absolute;
+  }
+}

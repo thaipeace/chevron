@@ -1,0 +1,41 @@
+@import '~src/sass/chevron/variables';
+@import '~src/sass/chevron/mixin';
+
+.table-schedule {
+    width: 100%;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid $cl_blue;
+
+    .text {
+        color: $cl_blue_wild;
+    }
+
+    ng-select {
+        display: block;
+        width: 190px;
+    }
+}
+
+.btn-i {
+    color: #fff;
+}
+
+
+::ng-deep {
+    .md2-datepicker-trigger {
+        .md2-datepicker-input {
+            input.md2-datepicker-value {
+                height: 24px;
+                font-size: 14px;
+            }
+        }
+    }
+    
+    .ng-select {
+        .ng-select-container {
+            height: 24px !important;
+            min-height: 24px !important;
+        }
+    }
+}

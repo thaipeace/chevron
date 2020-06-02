@@ -1,0 +1,98 @@
+<div [class.mat-elevation-z8]="true">
+	<div mat-dialog-title>
+		<div class="d-flex flex-row title align-items-center">
+			<span class="flex-grow-1">{{ isNew ? 'New Truck' : 'Edit Truck' }}</span>
+			<button class="close" mat-icon-button (click)="onCancel()">
+				<i class="fal fa-times"></i>
+			</button>
+		</div>
+	</div>
+	<div mat-dialog-content *ngIf="!!formData" class="layout-dialog-form">
+		<div class="position-relative" style="max-height: calc(80vh - 76px)" perfectScrollbar>
+			<form class="default-form custom-form" name="form" id="form" (ngSubmit)="enableUpdate() && doUpdate()"
+				#f="ngForm">
+				<div class="d-flex justify-content-between flex-row">
+					<div class="d-grid two-col-table">
+						<div *ngFor="let key of keys">
+							<div class="d-flex input-group align-items-start">
+								<label class="label d-flex align-items-center"
+									for="input_{{ key }}">{{ key | mappingLabel: { companyId: 'Company' } }}
+									<span class="required">*</span>
+								</label>
+							</div>
+							<ng-container [ngSwitch]="key">
+								<!-- COMPANY ID -->
+								<ng-container *ngSwitchCase="'companyId'">
+									<div class="form-group">
+										<div class="d-flex input-group align-items-start">
+											<select-menu [items]="companies" [bindLabel]="'_data.companyName'"
+												[bindValue]="'_data.companyName'" (change)="rfTruck.get(key).setValue($event.value)"
+												[classes]="'arb-input'" #control="ngModel" [placeHolder]="'Select Company'" required
+												[ngModel]="rfTruck.get(key).value" name="input_{{ key }}"
+												[class.disabled-half]="disabledSelect">
+											</select-menu>
+											<div *ngIf="f.submitted && control.invalid" class="error">
+												<small *ngIf="control?.errors.required">* Field is required</small>
+											</div>
+										</div>
+									</div>
+								</ng-container>
+								<!-- IS PTO SUPPORTED -->
+								<ng-container *ngSwitchCase="'isPtoSupported'">
+									<div class="form-group">
+										<div class="form-group mt-2">
+											<input-field [input]="rfTruck.get(key)" [placeholder]="key" type="radio-box"></input-field>
+										</div>
+									</div>
+								</ng-container>
+
+								<!-- IS COMPARTMENT -->
+								<ng-container *ngSwitchCase="'truckCompartment'">
+									<div class="form-group">
+										<array-input [formArray]="compartmentArray" [isSubmitted]="f.submitted" [placeholder]="key"
+											length="8" type="number"></array-input>
+									</div>
+								</ng-container>
+
+								<!-- IS SAFE LOADING PASS DATE -->
+								<ng-container *ngSwitchCase="'safeLoadingPassDate'">
+									<div class="form-group">
+										<input-field [input]="rfTruck.get(key)" [isSubmit]="f.submitted" [placeholder]="key" type="date">
+										</input-field>
+									</div>
+								</ng-container>
+
+								<!-- IS TOTAL CAPACITY -->
+								<ng-container *ngSwitchCase="'totalCapacity'">
+									<div class="form-group">
+										<input-field [input]="rfTruck.get(key)" [isSubmit]="f.submitted" [placeholder]="key" type="number">
+										</input-field>
+									</div>
+								</ng-container>
+
+								<!-- DEFAULT -->
+								<ng-container *ngSwitchDefault>
+									<div class="form-group">
+										<input-field [input]="rfTruck.get(key)" [isSubmit]="f.submitted" [placeholder]="key"></input-field>
+									</div>
+								</ng-container>
+							</ng-container>
+						</div>
+					</div>
+				</div>
+
+				<div *ngIf="!isNew" class="d-flex flex-row pt-1 justify-content-end text-default">
+					<app-last-updated-info [username]="truckDetail?.userName" [lastUpdated]="truckDetail?.lastUpdated">
+					</app-last-updated-info>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="form-buttons">
+	<button mat-raised-button [class.mat-elevation-z8]="true" type="submit" form="form" class="btn btn-blue">
+		<i class="fal fa-check"></i>
+		<span class="ml-2">{{ isNew ? 'Create' : 'Update' }}</span>
+	</button>
+</div>

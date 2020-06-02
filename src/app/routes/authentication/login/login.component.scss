@@ -1,0 +1,26 @@
+
+
+.login-form {
+
+  input[type="text"],
+  input[type="password"] {
+    height: 36px;
+    width: 100%;
+  }
+}
+
+.button-group {
+  display: flex;
+  width: 100%;
+  justify-content: space-between
+}
+
+.form-controls {
+    width: 260px;
+}
+
+.error {
+  color: rgba(255, 93, 106, 1);
+  font-style: italic;
+  margin-top: 0.25em;
+}

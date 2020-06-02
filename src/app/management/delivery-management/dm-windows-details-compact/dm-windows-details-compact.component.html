@@ -1,0 +1,186 @@
+<div class="compact-wrapper d-flex flex-column min-h-100">
+  <div class="title">
+    <div class=" d-flex align-items-center flex-row">
+      <span class="text flex-grow-1"><i class="fal fa-calendar-check mr-3"></i>Delivery Windows</span>
+      <button mat-icon-button (click)="close()" class="icon">
+        <mat-icon><i class="fal fa-times"></i></mat-icon>
+      </button>
+    </div>
+    <hr>
+  </div>
+  <br>
+  <div class="collapse-group mb-3">
+    <div class="heading d-flex flex-row pl-3">
+      <div class="flex-grow-1 text-ellipsis">
+        <i class="fal fa-clock mr-3"></i>Delivery Window Details
+      </div>
+      <button mat-icon-button (click)="isCollapse = !isCollapse" class="icon">
+        <mat-icon>
+          <i class="fal" [class.fa-angle-down]="!isCollapse" [class.fa-angle-up]="isCollapse"></i>
+        </mat-icon>
+      </button>
+    </div>
+    <div *ngIf="!isCollapse">
+      <form id="form-dm-window-details-compact" name="form" #f="ngForm" class="pt-4"
+            (ngSubmit)="formDOM.valid && onUpdate()"
+            *ngIf="!!data">
+        <div class="pb-4">
+          <div class="text-white pb-2">
+            Name
+          </div>
+          <div class="text-grey" *ngIf="!isEditing">
+            {{object?.getValue('DeliveryWindowName') || '[no data]'}}
+          </div>
+          <div *ngIf="isEditing">
+            <input-field
+              [input]="formDOM.get('name')"
+              [placeholder]="'Enter Name'"
+              [isSubmit]="f.submitted"
+            ></input-field>
+          </div>
+        </div>
+        <div class="pb-4">
+          <div class="text-white pb-2">
+            Start date
+          </div>
+          <div class="text-grey" *ngIf="!isEditing">
+            {{object?.getValue('StartDate') || '[no data]'}}
+          </div>
+          <div *ngIf="isEditing">
+            <input-field
+              [type]="'date'"
+              [input]="formDOM.get('startDate')"
+              [isSubmit]="f.submitted"
+            ></input-field>
+          </div>
+        </div>
+        <div class="pb-4">
+          <div class="text-white pb-2">
+            Duration
+          </div>
+          <div class="text-grey" *ngIf="!isEditing">
+            {{object?.duration || '[no data]'}}
+          </div>
+          <div *ngIf="isEditing">
+            <input-field
+              [type]="'number'"
+              [input]="formDOM.get('duration')"
+              [placeholder]="'Enter Duration'"
+              [isSubmit]="f.submitted"
+            ></input-field>
+          </div>
+        </div>
+        <div class="pb-4">
+          <div class="text-white pb-2">
+            Start time
+          </div>
+          <div class="text-grey" *ngIf="!isEditing">
+            {{toHourMinute(object?.getRawValue('startTime')) || '[no data]'}}
+          </div>
+          <div *ngIf="isEditing">
+            <timepicker [(ngModel)]="formDOM.get('startTime').value" name="startTime" class="time-picker"
+                        [formControl]="formDOM.get('startTime')"
+                        [mousewheel]="true"
+                        [showMeridian]="false" *ngIf="isEditing"></timepicker>
+            <small class="text-danger" *ngIf="!formDOM.get('startTime').valid">Invalid time</small>
+          </div>
+        </div>
+        <div class="pb-4">
+          <div class="text-white pb-2 d-flex">
+            End time
+            <span class="flex-grow-1 text-right text-blue"
+                  *ngIf="object?.getRawValue('endTime') < object?.getRawValue('startTime')">
+                    (Over night)
+                  </span>
+          </div>
+          <div class="text-grey" *ngIf="!isEditing">
+            {{toHourMinute(object?.getRawValue('endTime')) || '[no data]'}}
+          </div>
+          <div *ngIf="isEditing">
+            <timepicker [(ngModel)]="formDOM.get('endTime').value" name="endTime" class="time-picker"
+                        [formControl]="formDOM.get('endTime')"
+                        [mousewheel]="true"
+                        [showMeridian]="false" *ngIf="isEditing"></timepicker>
+            <small class="text-danger" *ngIf="!formDOM.get('endTime').valid">Invalid time</small>
+          </div>
+        </div>
+        <div class="pb-4">
+          <div class="text-white pb-2">
+            Max. Monthly Delivery Distribution (%)
+          </div>
+          <div class="text-grey" *ngIf="!isEditing">
+            {{object?.getValue('maxMonthlyDeliveryDistribution') || '[no data]'}}
+          </div>
+          <div *ngIf="isEditing">
+            <input-field *ngIf="isEditing" [type]="'number'" [input]="formDOM.get('maxDistribution')"
+                         [placeholder]="'Enter Number'" [isSubmit]="f.submitted"></input-field>
+          </div>
+        </div>
+        <!--<table class="table-schedule">
+          <tbody>
+          <tr>
+            <td class="pr-3">Name</td>
+            <td>
+                  <span *ngIf="!isEditing"
+                        class="text-default">{{object?.getValue('DeliveryWindowName') || '[no data]'}}</span>
+              <input-field *ngIf="isEditing" [input]="formDOM.get('name')" [placeholder]="'Enter Name'"
+                           [isSubmit]="f.submitted"></input-field>
+            </td>
+          </tr>
+          <tr>
+            <td class="pr-3">Start time</td>
+            <td>
+              <span *ngIf="!isEditing"
+                    class="text-default">{{toHourMinute(object?.getValue('startTime')) || '[no data]'}}</span>
+              <timepicker [(ngModel)]="formDOM.get('startTime').value" name="startTime" class="time-picker"
+                          [showMeridian]="false" *ngIf="isEditing"></timepicker>
+              &lt;!&ndash;<input-field *ngIf="isEditing" [type]="'datetime'" [input]="formDOM.get('startTime')"
+                [placeholder]="'Select date time'" [isSubmit]="f.submitted"></input-field>&ndash;&gt;
+            </td>
+          </tr>
+          <tr>
+            <td class="pr-3">End time</td>
+            <td>
+              <span *ngIf="!isEditing"
+                    class="text-default">{{toHourMinute(object?.getValue('endTime')) || '[no data]'}}</span>
+              <timepicker [(ngModel)]="formDOM.get('endTime').value" name="endTime" class="time-picker"
+                          [showMeridian]="false" *ngIf="isEditing"></timepicker>
+              &lt;!&ndash;<input-field *ngIf="isEditing" [type]="'datetime'" [input]="formDOM.get('endTime')"
+                [placeholder]="'Select date time'" [isSubmit]="f.submitted"></input-field>&ndash;&gt;
+            </td>
+          </tr>
+          <tr>
+            <td class="pr-3">Max. Monthly Delivery Distribution</td>
+            <td>
+                  <span *ngIf="!isEditing"
+                        class="text-default">{{object?.getValue('maxMonthlyDeliveryDistribution') || '[no data]'}}
+                    %</span>
+              <input-field *ngIf="isEditing" [type]="'number'" [input]="formDOM.get('maxDistribution')"
+                           [placeholder]="'Enter Number'" [isSubmit]="f.submitted"></input-field>
+            </td>
+          </tr>
+          </tbody>
+        </table>-->
+      </form>
+    </div>
+  </div>
+  <div class="flex-grow-1"></div>
+  <div class="footer py-3">
+    <hr class="mb-3">
+    <div class="d-flex">
+      <button mat-raised-button *ngIf="!isEditing" class=" btn-cancel mr-3" (click)="onDelete()">
+        <i class="far fa-trash-alt mr-1"></i> Delete
+      </button>
+      <span class="flex-grow-1"></span>
+      <button mat-raised-button *ngIf="!isEditing" class=" btn-edit" (click)="onEdit()">
+        <i class="fal fa-edit ml-0 mr-1"></i> Edit
+      </button>
+      <button mat-raised-button *ngIf="isEditing" class=" btn-cancel mr-3" (click)="onCancelEdit()">
+        <i class="far fa-ban mr-1"></i> Cancel
+      </button>
+      <button mat-raised-button *ngIf="isEditing" form="form-dm-window-details-compact" class=" btn-save" type="submit">
+        <i class="fal fa-check ml-0 mr-1"></i> Update
+      </button>
+    </div>
+  </div>
+</div>

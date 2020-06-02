@@ -1,0 +1,66 @@
+@import '~src/sass/chevron/variables';
+
+.notification-group {
+  position: relative;
+  background-color: $cl_blue_medium_dark;
+  padding: 0 !important;
+
+  .notification-group-header {
+    font-size: 1rem;
+    font-weight: bold;
+    height: 40px;
+    padding: 0 15px;
+    background-color: $cl_charcoal;
+
+    i {
+      font-weight: 300;
+      font-size: 1rem;
+    }
+  }
+
+  .notification-group-footer {
+    font-size: 1rem;
+    height: 40px;
+    padding: 0 15px;
+    color: $cl_blue;
+    background-color: $cl_charcoal;
+  }
+
+  .notification-group-content {
+    overflow-y: auto;
+    max-height: 50vh;
+    padding: 15px;
+    font-size: 1rem;
+
+    .text {
+      color: $cl_blue_wild;
+      line-height: 21px;
+    }
+  }
+}
+
+.dropdown-menus {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+}
+
+.bread-crumbs {
+  .dropdown {
+    a {
+      position: relative;
+      color: $cl_blue;
+      cursor: pointer;
+
+      &:before {
+        content: "\f0d7";
+        font-family: 'Font Awesome 5 Pro';
+        font-weight: 900;
+        bottom: -15px;
+        left: 50%;
+        position: absolute;
+      }
+    }
+
+  }
+}

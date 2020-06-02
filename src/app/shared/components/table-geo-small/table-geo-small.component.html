@@ -1,0 +1,45 @@
+<div class="d-flex flex-column table-mini-wrapper h-100 {{styleClass}}">
+  <table class="w-100 ">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Latitude</th>
+      <th>Longitude</th>
+      <th *ngIf="isEditing"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let point of coordinates; let $index = index;">
+      <td>{{$index + 1}}</td>
+      <td>
+        <span *ngIf="!isEditing">{{point?.getLat()}}</span>
+        <input *ngIf="isEditing" type="number" [(ngModel)]="point.lat"
+               (change)="onInputChange($event,point)">
+      </td>
+      <td>
+        <span *ngIf="!isEditing">{{point?.getLng()}}</span>
+        <input *ngIf="isEditing" type="number" [(ngModel)]="point.lng"
+               (change)="onInputChange($event,point)">
+      </td>
+      <td *ngIf="isEditing"><i class="fal fa-trash-alt color-red cursor-pointer" (click)="remove($index)"></i></td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="flex-grow-1">
+  </div>
+  <div class=" d-flex px-3 py-2 sticky-b sticky-l actions" *ngIf="isEditing">
+    <button mat-raised-button type="button" class="btn btn-blue mr-3 new" (click)="onNew()">
+      <i class="fal fa-plus"></i>
+    </button>
+    <div class="flex-grow-1"></div>
+    <div class="d-flex align-items-center">
+      <i class="fal fa-cloud-download-alt cursor-pointer" (click)="downloadTemplate()"
+         matTooltip="download template"></i>
+      <button (click)="loadData($event)" mat-button><span class="text-light-green">Load Data</span></button>
+      <button (click)="clearData()" mat-button><span class="color-red">Clear Set</span></button>
+      <input type="file" class="invisible"
+             #uploadInput
+             (change)="onClickToUpload($event)">
+    </div>
+  </div>
+</div>

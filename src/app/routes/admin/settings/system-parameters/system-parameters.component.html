@@ -1,0 +1,149 @@
+<div class="table-template p-3 d-flex flex-column">
+  <div class="actions-bar">
+    <div class="mb-3 d-flex align-items-center">
+      <div class="flex-grow-1">
+        <button mat-icon-button (click)="onRefresh()">
+          <i class="fal fa-sync-alt refresh-icon clickable"></i>
+        </button>
+      </div>
+      <div class="form-group d-flex justify-content-center">
+        <search-box [searchControl]="searchControl"></search-box>
+        <mat-paginator class="chevron-paginator ml-3" [length]="tableData?.data.length" [pageSize]="10"
+                       [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </div>
+    </div>
+  </div>
+  <perfect-scrollbar class="table-material hoverable flex-grow-1">
+    <table mat-table class="mat-elevation-z8 tql-table" [dataSource]="tableData" matSort>
+
+      <ng-container matColumnDef="#">
+        <th mat-header-cell *matHeaderCellDef>
+          <ng-container *ngTemplateOutlet="ind"></ng-container>
+          <ng-template #ind><span>#</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let i = index">
+          <ng-container *ngTemplateOutlet="indV"></ng-container>
+          <ng-template #indV>
+            <div class="text-left">{{i + 1}}</div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="name">
+          <ng-container *ngTemplateOutlet="name"></ng-container>
+          <ng-template #name><span>Name</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngTemplateOutlet="nameV"></ng-container>
+          <ng-template #nameV>
+            <div class="text-left">{{row.name}}</div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="category">
+          <ng-container *ngTemplateOutlet="category"></ng-container>
+          <ng-template #category><span>Category</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngTemplateOutlet="categoryV"></ng-container>
+          <ng-template #categoryV>
+            <div class="text-left">{{row.category}}</div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="keyType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="keyType">
+          <ng-container *ngTemplateOutlet="keyType"></ng-container>
+          <ng-template #keyType><span>Key Type</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngTemplateOutlet="keyTypeV"></ng-container>
+          <ng-template #keyTypeV>
+            <div class="text-left">{{row.keyType}}</div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="key">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="key">
+          <ng-container *ngTemplateOutlet="key"></ng-container>
+          <ng-template #key><span>Key</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngTemplateOutlet="keyV"></ng-container>
+          <ng-template #keyV>
+            <div class="text-left">{{row.key}}</div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="valueType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="type">
+          <ng-container *ngTemplateOutlet="valueType"></ng-container>
+          <ng-template #valueType><span>Value Type</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngTemplateOutlet="valueTypeV"></ng-container>
+          <ng-template #valueTypeV>
+            <div class="text-left">{{row.type}}</div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="value">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="value">
+          <ng-container *ngTemplateOutlet="value"></ng-container>
+          <ng-template #value><span>Value</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngTemplateOutlet="valueV"></ng-container>
+          <ng-template #valueV>
+            <div class="text-left">{{row.value}}</div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="created">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="created">
+          <ng-container *ngTemplateOutlet="created"></ng-container>
+          <ng-template #created><span>Created</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngTemplateOutlet="createdV"></ng-container>
+          <ng-template #createdV>
+            <div class="text-left">{{row.created | date:'yyyy-MM-dd (HH:mm)'}}</div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="modified">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="modified">
+          <ng-container *ngTemplateOutlet="modified"></ng-container>
+          <ng-template #modified><span>Modified</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngTemplateOutlet="modifiedV"></ng-container>
+          <ng-template #modifiedV>
+            <div class="text-left">{{row.modified | date:'yyyy-MM-dd (HH:mm)'}}</div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row [class.selected]="selectedRow === row" (click)="onClickRow(row)"
+          *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+    <!-- No search result -->
+    <div *ngIf="tableData?.data.length > 0 && tableData?.filteredData.length == 0" class="no-result">
+      No search result found
+    </div>
+    <!-- No data -->
+    <div *ngIf="tableData?.data.length == 0" class="no-result">
+      No data found
+    </div>
+  </perfect-scrollbar>
+</div>

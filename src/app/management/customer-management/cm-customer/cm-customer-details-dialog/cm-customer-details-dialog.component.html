@@ -1,0 +1,11 @@
+<div mat-dialog-title>
+  <div class="d-flex flex-row title align-items-center">
+    <span class="flex-grow-1">Customer Details - {{customer?.customerName}}</span>
+    <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+  </div>
+</div>
+<div mat-dialog-content>
+  <app-cm-customer-details
+    [customer]="customer"
+  ></app-cm-customer-details>
+</div>

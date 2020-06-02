@@ -1,0 +1,4 @@
+<i class="fal fa-cloud-download-alt cursor-pointer mr-3" (click)="downloadTemplate()"
+   matTooltip="download template"></i>
+<span app-upload-button-with-template (onUpload)="onUpload.emit($event)"></span>
+<button (click)="clearData.emit()" mat-button><span class="color-red">Clear Set</span></button>

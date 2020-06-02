@@ -1,0 +1,39 @@
+@import '~src/sass/tql/variables';
+
+.about {
+  padding: 60px 45px !important;
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 786px) {
+  .about {
+    width: 100%;
+  }
+}
+
+h3 {
+  margin: 15px 0 5px 0;
+}
+
+.text-primary {
+  color: #2496c9 !important;
+}
+
+.cl-des {
+  color: #9fb2bf;
+}
+
+.border-bottom-cl_darker {
+    border-bottom: 1px solid $cl_dark;
+}
+
+.legal-text {
+    height: 300px;
+    overflow-y: auto;
+    background-color: $cl_dark;
+
+    pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+}

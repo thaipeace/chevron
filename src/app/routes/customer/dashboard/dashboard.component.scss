@@ -1,0 +1,47 @@
+@import '~src/sass/chevron/variables';
+
+.meter-wrapper {
+    position: relative;
+}
+
+.top-chart {
+    height: 320px;
+}
+
+.station-product {
+    min-width: 380px;
+}
+
+.select-station {
+    height: 40px;
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: 500;
+
+    .title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.grey-text {
+    font-size: 14px;
+    color: $cl_blue_wild !important;
+}
+
+.left-content {
+    width: 250px;
+}
+
+td {
+    transition: 225ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.sub-title {
+    margin-top: -10px;
+
+    i {
+        font-size: 16px;
+    }
+}

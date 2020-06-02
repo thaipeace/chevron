@@ -1,0 +1,28 @@
+<div [class.mat-elevation-z8]="true" class="dialog-full d-flex flex-column">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">Truck Details - {{truck?.truckPlate}}</span>
+      <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+    </div>
+  </div>
+  <div mat-dialog-content class="flex-grow-1">
+    <div class="h-100 overflow-hidden">
+      <app-fm-truck-details *ngIf="!!id" [popupEdit]="true" (showEdit)="showEdit = $event" [id]="id"
+      (onDetailsChange)="setTruckDetails($event)"></app-fm-truck-details>
+    </div>
+  </div>
+</div>
+<div class="form-buttons d-flex justify-content-between" *ngIf="!readonly && showEdit">
+  <div></div>
+  <div class="col-action">
+    <button mat-raised-button [class.mat-elevation-z8]="true" class="btn-i btn-i-icon btn-edit color-default" (click)="onEdit()" *ngIf="!edit">
+            <i class="fal fa-edit ml-0 mr-1"></i> Edit
+        </button>
+    <button mat-raised-button [class.mat-elevation-z8]="true" class="btn-i btn-i-icon btn-save color-default" (click)="onSave()" *ngIf="edit">
+            <i class="fal fa-check ml-0 mr-1"></i> Update
+        </button>
+    <button mat-raised-button [class.mat-elevation-z8]="true" class="btn-i btn-i-icon btn-cancel ml-3 color-default" (click)="onCancelEdit()" *ngIf="edit">
+            <i class="fal fa-times ml-0 mr-1"></i> Cancel
+        </button>
+  </div>
+</div>

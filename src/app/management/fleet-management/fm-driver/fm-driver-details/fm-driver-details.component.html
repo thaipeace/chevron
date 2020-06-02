@@ -1,0 +1,149 @@
+<div class="tab-container h-100">
+    <mat-tab-group class="h-100" [selectedIndex]="index" (selectedTabChange)="tabChanged($event)">
+        <mat-tab label="Details">
+            <perfect-scrollbar class="h-100">
+                <table class="tql-table table-data-detail" *ngIf="object">
+                    <tbody>
+                        <tr class="bg-blue-darkest">
+                            <td>
+                                <div class="text-white">Full Name</div>
+                                <div class="text-blue mt-2" *ngIf="!edit">
+                                    {{ driverForm.get('fullName').value }}
+                                </div>
+                                <div class="mt-2" *ngIf="edit">
+                                    <text-field [input]="driverForm.get('fullName')" [class]="{ 'max-w-200px': true }">
+                                    </text-field>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="btn-group-edit" *ngIf="!popupEdit">
+                                    <button
+                                        mat-raised-button
+                                        *ngIf="edit"
+                                        class="p-0 s-36 btn-save"
+                                        matTooltip="Update"
+                                        [class.disabled-half]="driverForm.invalid"
+                                        (click)="onSave()"
+                                    >
+                                        <i class="fal fa-check ml-0"></i>
+                                    </button>
+                                    <button
+                                        mat-raised-button
+                                        *ngIf="!edit"
+                                        class="p-0 s-36 btn-edit"
+                                        matTooltip="Edit"
+                                        (click)="onEdit()"
+                                    >
+                                        <i class="fal fa-edit ml-0"></i>
+                                    </button>
+                                    <button
+                                        mat-raised-button
+                                        *ngIf="edit"
+                                        class="p-0 s-36 btn-cancel ml-3"
+                                        matTooltip="Cancel"
+                                        (click)="onCancelEdit()"
+                                    >
+                                        <i class="fal fa-times"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr
+                            *ngFor="
+                                let item of [
+                                    'driverLicenceNumber',
+                                    'address',
+                                    'contactNumber',
+                                    'terminalPassExpiryDate'
+                                ]
+                            "
+                        >
+                            <td>{{ item | mappingLabel }}</td>
+                            <td *ngIf="!edit">{{ driverForm.get(item).value }}</td>
+                            <td *ngIf="edit" class="td-edit">
+                                <ng-container [ngSwitch]="item">
+                                    <ng-container *ngSwitchCase="'terminalPassExpiryDate'">
+                                        <text-field [input]="driverForm.get(item)" type="date"></text-field>
+                                    </ng-container>
+                                    <ng-container *ngSwitchDefault>
+                                        <text-field [input]="driverForm.get(item)"></text-field>
+                                    </ng-container>
+                                </ng-container>
+                            </td>
+                        </tr>
+                        <tr
+                            *ngFor="
+                                let item of object?._data
+                                    | keyValueOrder
+                                        : [
+                                              'sysid',
+                                              'userName',
+                                              'downloadLink',
+                                              'driverLicenceNumber',
+                                              'address',
+                                              'contactNumber',
+                                              'terminalPassExpiryDate',
+                                              'fullName'
+                                          ]
+                                        : ['companyId', 'chevronDriverId']
+                            "
+                            [ngSwitch]="item.key"
+                        >
+                            <ng-container *ngSwitchCase="'driverSITDoc'">
+                                <td>{{ item.key | mappingLabel }}</td>
+                                <td>
+                                    {{ item.value }}
+                                    <button
+                                        mat-raised-button
+                                        type="button"
+                                        class="btn btn-blue ml-3"
+                                        (click)="onDownload()"
+                                        [ngClass]="{
+                                            'disabled-half': !downloadLink || !downloadLink.length
+                                        }"
+                                    >
+                                        <i class="fal fa-cloud-download"></i> Download
+                                    </button>
+                                    <label
+                                        for="uploadFileInput"
+                                        mat-raised-button
+                                        class="btn btn-blue ml-3 label-input mat-raised-button"
+                                    >
+                                        <i class="fal fa-cloud-upload"></i> Upload
+                                    </label>
+                                    <input
+                                        type="file"
+                                        class="form-control inputfile"
+                                        id="uploadFileInput"
+                                        (change)="onFileChange($event)"
+                                    />
+                                    <div *ngFor="let error of errors">
+                                        <small class="error">{{ error }}</small>
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'driverStatus'"></ng-container>
+                            <ng-container *ngSwitchDefault>
+                                <td>{{ item.key | mappingLabel }}</td>
+                                <td>{{ item.value }}</td>
+                            </ng-container>
+                        </tr>
+                        <tr>
+                            <td>Updated By</td>
+                            <td>{{ object?.userName }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </perfect-scrollbar>
+        </mat-tab>
+        <mat-tab label="Profile">
+            <app-fm-driver-profile
+                [id]="object?.chevronDriverId"
+                [sysId]="object?.getId()"
+                [driver]="object"
+                *ngIf="object"
+                class="h-100"
+            ></app-fm-driver-profile>
+        </mat-tab>
+    </mat-tab-group>
+</div>

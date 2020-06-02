@@ -1,0 +1,13 @@
+<div class="d-flex user-container height-100">
+  <app-um-list class="flex-grow-1 width-100"
+               [users]="users"
+               [roles]="roles"
+               (newUserClicked)="newUserClicked()"
+               (refreshClicked)="refreshData()"
+               (lockUserClicked)="onLockUser($event)"
+               (unlockUserClicked)="onUnlockUser($event)"
+               (editUserClicked)="onEditUser($event)"
+               (resetPaswordClicked)="onResetPasword($event)"
+               (deleteUserClicked)="onDeleteUser($event)">
+  </app-um-list>
+</div>

@@ -1,0 +1,61 @@
+<div class="dialog-map-content" [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">Selected Map</span>
+      <button class="close" mat-icon-button (click)="onCancel()">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <div mat-dialog-content class="p-0">
+    <div class="d-flex h-100">
+      <div class="coordinate-controls h-100">
+        <div class="d-flex flex-column h-100 table-mini-wrapper mh-100">
+          <table class="w-100 ">
+            <thead>
+              <tr>
+                <th style="width: 30px;">#</th>
+                <th>Name</th>
+                <th style="width: 60px;">Action</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="!isNotBorder">
+              <tr *ngFor="let item of groups; let $index = index;">
+                <td>{{$index + 1}}</td>
+                <td>{{item?.name}}</td>
+                <td>
+                  <button mat-icon-button (click)="setBound(item)" *ngIf="item?.coordinates?.length" matTooltip="focus">
+                    <i class="fal fa-map-marker-alt"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="isNotBorder">
+              <tr *ngFor="let item of groups; let $index = index;">
+                <td style="vertical-align: top;">{{$index + 1}}</td>
+                <td colspan="2">
+                  <div>{{item?.name}}</div>
+                  <div class="d-flex justify-content-between align-items-center"
+                    *ngFor="let station of item.stations; let $i = index;">
+                    <div class="px-3">{{$i+1}}. {{station?.stationName}}</div>
+                    <div>
+                      <button mat-icon-button (click)="setBound(station)" matTooltip="focus">
+                        <i class="fal fa-map-marker-alt"></i>
+                      </button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="flex-grow-1 h-100">
+        <app-mpm-terminal [groups]="groups" [boundPoints]="boundPoints" *ngIf="!isNotBorder"></app-mpm-terminal>
+        <app-mpm-all *ngIf="isNotBorder" [boundPoints]="boundPoints" [terminals]="[]" [stations]="stations"
+          [regions]="[]"></app-mpm-all>
+      </div>
+    </div>
+  </div>
+</div>

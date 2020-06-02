@@ -1,0 +1,10 @@
+<ngui-map
+  [zoom]="zoom"
+  [center]="center"
+  [styles]="styles"
+  class="map-wrapper"
+  (mapReady$)="onMapReady($event)"
+  (mapClick)="onMapClick($event)"
+>
+  <marker *ngIf="marker" [geoFallbackPosition]="marker"></marker>
+</ngui-map>

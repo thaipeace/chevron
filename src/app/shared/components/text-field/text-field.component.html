@@ -1,0 +1,85 @@
+<input *ngIf="isHidden; else tf" disabled [value]="value || input?.value" class="text-field size-14" />
+<ng-template #tf>
+    <ng-container [ngSwitch]="type">
+        <ng-container *ngSwitchCase="'number'">
+            <input
+                *ngIf="!isHidden"
+                type="text"
+                [formControl]="input"
+                class="text-field size-14"
+                [ngClass]="class"
+                digitOnly
+            />
+        </ng-container>
+        <ng-container *ngSwitchCase="'select-menu'">
+            <select-menu
+                [items]="arrayList"
+                type="simpleArray"
+                (change)="input.setValue($event.value)"
+                [placeHolder]="'Select'"
+                [ngModel]="input.value"
+                [border]="'true'"
+                noMappingLabel="true"
+            >
+            </select-menu>
+        </ng-container>
+        <ng-container *ngSwitchCase="'date'">
+            <input
+                type="text"
+                class="text-left date-picker"
+                bsDatepicker
+                placement="left"
+                [ngModel]="input.value"
+                (ngModelChange)="input.setValue($event)"
+                [ngModelOptions]="{ standalone: true }"
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+            />
+        </ng-container>
+        <ng-container *ngSwitchCase="'radioBox'">
+            <div class="d-flex input-group align-items-start flex-column justify-content-between">
+                <label class="tql-checkbox"
+                    ><input type="checkbox" [(ngModel)]="input.value"/><span class="tickmark"></span
+                ></label>
+            </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'pickUpLocation'">
+            <div class="location" (click)="pickUpLocation()">
+                <input
+                    type="text"
+                    class="w-100 non-typing"
+                    id="{{ item }}"
+                    [formControl]="input"
+                    placeholder="{{ placeholder | mappingLabel }}"
+                />
+            </div>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+            <input
+                *ngIf="!isHidden"
+                type="{{ type || 'text' }}"
+                [formControl]="input"
+                class="text-field size-14"
+                [ngClass]="class"
+            />
+        </ng-container>
+    </ng-container>
+    <div class="mt-1" *ngIf="input.invalid">
+        <div [ngSwitch]="getFirstError(input.errors)">
+            <small *ngSwitchCase="'required'" class="text-danger">
+                * Field is required
+            </small>
+            <small *ngSwitchCase="'notSafe'" class="text-danger">
+                * Field can't contain "& <"
+            </small>
+            <small *ngSwitchCase="'emailError'" class="text-danger">
+                * email is invalid
+            </small>
+            <small *ngSwitchCase="'whitespace'" class="text-danger">
+                * Can't contain whitespace
+            </small>
+            <small *ngSwitchCase="'telPhoneError'" class="text-danger">
+                * Tel is wrong format
+            </small>
+        </div>
+    </div>
+</ng-template>

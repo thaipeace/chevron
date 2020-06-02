@@ -1,0 +1,17 @@
+.map-view {
+  height: calc(80vh - 121px);
+  width: calc(80vw - 70px);
+}
+
+.address-input {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  background-color: #263653;
+  input {
+    width: 500px;
+    padding: 5px 10px;
+    height: fit-content;
+  }
+}

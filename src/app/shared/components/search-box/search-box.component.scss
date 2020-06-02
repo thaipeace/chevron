@@ -1,0 +1,58 @@
+@import "~src/sass/chevron/variables";
+
+@mixin show {
+    border-bottom: 2px solid $cl_input;
+    box-sizing: border-box;
+
+    > .search {
+        width: 150px;
+        padding: 10px 15px;
+    }
+
+    & > .i-close {
+        display: block;
+        padding-right: 0.5rem;
+    }
+
+    & > .search-btn {
+        padding-left: 0.5rem;
+    }
+}
+
+.search-box {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: unset;
+    transition: all 0.4s, border 0;
+    height: 40px;
+    position: relative;
+
+    & > .search {
+        width: 0;
+        padding: 0;
+        border: none;
+        transition: all 0.4s;
+        background-color: transparent;
+    }
+
+    & > .i-close {
+        cursor: pointer;
+    }
+
+    &.show {
+        @include show;
+    }
+
+    &:hover {
+        @include show;
+    }   
+
+    &:focus-within {
+        @include show;
+    }
+
+    @media screen and (max-width: 768px) {
+        @include show;
+    }
+}

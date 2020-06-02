@@ -1,0 +1,413 @@
+<div class="p-3 d-flex flex-column" [ngClass]="{'disabled-half': isDataLoading}">
+  <div class="actions-bar">
+    <div class="mb-3 d-flex align-items-center">
+      <div class="flex-grow-1">
+        <button mat-raised-button type="button" class="btn btn-blue mr-3 disabled-half" (click)="onManuallySchedule()">
+          <i class="fal fa-calendar mr-2"></i> Manually Schedule
+        </button>
+        <button *ngIf="isTomorrow" mat-raised-button type="button" class="btn btn-blue mr-3"
+          (click)="triggerSchedule()">
+          <i class="fal fa-bolt mr-2"></i> Create Schedule
+        </button>
+        <button mat-raised-button type="button" class="btn btn-blue mr-3" (click)="exportSchedule()"
+          [matTooltip]="'Export data of '+ moment(this.selectedDate).format('MMMM DD YYYY')">
+          <i class="far fa-file-export mr-2"></i> Export
+        </button>
+        <button *ngIf="selectedItem" mat-raised-button type="button"
+          class="btn-i btn-i-icon btn-cancel mat-raised-button text-white mr-3" (click)="cancelUpdate()">
+          <i class="fal fa-ban mr-1"></i> Cancel
+        </button>
+        <button *ngIf="selectedItem" mat-raised-button type="button"
+          class="btn-i btn-i-icon btn-save mat-raised-button text-white mr-3" (click)="onUpdate()">
+          <i class="fal fa-check ml-0 mr-1"></i> Update
+        </button>
+        <button mat-raised-button type="button" class="btn btn-blue mr-3" *ngIf="freeTrucks.length"
+          (click)="scrollTo('freeTrucks')">
+          <i class="fal fa-truck-ramp mr-2"></i> Free trucks
+        </button>
+      </div>
+      <div class="d-flex justify-content-between align-items-center">
+        <button *ngIf="!isTomorrow && (today.getDate() != selectedDate.getDate())" mat-raised-button type="button"
+          class="btn btn-blue" (click)="selectedDate = today; this.setTime(selectedDate);">
+          Back to today
+        </button>
+        <div *ngIf="isTomorrow || (today.getDate() == selectedDate.getDate())" class="mr-3">
+          <span class="title truck-action-bar-text truck-action-bar-text-spacing-left">Today</span>
+          <button class="" mat-button [disableRipple]="true">
+            <mat-slide-toggle class="" [checked]="isTomorrow" (change)="toggle($event)" color="accent"
+              [disableRipple]="true">
+            </mat-slide-toggle>
+          </button>
+          <span class="title truck-action-bar-text">Tomorrow</span>
+        </div>
+        <div class="ml-3">
+          <i class="far fa-arrow-circle-left cursor-pointer" (click)="dayStep('previous')" title="Previous Day"></i>
+          <input type="text" class="mx-2 date-picker" bsDatepicker placement="left" [(ngModel)]="selectedDate"
+            (ngModelChange)="onTimeChange()">
+          <i class="far fa-arrow-circle-right cursor-pointer" (click)="dayStep('next')" title="Next Day"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h4>Trips</h4>
+  <div class="d-flex flex-row align-items-baseline justify-content-between mb-3">
+    <div class="d-flex align-items-center">
+      <button class="mr-3" mat-icon-button (click)="onRefresh()">
+        <i class="fal fa-sync-alt"></i>
+      </button>
+    </div>
+    <div class="d-flex align-items-center">
+      <div class="input-group mr-3 w-auto" [hidden]="currentViewMode !== viewModeEnum.Grid">
+        <select-menu [items]="displayedColumns" [type]="'simpleArray'" [multiple]="true"
+          [ngModel]="tableHeadGroupSelect" [placeHolder]="'Select Columns'"
+          (change)="changeDisplayHeadColumnGroup($event)">
+        </select-menu>
+      </div>
+      <mat-paginator #matPaginator class="chevron-paginator ml-3" [length]="table?.data.length" [pageSize]="10"
+        [hidden]="currentViewMode != viewModeEnum.Grid" [pageSizeOptions]="[5, 10, 25, 100]">
+      </mat-paginator>
+      <div class="form-group d-flex justify-content-center">
+        <button matTooltip="List View" mat-icon-button (click)="changeViewMode(viewModeEnum.Grid)">
+          <i class="far fa-list" [class.text-grey]="currentViewMode != viewModeEnum.Grid"></i>
+        </button>
+        <button matTooltip="Chart View" mat-icon-button (click)="changeViewMode(viewModeEnum.Chart)">
+          <i class="far fa-chart-bar" [class.text-grey]="currentViewMode != viewModeEnum.Chart"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div [hidden]="currentViewMode !== viewModeEnum.Chart">
+    <app-sm-truck-schedule-chart [schedules]="trips" [selectedDate]="selectedDate" (onSelectTrip)="openCompact($event)">
+    </app-sm-truck-schedule-chart>
+  </div>
+
+  <div class="panel tql-panel flex-row perfect-height" [hidden]="currentViewMode !== viewModeEnum.Grid">
+    <div class="p-3" *ngIf="!tableHeadGroupSelect.length">
+      No column is selected
+    </div>
+    <div class="table-material truck-container hoverable" *ngIf="tableHeadGroupSelect.length">
+      <perfect-scrollbar class="position-relative ar-scroll height-ar perfect-height">
+        <table mat-table style="border-collapse: unset;" [dataSource]="table" #matSort="matSort" matSort id="trip-table"
+          matSortDirection="asc" class="mat-elevation-z8 bordered-table tql-table truck-schedule-table">
+
+          <ng-container matColumnDef="tripIndex">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="TripIndex">
+              <ng-container *ngTemplateOutlet="tripIndex"></ng-container>
+              <ng-template #tripIndex>
+                <span>Trip #</span>
+              </ng-template>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <ng-container *ngTemplateOutlet="tripIndexValue"></ng-container>
+              <ng-template #tripIndexValue>
+                <div class="text-left">{{element.TripIndex}}</div>
+              </ng-template>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="ptoX">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="PTO">
+              <ng-container *ngTemplateOutlet="ptoX"></ng-container>
+              <ng-template #ptoX>
+                <span>Pto X</span>
+              </ng-template>
+            </th>
+            <td mat-cell *matCellDef="let element" [ngClass]="{
+                        'positive': element.PTO === 'true',
+                        'negative': element.PTO !== 'true',
+                        'first-td pto-ps-adjusted-w text-left': true,
+                        'disabled-half': selectedItem  && element.sysId != selectedItem.sysId
+                      }">
+              <ng-container *ngTemplateOutlet="ptoXValue"></ng-container>
+              <ng-template #ptoXValue>
+                <div class="first-td pto-ps-adjusted-w text-left ">{{element.PTO === 'true' ? 'Yes' : 'No'}}</div>
+              </ng-template>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="truck">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="TruckPlate">
+              <ng-container *ngTemplateOutlet="truck"></ng-container>
+              <ng-template #truck>
+                <span>Truck</span>
+              </ng-template>
+            </th>
+            <td mat-cell *matCellDef="let element"
+              [ngClass]="{'text-left': true, 'disabled-half': selectedItem  && element.sysId != selectedItem.sysId}">
+              <ng-container *ngTemplateOutlet="truckXValue"></ng-container>
+              <ng-template #truckXValue>
+                <div class="text-white ">{{element.TruckPlate}}</div>
+              </ng-template>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="tripStatus">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="TripStatus">
+              <ng-container *ngTemplateOutlet="tripStatus"></ng-container>
+              <ng-template #tripStatus>
+                <span>Trip Status</span>
+              </ng-template>
+            </th>
+            <td mat-cell *matCellDef="let element"
+              [ngClass]="{'text-right': true, 'disabled-half': selectedItem  && element.sysId != selectedItem.sysId}">
+              <ng-container *ngTemplateOutlet="tripStatusValue"></ng-container>
+              <ng-template #tripStatusValue>
+                <div class="text-left ">{{element.TripStatus | mappingLabel}}</div>
+              </ng-template>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="totalDrop">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="DropCount">
+              <ng-container *ngTemplateOutlet="drop"></ng-container>
+              <ng-template #drop>
+                <span>Total Drop</span>
+              </ng-template>
+            </th>
+            <td mat-cell *matCellDef="let element"
+              [ngClass]="{'text-right': true, 'disabled-half': selectedItem  && element.sysId != selectedItem.sysId}">
+              <ng-container *ngTemplateOutlet="dropValue"></ng-container>
+              <ng-template #dropValue>
+                <div class="text-left ">{{element.DropCount}}</div>
+              </ng-template>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="dropIndex">
+            <th mat-header-cell *matHeaderCellDef>
+              <ng-container *ngTemplateOutlet="drop"></ng-container>
+              <ng-template #drop>
+                <span>Drop Index</span>
+              </ng-template>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <ng-container *ngTemplateOutlet="dropIndex"></ng-container>
+              <ng-template #dropIndex>
+                <div class="sublist-wrapper">
+                  <div *ngFor="let item of element?.ScheduleDetails?.Schedule; let i=index"
+                    [class]="'sublist text-left schedule-' + i">
+                    {{item.DropNumber}}
+                  </div>
+                </div>
+              </ng-template>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="orderStatus">
+            <th mat-header-cell *matHeaderCellDef>
+              <ng-container *ngTemplateOutlet="orderStatus"></ng-container>
+              <ng-template #orderStatus>
+                <span>Order Status</span>
+              </ng-template>
+            </th>
+            <td mat-cell *matCellDef="let element"
+              [ngClass]="{'text-right': true, 'disabled-half': selectedItem  && element?.sysId != selectedItem?.sysId}">
+              <ng-container *ngTemplateOutlet="orderStatusValue"></ng-container>
+              <ng-template #orderStatusValue>
+                <div class="sublist-wrapper">
+                  <div *ngFor="let item of element.ScheduleDetails.Schedule; let i=index"
+                    [class]="'sublist text-left schedule-' + i">
+                    {{item.OrderStatus}}
+                  </div>
+                </div>
+              </ng-template>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="destinationName">
+            <th mat-header-cell *matHeaderCellDef>
+              <ng-container *ngTemplateOutlet="destinationName"></ng-container>
+              <ng-template #destinationName>
+                <span>Destination Name</span>
+              </ng-template>
+            </th>
+            <td mat-cell *matCellDef="let element"
+              [ngClass]="{'text-left': true, 'disabled-half': selectedItem  && element.sysId != selectedItem.sysId}">
+              <ng-container *ngTemplateOutlet="destinationNameValue"></ng-container>
+              <ng-template #destinationNameValue>
+                <div class="sublist-wrapper">
+                  <div *ngFor="let item of element.ScheduleDetails.Schedule; let i=index"
+                    [class]="'sublist text-left text-white schedule-' + i">
+                    {{item.StationName}}
+                  </div>
+                </div>
+              </ng-template>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="dropCat.">
+            <th mat-header-cell *matHeaderCellDef>
+              <ng-container *ngTemplateOutlet="dropCategory"></ng-container>
+              <ng-template #dropCategory>
+                <span title="Drop Category">Drop Cat.</span>
+              </ng-template>
+            </th>
+            <td mat-cell *matCellDef="let element"
+              [ngClass]="{'text-left': true, 'disabled-half': selectedItem  && element.sysId != selectedItem.sysId}">
+              <ng-container *ngTemplateOutlet="dropCategoryValue"></ng-container>
+              <ng-template #dropCategoryValue>
+                <div class="sublist-warpper">
+                  <div *ngFor="let item of element?.ScheduleDetails?.Schedule; let i=index"
+                    [class]="'sublist text-left schedule-' + i">
+                    {{item.StationType}}
+                  </div>
+                </div>
+              </ng-template>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="destinationETA">
+            <th mat-header-cell *matHeaderCellDef>
+              <ng-container *ngTemplateOutlet="estimatedTime"></ng-container>
+              <ng-template #estimatedTime>
+                <span>Destination ETA</span>
+              </ng-template>
+            </th>
+            <td mat-cell *matCellDef="let element" style="text-align: left;"
+              [ngClass]="{'pl-0 pr-0': selectedDate > today, 'disabled-half': selectedItem  && element.sysId != selectedItem.sysId}">
+              <ng-container *ngTemplateOutlet="estimatedTimeValue"></ng-container>
+              <ng-template #estimatedTimeValue>
+                <div class="sublist-wrapper">
+                  <div *ngFor="let item of element.ScheduleDetails.Schedule; let i=index"
+                    [class]="'sublist schedule-' + i">
+                    {{item.ScheduleTime | date:'yyyy-MM-dd (HH:mm)'}}
+                  </div>
+                </div>
+
+              </ng-template>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="ScheduleTimeFrom">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="ScheduleTimeFrom">
+              <span>Schedule Time From</span>
+            </th>
+            <td mat-cell *matCellDef="let element" style="text-align: left;">
+              <div class="text-left ">{{element?.ScheduleTimeFrom | date:'yyyy-MM-dd (HH:mm)'}}</div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="term.Ret.ETA">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="TerminalReturnTime">
+              <ng-container *ngTemplateOutlet="scheduledTimeTo"></ng-container>
+              <ng-template #scheduledTimeTo>
+                <span>Term. Ret. ETA</span>
+              </ng-template>
+            </th>
+            <td mat-cell *matCellDef="let element" style="text-align: left;"
+              [ngClass]="{'pl-0 pr-0': selectedDate > today, 'disabled-half': selectedItem  && element.sysId != selectedItem.sysId}">
+              <ng-container *ngTemplateOutlet="scheduledTimeToValue"></ng-container>
+              <ng-template #scheduledTimeToValue>
+                <div class="text-left ">{{element.TerminalReturnTime | date:'yyyy-MM-dd (HH:mm)'}}</div>
+              </ng-template>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="totalTruckCPTY">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="TruckCapacity">
+              <ng-container *ngTemplateOutlet="totalCapacity"></ng-container>
+              <ng-template #totalCapacity>
+                <span title="Total Truck Capacity">Total Truck CPTY</span>
+              </ng-template>
+            </th>
+            <td mat-cell *matCellDef="let element"
+              [ngClass]="{'text-right': true, 'disabled-half': selectedItem  && element?.sysId != selectedItem?.sysId}">
+              <ng-container *ngTemplateOutlet="totalCapacityValue"></ng-container>
+              <ng-template #totalCapacityValue>
+                <div class="text-left ">{{element.TruckCapacity}}</div>
+              </ng-template>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="emptyCompartments">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="EmptyCompartments">
+              <ng-container *ngTemplateOutlet="emptyCompartments"></ng-container>
+              <ng-template #emptyCompartments>
+                <span>Empty Compartments</span>
+              </ng-template>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <ng-container *ngTemplateOutlet="emptyCompartmentsValue"></ng-container>
+              <ng-template #emptyCompartmentsValue>
+                <div class="text-left ">{{element.EmptyCompartments}}</div>
+              </ng-template>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="compartments">
+            <th mat-header-cell *matHeaderCellDef>
+              <ng-container *ngTemplateOutlet="compartments"></ng-container>
+              <ng-template #compartments>Compartments</ng-template>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <ng-container *ngTemplateOutlet="compartmentsValue"></ng-container>
+              <ng-template #compartmentsValue>
+                <div class="sublist-warpper d-flex justify-content-between">
+                  <div>
+                    <ng-template ngFor let-i="index" let-c="count" let-item
+                      [ngForOf]="element.CompartmentDetails.Compartment | arrangeKeyValue : ['1', '2', '3', '4', '5', '6', '7', '8'] : 'CompartmentNumber'">
+                      <div *ngIf="i<=(c/2)" [class]="'text-left sublist compartment-' + i">
+                        <div class="num">{{item.CompartmentNumber}}</div>
+                        <div class="capacity">{{item.CompartmentCapacity}}</div>
+                        <div [class]="'product product-code-title ' + item.CurrentProduct.toLowerCase()">
+                          {{item.CurrentProduct !== 'NA' ? item.CurrentProduct : 'Empty'}}
+                        </div>
+                      </div>
+                    </ng-template>
+                  </div>
+                  <div>
+                    <ng-template ngFor let-i="index" let-c="count" let-item
+                      [ngForOf]="element.CompartmentDetails.Compartment | arrangeKeyValue : ['1', '2', '3', '4', '5', '6', '7', '8'] : 'CompartmentNumber'">
+                      <div *ngIf="i>(c/2)" [class]="'text-left sublist compartment-' + i">
+                        <div class="num">{{item.CompartmentNumber}}</div>
+                        <div class="capacity">{{item.CompartmentCapacity}}</div>
+                        <div [class]="'product product-code-title ' + item.CurrentProduct.toLowerCase()">
+                          {{item.CurrentProduct !== 'NA' ? item.CurrentProduct : 'Empty'}}
+                        </div>
+                      </div>
+                    </ng-template>
+                  </div>
+                </div>
+              </ng-template>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="scheduleStatus" stickyEnd>
+            <th class="schedule-status-box-header" mat-header-cell *matHeaderCellDef mat-sort-header="scheduleStatus">
+              <ng-container *ngTemplateOutlet="scheduleStatus"></ng-container>
+              <ng-template #scheduleStatus>
+                <span>Schedule Status</span>
+              </ng-template>
+            </th>
+            <td mat-cell *matCellDef="let element; let i = index;" class="schedule-status-box"
+              [ngClass]="{'text-left': true}">
+              <ng-container *ngTemplateOutlet="scheduleStatusValue"></ng-container>
+              <ng-template #scheduleStatusValue>
+                <span *ngIf="element?.errors?.hasError">
+                  {{element?.errors?.toArray()[0] | mappingLabel}}
+                </span>
+                <span *ngIf="!element?.errors?.hasError">
+                  <button [ngClass]="{'disabled-half': selectedItem}" mat-raised-button type="button"
+                    class="btn btn-blue mt-2" (click)="approveSchedule(element)" appClickStopPropagation>
+                    <i class="far fa-check-circle mr-3"></i> Approved
+                  </button>
+                </span>
+
+              </ng-template>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="tableHeadGroupSelect; sticky: schedules.length ? true : false;"></tr>
+          <tr mat-row class="truck-schedule-row" [class.selected]="selectedRow === row" (click)="openCompact(row)"
+            *matRowDef="let row; columns: tableHeadGroupSelect"></tr>
+        </table>
+        <div *ngIf="!table?.data.length" class="no-result p-3">
+          No data found
+        </div>
+      </perfect-scrollbar>
+    </div>
+  </div>
+  <div *ngIf="freeTrucks.length">
+    <app-planner-truck-schedule-free-trucks [freeTrucks]='freeTrucks' id="freeTrucks"
+      [selectedDate]="selectedDate"></app-planner-truck-schedule-free-trucks>
+  </div>
+</div>

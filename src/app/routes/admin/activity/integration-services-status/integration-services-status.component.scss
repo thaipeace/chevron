@@ -1,0 +1,44 @@
+@import '~src/sass/chevron/variables';
+
+::ng-deep .md2-datepicker-button,
+::ng-deep .md2-datepicker-arrow {
+  display: none !important;
+}
+
+::ng-deep .md2-datepicker-trigger {
+  padding: 0 10px !important;
+}
+
+::ng-deep .md2-datepicker-input {
+  padding-right: 0 !important;
+  font-size: 12px !important;
+  .md2-floating-placeholder::after {
+    display: none;
+  }
+}
+
+::ng-deep .md2-datepicker-value {
+  cursor: pointer !important;
+}
+
+::ng-deep .time-picker-spacing {
+  //width: 250px;
+  padding-bottom: 3px;
+  padding-top: 3px;
+}
+
+.round {
+  width: 14px;
+  height: 14px;
+  border-radius: 7px;
+  background-color: $cl_kelly_green;
+
+  &.negative {
+    background-color: $cl_red;
+  }
+}
+
+.mat-column-- {
+  min-width: 50px;
+  max-width: 50px;
+}

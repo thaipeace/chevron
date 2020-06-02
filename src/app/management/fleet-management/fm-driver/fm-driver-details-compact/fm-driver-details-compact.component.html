@@ -1,0 +1,116 @@
+<div class="compact-wrapper h-100 p-0" [class.disabled-half]="promise?.__zone_symbol__state !== true">
+  <div class="tab" *ngIf="view==='tab1'">
+    <div class="title">
+      <div class=" d-flex align-items-center flex-row">
+        <span class="text flex-grow-1">{{driver?.fullName}}</span>
+        <button mat-icon-button (click)="close()" class="icon">
+          <mat-icon><i class="fal fa-times"></i></mat-icon>
+        </button>
+      </div>
+      <hr>
+    </div>
+    <div class="calendar-wrapper">
+      <div class="sub-title d-flex align-items-center flex-row col-action">
+        <span class="flex-grow-1">{{currentTime.toDate() | date : 'MMMM y'}}</span>
+        <button mat-icon-button (click)="refresh()" matTooltip="View">
+          <mat-icon><i class="fal fa-sync-alt"></i></mat-icon>
+        </button>
+        <button mat-icon-button (click)="previousMonth()" matTooltip="View">
+          <mat-icon><i class="far fa-angle-left"></i></mat-icon>
+        </button>
+        <button mat-icon-button (click)="nextMonth()" matTooltip="View">
+          <mat-icon><i class="far fa-angle-right"></i></mat-icon>
+        </button>
+        <button mat-icon-button (click)="onDetails()" matTooltip="View">
+          <mat-icon><i class="fal fa-poll-h cream"></i></mat-icon>
+        </button>
+      </div>
+      <div class="grids d-flex flex-row flex-wrap">
+        <div class="grid d-flex align-items-center justify-content-center" *ngFor="let item of weekDay;">
+          <b>{{item}}</b>
+        </div>
+        <div class="grid d-flex align-items-center justify-content-center" [class.selected]="selectedGrid === item"
+          (click)="selectGrid(item)" *ngFor="let item of grids; let $index = index;"
+          [ngClass]="{'disabled-half': item?.time?.month() !== currentTime?.month()}">
+          <div class="text d-flex align-items-center justify-content-center" [ngClass]="{'current': item?.current}">
+            {{item?.label}}
+          </div>
+          <div class="letter {{item?.profile?.driverStatus | lowercase}}" *ngIf="item?.profile"
+            [matTooltip]="item?.statusLong">
+            {{item?.profile?.driverStatus | slice:0:1}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div>
+      <div class="sub-title d-flex align-items-center flex-row col-action"
+        *ngIf="driverStatuses && driverStatuses?.length">
+        <span class="flex-grow-1">{{selectedGrid?.time?.toDate() | date : 'y-MM-d'}}</span>
+        <mat-button-toggle-group class="status-button-group">
+          <mat-button-toggle value="" matTooltip="Click to remove status"
+            [matTooltipDisabled]="selectedGrid?.profile?.driverStatus !== driverStatuses[0]?.Key"
+            (click)="updateStatus(driverStatuses[0]?.Key,selectedGrid)" [ngClass]="(driverStatuses[0]?.Key | lowercase)"
+            [class.mat-elevation-z2]="true"
+            [class.selected]="selectedGrid?.profile?.driverStatus === driverStatuses[0]?.Key">
+            {{driverStatuses[0]?.Value}}</mat-button-toggle>
+          <mat-button-toggle value="" matTooltip="Click to remove status"
+            [matTooltipDisabled]="selectedGrid?.profile?.driverStatus !== driverStatuses[1]?.Key"
+            (click)="updateStatus(driverStatuses[1]?.Key,selectedGrid)" [ngClass]="(driverStatuses[1]?.Key | lowercase)"
+            [class.mat-elevation-z2]="true"
+            [class.selected]="selectedGrid?.profile?.driverStatus === driverStatuses[1]?.Key">
+            {{driverStatuses[1]?.Value}}</mat-button-toggle>
+          <mat-button-toggle value="" [class.mat-elevation-z2]="true" [class.selected]="selectedGrid?.profile && selectedGrid?.profile?.driverStatus !== driverStatuses[0]?.Key
+                                    && selectedGrid?.profile?.driverStatus !== driverStatuses[1]?.Key"
+            [matMenuTriggerFor]="menu">
+            {{selectedGrid?.profile?.driverStatus !== driverStatuses[0]?.Key && selectedGrid?.profile?.driverStatus !== driverStatuses[1]?.Key
+                    ? selectedGrid?.profile?.driverStatus : ''}}
+            <i class="fal fa-ellipsis-h"></i>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+        <mat-menu #menu="matMenu" class="driver-status-list">
+          <ng-container *ngFor="let item of driverStatuses; let $index = index;">
+            <button mat-menu-item [ngClass]="(item?.Key | lowercase)" matTooltip="Click to remove status"
+              [matTooltipDisabled]="selectedGrid?.profile?.driverStatus !== item?.Key"
+              (click)="updateStatus(item?.Key,selectedGrid)"
+              [class.selected]="selectedGrid?.profile?.driverStatus === item?.Key"
+              *ngIf="$index !== 0 && $index !== 1">{{item?.Value}}</button>
+          </ng-container>
+        </mat-menu>
+      </div>
+      <div class="box-24 mb-5 mt-2">
+        <ng-container *ngIf="selectedGrid?.sleepingBoxes">
+          <div class="box blue" *ngFor="let box of selectedGrid?.sleepingBoxes"
+            [ngStyle]="{'left': box?.start+'%','width': (box?.end - box?.start)+'%'}"></div>
+        </ng-container>
+      </div>
+      <div class="box-24">
+        <ng-container *ngIf="selectedGrid?.workingBoxes">
+          <div class="box yellow" *ngFor="let box of selectedGrid?.workingBoxes"
+            [ngStyle]="{'left': box?.start+'%','width': (box?.end - box?.start)+'%'}"></div>
+        </ng-container>
+      </div>
+      <div class="d-flex flex-row mt-2">
+        <div class="flex-grow-1 box-24-label">00:00</div>
+        <div class="box-24-label">24:00</div>
+      </div>
+    </div>
+  </div>
+  <div class="tab pb-5" *ngIf="view==='tab2'">
+    <app-fm-driver-details-detail [readonly]="readonly" [id]="id"></app-fm-driver-details-detail>
+  </div>
+  <div class="tab-selection">
+    <div class="d-flex align-items-center">
+      <div class="item" (click)="view = view==='tab1' ? 'tab2' : 'tab1'"
+        [ngClass]="{'disabled-half': view==='tab1'}">
+        <i class="fal fa-chevron-left"></i>
+      </div>
+      <div class="item" (click)="view = 'tab1'" [ngClass]="{'active': view==='tab1'}">Profile</div>
+      <div class="item" (click)="view = 'tab2'" [ngClass]="{'active': view==='tab2'}">Detail</div>
+    </div>
+    <div class="item" (click)="view = view==='tab1' ? 'tab2' : 'tab1'"
+      [ngClass]="{'disabled-half': view==='tab2'}">
+      <i class="fal fa-chevron-right"></i>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,134 @@
+<div class="d-flex flex-column flex-xl-row">
+  <div class="flex-fill d-flex flex-column">
+    <div class="row m-0">
+      <div class="col mt-0 px-0">
+        <div class="cl_medium_jungle_green-background px-3">
+          <div class="header d-flex justify-content-between align-items-center py-3">
+            <div><i class="fal fa-sync-alt refresh-icon clickable cursor-pointer" (click)="onRefesh()"></i></div>
+            <div class="d-flex justify-content-center align-items-center">
+              <search-box [searchControl]="searchControl"></search-box>
+              <mat-paginator class="chevron-paginator ml-3" [length]="tableData?.data.length" [pageSize]="10"
+                [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+              <input type="text" class="ml-3 date-picker" bsDaterangepicker placement="left" [(ngModel)]="selectedDate"
+                (ngModelChange)="onTimeChange()" placeholder="Select date">
+            </div>
+          </div>
+
+          <div class="table-material">
+            <table mat-table class="mat-elevation-z8 tql-table" [dataSource]="tableData" matSort>
+
+              <ng-container matColumnDef="#">
+                <th mat-header-cell *matHeaderCellDef>
+                  <ng-container *ngTemplateOutlet="ind"></ng-container>
+                  <ng-template #ind><span>#</span></ng-template>
+                </th>
+                <td mat-cell *matCellDef="let i = index">
+                  <ng-container *ngTemplateOutlet="indV"></ng-container>
+                  <ng-template #indV>
+                    <div class="text-left">{{i + 1}}</div>
+                  </ng-template>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="fileName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header="FileName">
+                  <ng-container *ngTemplateOutlet="fileName"></ng-container>
+                  <ng-template #fileName><span>File Name</span></ng-template>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  <ng-container *ngTemplateOutlet="fileNameV"></ng-container>
+                  <ng-template #fileNameV>
+                    <div class="text-left">{{row.FileName}}</div>
+                  </ng-template>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="path">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header="FilePath">
+                  <ng-container *ngTemplateOutlet="path"></ng-container>
+                  <ng-template #path><span>Path</span></ng-template>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  <ng-container *ngTemplateOutlet="pathV"></ng-container>
+                  <ng-template #pathV>
+                    <div class="text-left">{{row.FilePath}}</div>
+                  </ng-template>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header="Date">
+                  <ng-container *ngTemplateOutlet="date"></ng-container>
+                  <ng-template #date><span>Date</span></ng-template>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  <ng-container *ngTemplateOutlet="dateV"></ng-container>
+                  <ng-template #dateV>
+                    <div class="text-left">
+                      {{row.Date && row.Date!=='NA' ? (row.Date | date:'yyyy-MM-dd (HH:mm)') : ''}}
+                    </div>
+                  </ng-template>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="size">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header="FileSize">
+                  <ng-container *ngTemplateOutlet="size"></ng-container>
+                  <ng-template #size><span>Size</span></ng-template>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  <ng-container *ngTemplateOutlet="sizeV"></ng-container>
+                  <ng-template #sizeV>
+                    <div class="text-left">{{row.FileSize}}</div>
+                  </ng-template>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="kind">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header="FileType">
+                  <ng-container *ngTemplateOutlet="kind"></ng-container>
+                  <ng-template #kind><span>Kind</span></ng-template>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  <ng-container *ngTemplateOutlet="kindV"></ng-container>
+                  <ng-template #kindV>
+                    <div class="text-left">{{row.FileType}}</div>
+                  </ng-template>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>
+                  <ng-container *ngTemplateOutlet="action"></ng-container>
+                  <ng-template #action><span>Action</span></ng-template>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  <ng-container *ngTemplateOutlet="actionV"></ng-container>
+                  <ng-template #actionV>
+                    <div class="text-left">
+                      <a [href]="row.DownloadLink" download appClickStopPropagation>
+                        <i class="fal fa-file-download cursor-pointer text-cl_aquamarine"></i>
+                      </a>
+                    </div>
+                  </ng-template>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row (click)="onClickRow(row)" *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <!-- No search result -->
+            <div *ngIf="tableData?.data.length > 0 && tableData?.filteredData.length == 0" class="no-result">
+              No search result found
+            </div>
+            <!-- No data -->
+            <div *ngIf="tableData?.data.length == 0" class="no-result">
+              No data found
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

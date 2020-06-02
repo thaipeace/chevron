@@ -1,0 +1,40 @@
+input {
+  border-color: #9fb2bf;
+  background-color: #3c4d6a !important;
+  height: 30px !important;
+  width: 100% !important;
+  border-radius: 0 !important;
+  color: #9fb2bf !important;
+
+  &:disabled {
+    border-color: transparent;
+    background-color: transparent !important;
+  }
+}
+
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+  // -webkit-appearance: none;
+  // -moz-appearance: none;
+  // appearance: none;
+  margin: 0;
+}
+
+input {
+  -moz-appearance: textfield;
+}
+
+.location {
+  overflow: hidden;
+  &::after {
+    height: calc(100% - 2px);
+    top: 1px;
+    right: 1px;
+  }
+}
+
+.tql-checkbox input {
+  position: relative !important;
+  height: 0 !important;
+  padding: 0 !important;
+}

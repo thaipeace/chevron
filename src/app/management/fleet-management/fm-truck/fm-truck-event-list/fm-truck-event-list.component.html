@@ -1,0 +1,71 @@
+<div class="d-flex h-100 min-vw-50 p-3">
+  <div class="flex-grow-1 pr-3 d-flex flex-column">
+    <ng-container [ngTemplateOutlet]="tableTemplate"></ng-container>
+  </div>
+  <div>
+    <app-map-truck-historical-location [events]="locations"></app-map-truck-historical-location>
+  </div>
+</div>
+<!--Template-->
+
+<ng-template #tableTemplate>
+  <div class="pb-3 d-flex justify-content-end">
+    <div class="flex-grow-1">
+      <button mat-icon-button (click)="onRefresh()">
+        <i class="fal fa-sync-alt refresh-icon clickable"></i>
+      </button>
+    </div>
+    <input type="text" class="date-picker" #drp="bsDaterangepicker" bsDaterangepicker placement="left"
+           [bsConfig]="{ rangeInputFormat: 'YYYY/MM/DD' }"
+           [ngModel]="dateRange"
+           (ngModelChange)="onDateChange($event)">
+  </div>
+  <perfect-scrollbar class="table-material flex-grow-1">
+    <table class="tql-table" *ngIf="locations && locations.length;">
+      <thead class="stick">
+      <tr>
+        <th>#</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Time</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let location of locations; let $index = index;">
+        <td>
+          <div>{{ $index + 1 }}</div>
+        </td>
+        <td>
+          <div>{{ location.getValue('EventType')}}</div>
+        </td>
+        <td>
+          <div>{{ location.getValue('eventDetail').eventFrom}}
+            - {{ location.getValue('eventDetail').description}}</div>
+        </td>
+        <td>
+          <div>{{ location.getValue('startGeoPoint')?.getLat()}}</div>
+        </td>
+        <td>
+          <div>{{ location.getValue('startGeoPoint')?.getLng()}}</div>
+        </td>
+        <td>
+          <div>{{ location.getValue('startTime') }}</div>
+        </td>
+        <td>
+          <div class="col-action d-flex justify-content-end">
+            <button mat-icon-button class="action-icon" (click)="onEventDetails(location);">
+              <i class="fal fa-poll-h cream"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <div *ngIf="!locations || !locations.length">
+      No data
+    </div>
+  </perfect-scrollbar>
+</ng-template>

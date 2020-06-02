@@ -1,0 +1,237 @@
+@import '~src/sass/chevron/variables';
+
+.driver-performance-dialog {
+  .panel {
+    width: 100%;
+    color: $cl_text_grey;
+
+    .hovering {
+      border: 3px solid $cl_blue !important;
+    }
+
+    .edit-driver-palet {
+      background-color: #2f405d !important;
+    }
+
+    .hour-td {
+      height: 120px;
+      min-width: 150px;
+
+      .status-bar {
+        padding-left: 10px;
+        padding-right: 10px;
+        pointer-events: none;
+
+        .date {
+          color: $cl_text;
+        }
+
+        .Good {
+          color: $cl_dollar_bill;
+          width: 45px;
+          text-align: right;
+        }
+
+        .Normal {
+          color: $cl_golden;
+          width: 45px;
+          text-align: right;
+        }
+
+        .Bad {
+          color: $cl_red;
+          width: 45px;
+          text-align: right;
+        }
+      }
+
+      .hour-range {
+        span {
+          color: $cl_text;
+        }
+
+        padding-left: 1px;
+        padding-right: 1px;
+        pointer-events: none;
+      }
+
+      .corner {
+        height: 20px;
+        width: 20px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        border-style: solid;
+        border-width: 0 20px 20px 0;
+        border-color: transparent #62e8c8 transparent transparent;
+      }
+
+      .no-data {
+        height: 100%;
+      }
+    }
+
+    .hours-slider {
+      padding-left: 1px;
+      padding-right: 1px;
+      pointer-events: none;
+
+      hr {
+        width: 100%;
+        border: solid 1px $cl_text_grey;
+        background: $cl_text_grey;
+        border: none;
+        height: 4px;
+      }
+
+      hr.sleepactive {
+        background: $cl_ultramarine_blue;
+      }
+
+      hr.workactive {
+        background: $cl_golden;
+      }
+
+      &.sleeptime {
+        padding-top: 10px;
+      }
+
+      &.worktime {
+        padding-top: 15px;
+      }
+    }
+  }
+
+  .driver-performance-table {
+    th {
+      border: solid 2px $cl_charcoal !important;
+    }
+
+    td {
+      border: solid 2px $cl_charcoal;
+      background-color: $cl_border_2 !important;
+    }
+
+    td.in-month {
+      background-color: $cl_border_1 !important;
+      position: relative;
+    }
+  }
+
+  hr.sleepactive {
+    background: $cl_ultramarine_blue;
+  }
+
+  hr.workactive {
+    background: $cl_golden;
+  }
+
+  hr.info {
+    height: 4px;
+    width: 12px;
+    border: none;
+  }
+
+  .info-bar {
+    font-size: 12px;
+  }
+
+  .month {
+    font-size: 14px;
+  }
+
+  .no-schedule {
+    display: flex;
+    border: none !important;
+  }
+}
+
+::ng-deep .no-backdrop {
+  background: none !important;
+  display: none !important;
+}
+
+.driver-daily-dialog-wrapper {
+  min-width: 380px;
+  background: $cl_charcoal;
+
+  .driver-daily-dialog-table {
+    width: 100%;
+
+    td {
+      border-right: 1px $cl_charcoal solid;
+      padding: 15px 20px 28px 20px;
+    }
+  }
+}
+
+.btn-status {
+  background: $cl_charcoal;
+  padding-right: 0;
+}
+
+.button-plus {
+  min-width: 40px;
+}
+
+.bs-timepicker-field {
+  width: 70px;
+}
+
+.driver-profile-wrapper-w {
+  min-width: 300px;
+}
+
+.status {
+  .Good {
+    color: $cl_dollar_bill;
+    width: 45px;
+    text-align: right;
+  }
+
+  .Normal {
+    color: $cl_golden;
+    width: 45px;
+    text-align: right;
+  }
+
+  .Bad {
+    color: $cl_red;
+    width: 45px;
+    text-align: right;
+  }
+}
+
+.time-input {
+  border: dashed 1px gray;
+  background: transparent;
+}
+
+.spare-line {
+  border: 0;
+  border-top: 1px solid rgba(74, 97, 112, 1);
+}
+
+.driver-daily-dialog {
+  background-color: #1f2b43;
+}
+
+.remv-btn,
+.button-plus {
+  min-width: auto;
+  width: 30px;
+  height: 30px;
+  line-height: normal;
+}
+
+.status-label {
+  font-size: 12px;
+}
+
+.status-spacing {
+  padding-right: 40px !important;
+}
+
+.h-dialog {
+  max-height: calc(80vh - 86px) !important;
+}

@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Delete Truck</h1>
+<div mat-dialog-content>
+  <p>Do you want to delete truck {{data.truckPlate}}</p>
+</div>
+<div class="pt-3" align="end" mat-dialog-actions>
+  <button matRipple class="btn btn-blue btn-outline mr-3" (click)="onNoClick()">Cancel</button>
+  <button matRipple cdkFocusInitial (click)="onSaveClick()" class="btn btn-blue">Delete</button>
+</div>

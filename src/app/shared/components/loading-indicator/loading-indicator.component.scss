@@ -1,0 +1,27 @@
+@import '~src/sass/chevron/variables';
+@import '~src/sass/tql/mixin';
+
+:host {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    &.back-drop {
+        background-color: $cl_grey_dark_light;
+    }
+}
+.container {
+  position: relative;
+  height: 100%;
+  min-height: 200px;
+  max-height: 500px;
+  width: 100%;
+  opacity: 0.7;
+  font-family: Helvetica;
+
+  .spinner-grow {
+    margin: 10px;
+  }
+}

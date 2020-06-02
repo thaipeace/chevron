@@ -1,0 +1,114 @@
+<div class="d-flex flex-column" [class.disabled-half]="promise?.__zone_symbol__state !== true">
+    <div class="mb-1 pt-1 pb-1 px-3 d-flex flex-row actions-bar justify-content-between">
+        <search-box [searchControl]="searchControl"></search-box>
+        <div class="d-flex justify-content-end align-items-center p-0">
+            <button mat-icon-button (click)="onRefresh()" matTooltip="Refresh">
+                <i class="fal fa-sync-alt"></i>
+            </button>
+            <!-- create of CM -->
+            <button *ngIf="treeOf == 'cm'" class="btn btn-icon text-white ml-2" (click)="onNewCustomer()">
+                <i class="fal fa-plus"></i>
+            </button>
+            <!-- create of FM -->
+            <button
+                *ngIf="treeOf == 'fm'"
+                class="btn btn-icon text-white ml-2"
+                [matMenuTriggerFor]="fmMenu"
+            >
+                <i class="fal fa-plus"></i>
+            </button>
+            <mat-menu #fmMenu="matMenu">
+                <button mat-menu-item (click)="onAddNew('Company')">New Company</button>
+                <button mat-menu-item (click)="onAddNew('Truck')">New Truck</button>
+                <button mat-menu-item (click)="onAddNew('Driver')">New Driver</button>
+            </mat-menu>
+        </div>
+    </div>
+
+    <perfect-scrollbar class="flex-grow-1">
+        <mat-tree
+            *ngIf="!!dataSource && !!treeControl"
+            [dataSource]="dataSource"
+            [treeControl]="treeControl"
+            class="tree no-overflow"
+        >
+            <!-- This is the tree node template for leaf nodes -->
+            <mat-tree-node *matTreeNodeDef="let node" (click)="onToggleNode(node)">
+                <li class="mat-tree-node d-flex">
+                    <!-- use a disabled button to provide padding for tree leaf -->
+                    <button mat-icon-button disabled></button>
+                    <div
+                        class="node-wrapper d-flex justify-content-between"
+                        [class.bg-medium-dark]="node === selectedNode"
+                    >
+                        <div
+                            class="p-2 cursor-pointer d-flex"
+                            matRipple
+                            [matTooltip]="node.name"
+                            (click)="onSelectedNodeChanged(node)"
+                        >
+                            <div class="node-prefix mr-2">
+                                <i class="{{ node?.icon }} mr-2" *ngIf="node?.icon"></i>
+                                {{ node.levelName }}
+                            </div>
+                            <div class="text-default text-truncate">{{ node.name }}</div>
+                        </div>
+                        <ng-container
+                            [ngTemplateOutlet]="nodeDataTemplate"
+                            [ngTemplateOutletContext]="{ node: node }"
+                        ></ng-container>
+                    </div>
+                </li>
+            </mat-tree-node>
+            <!-- This is the tree node template for expandable nodes -->
+            <mat-nested-tree-node #nodeRef *matTreeNodeDef="let node; when: hasChild">
+                <li>
+                    <div class="mat-tree-node d-flex">
+                        <button
+                            mat-icon-button
+                            (click)="onToggleNode(node)"
+                            [attr.aria-label]="'toggle ' + node.name"
+                        >
+                            <i *ngIf="treeControl.isExpanded(node)" class="fal fa-minus-square text-default"></i>
+                            <i *ngIf="!treeControl.isExpanded(node)" class="fal fa-plus-square text-default"></i>
+                        </button>
+                        <div
+                            class="node-wrapper d-flex justify-content-between"
+                            [class.bg-medium-dark]="node === selectedNode"
+                        >
+                            <div
+                                class="p-2 cursor-pointer text-truncate d-flex"
+                                matRipple
+                                [matTooltip]="node.name"
+                                (click)="onSelectedNodeChanged(node);"
+                                [class.bg-medium-dark]="node === selectedNode"
+                            >
+                                <div class="node-prefix mr-2">
+                                    <i class="{{ node.icon }} i-w mr-2"></i> {{ node.levelName }}
+                                </div>
+                                <div class="text-default text-truncate">{{ node.name }}</div>
+                            </div>
+                            <ng-container
+                                [ngTemplateOutlet]="nodeDataTemplate"
+                                [ngTemplateOutletContext]="{ node: node }"
+                            ></ng-container>
+                        </div>
+                    </div>
+                    <ul [class.tree-invisible]="!treeControl.isExpanded(node)">
+                        <ng-container matTreeNodeOutlet></ng-container>
+                    </ul>
+                </li>
+            </mat-nested-tree-node>
+        </mat-tree>
+    </perfect-scrollbar>
+</div>
+
+<ng-template #nodeDataTemplate let-node="node">
+  <div>
+    <div class="col-action d-flex align-items-center h-100 pr-2">
+      <!-- <i *ngIf="hasEdit(node) && !readonly" matTooltip="Edit" class="fal fa-edit blue mr-2" (click)="onEdit(node)"></i> -->
+      <!--      <i *ngIf="hasRemove(node) && !readonly" matTooltip="Delete" class="fal fa-times-circle red"-->
+      <!--         (click)="onDelete(node)"></i>-->
+    </div>
+  </div>
+</ng-template>

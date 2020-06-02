@@ -1,0 +1,25 @@
+.mat-cell.mat-column-- {
+    min-width: 70px;
+}
+
+.mat-cell {
+    min-width: 150px;
+}
+
+.mat-column-remark {
+    min-width: 350px;
+}
+
+.mat-column-averageExcutionTimeSpan {
+    min-width: 230px;
+}
+
+.mat-column-completionStatus, 
+.mat-column-progressStatus,
+.mat-column-queueDatetime {
+    min-width: 170px;
+}
+
+.table-material {
+    overflow-x: scroll;
+}

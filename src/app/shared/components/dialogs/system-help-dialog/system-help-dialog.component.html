@@ -1,0 +1,46 @@
+<div [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1"><i class="fal fa-envelope-open-text"></i> System Help</span>
+      <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+    </div>
+  </div>
+  <div mat-dialog-content>
+    <form name="form" id="form" #ngForm="ngForm" [formGroup]="rfMessage" (ngSubmit)="rfMessage.valid && onSubmit()"
+          novalidate>
+      <div class="">
+        <input type="text" id="input_subject" name="input_subject" formControlName="subject" autofocus class="w-100"
+               placeholder="Enter Subject*">
+        <div *ngIf="ngForm.submitted && rfMessage.invalid" class="error">
+          <small *ngIf="rfMessage.get('subject').hasError('required'); else elseTemplate" class="d-block">* Field is
+            required</small>
+          <ng-template #elseTemplate>
+            <small *ngIf="rfMessage.get('subject').hasError('whitespace')" class="d-block">* Field contain at least one
+              character</small>
+          </ng-template>
+        </div>
+      </div>
+      <div class="mt-3">
+        <textarea class="w-100" id="input_message" name="input_message" placeholder="Enter Message*" rows="3"
+                  formControlName="message"></textarea>
+        <div *ngIf="ngForm.submitted && rfMessage.invalid" class="error">
+          <small *ngIf="rfMessage.get('message').hasError('required'); else elseTemplate" class="d-block">* Field is
+            required</small>
+          <ng-template #elseTemplate>
+            <small *ngIf="rfMessage.get('message').hasError('whitespace')" class="d-block">* Field contain at least one
+              character</small>
+          </ng-template>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="form-buttons">
+  <button mat-raised-button [class.mat-elevation-z8]="true" type="button" class="btn btn-blue btn-cancel btn-125"
+          (click)="onCancel()">Cancel
+  </button>
+  <!-- <button mat-raised-button [class.mat-elevation-z8]="true" type="submit" class="btn btn-blue btn-125 ml-10 " form="form">Submit</button> -->
+  <button mat-raised-button [class.mat-elevation-z8]="true" type="submit" form="form"
+          class="btn btn-blue btn-125 ml-10">Submit
+  </button>
+</div>

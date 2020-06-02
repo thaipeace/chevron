@@ -1,0 +1,52 @@
+<div class="user-list p-3">
+  <div class="mb-3 d-flex justify-content-between align-items-baseline">
+    <div class="top-bar">
+      <button mat-raised-button type="button" class="btn btn-blue" (click)="onNew()"><i
+        class="fal fa-plus"></i>
+        New Customer
+      </button>
+      <button class="ml-3" mat-icon-button (click)="onRefresh()">
+        <i class="fal fa-sync-alt"></i>
+      </button>
+    </div>
+    <!-- Paging -->
+    <mat-paginator class="chevron-paginator" [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    <input type="text" class="fas ml-3 search" placeholder="&#xf002; Search" [formControl]="searchControl" />
+  </div>
+  <div class="table-material">
+    <table mat-table [dataSource]="tableData" matSort>
+      <ng-container *ngFor="let key of displayedColumns" matColumnDef="{{key}}" [ngSwitch]="key">
+
+        <!-- index -->
+        <ng-container *ngSwitchCase="'index'">
+            <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+            <mat-cell *matCellDef="let row; let $index = index;"> {{$index + 1}}
+            </mat-cell>
+          </ng-container>
+  
+        <!-- actions -->
+        <ng-container *ngSwitchCase="'actions'">
+          <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <div class="d-flex flex-row col-action">
+              <div class="flex-grow-1"></div>
+              <i matTooltip="View customer" class="fal fa-poll-h key" (click)="onDetails(row)"></i>
+              <i matTooltip="Edit customer" class="fal fa-edit edit" (click)="onEditCustomer(row)"></i>
+              <i matTooltip="Delete customer" class="fal fa-times-circle delete" (click)="onDeleteCustomer(row)"></i>
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container *ngSwitchDefault>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{key | mappingLabel}}</mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.getValue(key)}} </mat-cell>
+        </ng-container>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"
+      >
+      </mat-row>
+    </table>
+  </div>
+</div>

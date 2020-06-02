@@ -1,0 +1,61 @@
+@import '~src/sass/chevron/variables';
+
+.edit-param {
+  width: 360px;
+
+  .settings {
+    height: 100%;
+    background-color: $cl_charcoal;
+
+    h4 {
+      border-bottom: 1px solid $cl_cadet;
+      padding: 0 0 10px 0;
+      font-size: 16px;
+      font-weight: 500;
+      margin: 0 0 15px 0;
+    }
+
+    .footer {
+      border-top: 1px solid $cl_cadet;
+      padding-top: 15px;
+      margin-top: 15px;
+    }
+
+    .infos {
+      .item {
+        margin-bottom: 15px;
+
+        .value {
+          color: $cl_blue_wild;
+        }
+
+        .label {
+          color: $cl_white;
+          font-size: 14px;
+          font-weight: 500;
+        }
+
+        .control {
+          width: 100%;
+          max-width: unset;
+          border: none;
+          background-color: $cl_input;
+          color: $cl_text;
+          margin-top: 10px;
+
+          &[disabled] {
+            background-color: transparent;
+            padding: 0;
+            margin-top: 0;
+          }
+        }
+
+        textarea.control {
+          &[disabled] {
+            padding: 10px 0;
+          }
+        }
+      }
+    }
+  }
+}

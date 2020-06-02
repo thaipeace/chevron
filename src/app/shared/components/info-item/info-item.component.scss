@@ -1,0 +1,39 @@
+.title-box {
+  width: 150px;
+  height: 40px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  border-width: 1px;
+  border-style: solid;
+  box-sizing: border-box;
+  &>h3 {
+    color: #ffffff;
+    padding: 0 10px;
+    border-radius: 0 0 4px 4px;
+    line-height: 16px;
+    background-color: #142134;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.value-box {
+  display: flex;
+  height: fit-content;
+  &>.value {
+    border-bottom: 1px solid #9FB2BF;
+    padding: 3px 7px;
+    width: 50px;
+  }
+  &>.suffix {
+    color: #9FB2BF;
+    margin-left: 7px;
+  }
+}
+
+.diagonal-line {
+  width: 15px;
+  height: initial;
+  background: linear-gradient(to top right, rgba(225, 255, 255, 0) calc(50% - 1px), #9FB2BF, rgba(225, 255, 255, 0) calc(50% + 1px));
+}

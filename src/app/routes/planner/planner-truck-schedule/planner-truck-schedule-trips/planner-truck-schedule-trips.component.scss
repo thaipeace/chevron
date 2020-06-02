@@ -1,0 +1,281 @@
+@import '~src/sass/chevron/variables';
+
+.truck-action-bar {
+    &-text {
+        color: $cl_blue_wild;
+        font-size: 14px;
+
+        &-spacing-left {
+            padding-left: 16px;
+        }
+    }
+}
+
+//.truck-schedule {
+//    .panel-heading {
+//        padding-top: 0;
+//        padding-bottom: 0;
+//        padding-right: 0;
+//    }
+//}
+
+.truck-container {
+    overflow-x: auto;
+}
+
+.perfect-height {
+    max-height: calc(100vh - 210px);
+    overflow: auto;
+}
+
+.truck-schedule-table {
+    th {
+        padding: 15px 20px !important;
+        white-space: nowrap;
+    }
+
+    td {
+        border: solid 2px #142134 !important;
+        font-size: 12px;
+        padding-top: 0;
+        padding-bottom: 0;
+        height: 40px;
+        white-space: nowrap;
+
+        i {
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        &:first-child {
+            border-left: none !important;
+        }
+
+        &:last-child {
+            border-right: none !important;
+        }
+
+        &.positive {
+            color: $cl_dollar_bill;
+        }
+
+        &.negative {
+            color: $cl_red;
+        }
+
+        &.ron-a {
+            color: $cl_red;
+        }
+
+        &.ron-b {
+            color: $cl_golden;
+        }
+
+        &.ron-c {
+            color: $cl_blue;
+        }
+
+        &.ron-d {
+            color: $cl_brown;
+        }
+    }
+}
+
+.ron-a {
+    color: $cl_red;
+}
+
+.ron-b {
+    color: $cl_golden;
+}
+
+.ron-c {
+    color: $cl_blue;
+}
+
+.ron-d {
+    color: $cl_brown;
+}
+
+.toggle-spacing-left {
+    padding-left: 14px;
+}
+
+.dest-button {
+    width: 100%;
+    padding-right: 0;
+}
+
+.actions-bar {
+    i {
+        font-size: 16px;
+    }
+}
+
+.index-ps-adjusted-w {
+    flex: 0 0 30px;
+}
+
+.pto-ps-adjusted-w {
+    width: 70px;
+}
+
+.total-ps-adjusted-w {
+    flex: 0 0 140px;
+}
+
+.truck-ps-adjusted-w {
+    flex: 0 0 75px;
+}
+
+.other-ps-adjusted-w {
+    flex: 0 0 60px;
+}
+
+.dest-ps-adjusted-w {
+    flex: 0 0 240px;
+}
+
+::ng-deep .md2-datepicker-button,
+::ng-deep .md2-datepicker-arrow {
+    display: none !important;
+}
+
+::ng-deep .md2-datepicker-trigger {
+    padding: 0 !important;
+}
+
+::ng-deep .md2-datepicker-input {
+    padding-right: 0 !important;
+}
+
+::ng-deep .md2-datepicker-input input {
+    color: rgb(159, 178, 191);
+}
+
+::ng-deep .md2-datepicker-value {
+    cursor: pointer !important;
+}
+
+.ts-calendar-icon {
+    position: absolute;
+    top: 8px;
+    right: 15px;
+}
+
+.ts-time-wrapper {
+    position: relative;
+}
+
+.time-picker-spacing ::ng-deep .md2-datepicker-value {
+    background: transparent;
+}
+
+.time-picker-spacing ::ng-deep .md2-datepicker-input {
+    border: none;
+}
+
+.truck-schedule-row:nth-child(odd) {
+    .schedule-status-box {
+        background-color: #3d4f6d !important;
+    }
+}
+
+.truck-schedule-row:nth-child(even) {
+    .schedule-status-box {
+        background-color: #2f405d !important;
+    }
+}
+
+.truck-schedule-row {
+    td {
+        border: solid 0.5px #182130 !important;
+    }
+}
+
+.truck-schedule-row {
+    .schedule-status-box {
+        border-left: solid 2px #182130 !important;
+        //outline: 1px solid #182130;
+    }
+}
+
+.schedule-status-box-header {
+    position: relative;
+
+    &:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 2px;
+        background-color: #182130;
+    }
+}
+
+//perfect-scrollbar {
+//    max-height: calc(100vh - 210px);
+//}
+
+#trip-table {
+    th {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        span {
+            //white-space: nowrap;
+        }
+    }
+
+    .mat-cell {
+        vertical-align: top;
+        padding: 12px 10px !important;
+    }
+
+    .mat-column-compartments {
+        max-width: 500px;
+
+        .sublist {
+            margin-bottom: 5px;
+
+            .num {
+                width: 30px;
+                height: 25px;
+                line-height: 25px;
+            }
+
+            .capacity {
+                width: 70px;
+                height: 25px;
+                line-height: 25px;
+                padding: 0 10px;
+                margin: 0 10px 0 0;
+                background-color: $cl_dark_jungle_green;
+                border-radius: 3px;
+            }
+
+            .product {
+                width: 120px;
+                text-transform: uppercase;
+                height: 25px;
+                line-height: 25px;
+            }
+        }
+    }
+
+    .sublist {
+        text-align: left;
+        //height: 25px;
+        display: flex;
+        align-items: center;
+        padding-bottom: 2px;
+        margin-bottom: 8px;
+    }
+
+    .mat-header-cell {
+        top: 0px;
+        z-index: 2 !important;
+        left: 0px;
+        position: sticky;
+    }
+}

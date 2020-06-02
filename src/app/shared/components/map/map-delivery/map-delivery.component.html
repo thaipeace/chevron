@@ -1,0 +1,77 @@
+<ngui-map [zoom]="zoom"
+          [center]="center"
+          [styles]="styles"
+          (mapReady$)="onMapReady($event)" class="map-wrapper">
+
+    <custom-marker *ngIf="terminalLocation" [position]="terminalLocation?.toArray()">
+        <div class="custom-marker">
+            <img class="" src="/assets/images/Chevron_Logo.svg.png"/>
+        </div>
+    </custom-marker>
+    <!--  station of unloading truck  -->
+    <ng-container *ngFor="let truck of unloadingTrucks">
+        <custom-marker *ngIf="truck?.currentOrder?.station?.geoPoint"
+                       (initialized$)="onCustomMarkerInit($event,truck?.currentOrder?.station)"
+                       (click)="onStationDetails(truck?.currentOrder?.station)"
+                       [position]="truck?.currentOrder?.station?.geoPoint?.toArray()">
+            <div class="custom-marker">
+                <img class="icon" src="/assets/images/map/unloading-marker.png"/>
+            </div>
+        </custom-marker>
+    </ng-container>
+
+    <ng-container *ngFor="let truck of trucks">
+        <!-- station  on transit -->
+        <ng-container *ngFor="let order of truck?.pendingOrders">
+            <custom-marker *ngIf="order.station?.geoPoint"
+                           (initialized$)="onCustomMarkerInit($event,order?.station)"
+                           (click)="onStationDetails(order?.station)"
+                           [position]="order?.station?.geoPoint?.toArray()">
+                <div class="custom-marker">
+                    <img class="icon" src="/assets/images/map/gas-station-marker.png"/>
+                </div>
+            </custom-marker>
+        </ng-container>
+    </ng-container>
+
+    <ng-container *ngFor="let truck of trucks">
+        <!--  truck  -->
+        <custom-marker *ngIf="truck?.currentLocation?.geoPoint"
+                       (initialized$)="onCustomMarkerInit($event,truck)"
+                       (click)="onTruckDetails(truck)"
+                       [position]="truck?.currentLocation?.geoPoint?.toArray()">
+            <div class="custom-marker">
+                <img class="icon" src="/assets/images/map/icon-truck.png"/>
+            </div>
+        </custom-marker>
+    </ng-container>
+    <!--    info window-->
+    <info-window id="{{iwInfos.STATION}}">
+        <div class="d-flex color-default align-items-center">
+            <i class="far fa-gas-pump size-16"></i>
+            <h3 class="size-14 ml-3 mt-0 mb-0">{{showStation?.stationName}}</h3>
+            <i class="far fa-times size-16 close-icon" (click)="closeDialogInfo()"></i>
+        </div>
+        <div class="iw-table">
+            <h4 class="iw-td color-text-dark font-weight-normal">Contact Number</h4>
+            <div class="iw-td text-right font-weight-bold">
+                <p class="iw-list" *ngFor="let data of showStation?.contactNumber | array">{{data}}</p>
+            </div>
+            <h4 class="iw-td color-text-dark font-weight-normal">Distance From Terminal</h4>
+            <p class="iw-td text-right font-weight-bold">{{showStation?.distanceFromTerminal}}</p>
+        </div>
+    </info-window>
+    <info-window id="{{iwInfos.TRUCK}}">
+        <div class="d-flex color-default align-items-center">
+            <i class="far fa-truck-container size-16"></i>
+            <h3 class="size-14 ml-3 mt-0 mb-0">{{showTruck?.truckPlate}}</h3>
+            <i class="far fa-times size-16 close-icon" (click)="closeDialogInfo()"></i>
+        </div>
+        <div class="iw-table">
+            <h4 class="iw-td color-text-dark font-weight-normal">Company</h4>
+            <p class="iw-td text-right font-weight-bold">{{showTruck?.companyId}}</p>
+            <h4 class="iw-td color-text-dark font-weight-normal">Destination</h4>
+            <p class="iw-td text-right font-weight-bold">{{showTruck?.currentOrder?.station?.stationName}}</p>
+        </div>
+    </info-window>
+</ngui-map>

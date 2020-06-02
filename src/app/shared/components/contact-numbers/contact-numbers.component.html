@@ -1,0 +1,39 @@
+<div class="form-group">
+  <div class="input-contact-number" *ngFor="let control of formArray.controls; let i = index">
+    <div class="input-box" [class.w-100]="wFull">
+      <input
+        class="form-control control arb-input"
+        type="text"
+        [formControl]="control"
+        placeholder="Contact Number {{ i + 1 }}"
+        [class.w-100]="wFull"
+        [class.style-details]="type == 'details'"
+      />
+      <button
+        *ngIf="formArray.controls.length > 1"
+        class="btn btn-cancel btn-icon-add ml-2"
+        (click)="onRemove(i)"
+        type="button"
+      >
+        <i class="fal fa-trash-alt color-default"></i>
+      </button>
+    </div>
+    <div *ngIf="isSubmitted && control.invalid" class="error">
+      <small *ngIf="control.hasError('required'); else elseBlock">* Field is required</small>
+      <ng-template #elseBlock>
+        <small *ngIf="control.hasError('telPhoneError')">* Tel is wrong format</small>
+      </ng-template>
+    </div>
+  </div>
+  <div class="d-flex text-default mt-1 justify-content-between input-custom-form" [class.w-100]="wFull">
+    <small [class.error]="formArray.controls.length === 5"><i>Maximum number of contacts: 5</i></small>
+    <button
+      type="button"
+      class="btn btn-icon-add btn-blue ml-3"
+      [disabled]="canAddNewContactNumber()"
+      (click)="addContactNumberControl()"
+    >
+      <i class="fal fa-user-plus"></i>
+    </button>
+  </div>
+</div>

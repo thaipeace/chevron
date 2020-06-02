@@ -1,0 +1,70 @@
+<div class="compact-wrapper d-flex flex-column min-h-100">
+  <div class="title">
+    <div class=" d-flex align-items-center flex-row">
+      <span class="text flex-grow-1">Product Type</span>
+      <button mat-icon-button (click)="close()" class="icon">
+        <mat-icon><i class="fal fa-times"></i></mat-icon>
+      </button>
+    </div>
+    <hr>
+  </div>
+  <div class="forms-control py-3">
+    <form #editForm="ngForm" name="form">
+      <div class="pb-4">
+        <div class="text-white pb-2">
+          Product Code
+        </div>
+        <div class="text-grey" *ngIf="!isEditing">
+          {{selectedProductType?.ProductCode}}
+        </div>
+        <div *ngIf="isEditing">
+          <input class="form-control control no-radius-input w-100" type="text" name="productCode" required
+            pattern="^(?!\s+$).+" [disabled]="!isEditing" [(ngModel)]="selectedProductType.ProductCode">
+        </div>
+      </div>
+      <div class="pb-4">
+        <div class="text-white pb-2">
+          Description
+        </div>
+        <div class="text-grey" *ngIf="!isEditing">
+          {{selectedProductType?.Description}}
+        </div>
+        <div *ngIf="isEditing">
+          <input class="form-control control no-radius-input w-100" name="description" [disabled]="!isEditing" required
+            pattern="^(?!\s+$).+" [(ngModel)]="selectedProductType.Description">
+        </div>
+      </div>
+      <div class="pb-4">
+        <div class="text-white pb-2">
+          Color
+        </div>
+        <div *ngIf="selectedProductType?.ColorCode">
+          <input class="color-picker-input cursor-pointer" [(colorPicker)]="selectedProductType.ColorCode"
+            [style.background]="selectedProductType.ColorCode" name="color" [disabled]="!isEditing" />
+        </div>
+      </div>
+    </form>
+    <div class="pb-4" *ngIf="baseProductTypes.length">
+      <div class="text-white pb-3">Base Product Types</div>
+      <app-table-select-advance [columnNames]="['BaseProductCode', 'BaseProductCategory']" [dataArr]="baseProductTypes"
+        [selectedItemValues]="selectedBasesProductIds" (selectedItemsChange)="onSelectedBasesProductTypesChange($event)"
+        [compareKey]="'BaseProductId'" [showKey]="'BaseProductCode'" [isEditing]="isEditing" name="baseProductTypes">
+      </app-table-select-advance>
+    </div>
+  </div>
+
+  <div class="flex-grow-1"></div>
+  <div class="footer text-right py-3">
+    <hr class="mb-3">
+    <button mat-raised-button *ngIf="!isEditing" class=" btn-edit" (click)="onEdit()">
+      <i class="fal fa-edit ml-0 mr-1"></i> Edit
+    </button>
+    <button mat-raised-button *ngIf="isEditing" class=" btn-cancel mr-3" (click)="onCancelEdit()">
+      <i class="far fa-ban mr-1"></i> Cancel
+    </button>
+    <button mat-raised-button *ngIf="isEditing" [disabled]="editForm.form.invalid && invalidUpdate()" class=" btn-save"
+      (click)="onUpdateItemValue()">
+      <i class="fal fa-check ml-0 mr-1"></i> Update
+    </button>
+  </div>
+</div>

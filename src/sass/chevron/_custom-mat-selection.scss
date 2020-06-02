@@ -1,0 +1,35 @@
+.selection {
+  padding: 9.5px 0 9.5px 20px !important;
+  .mat-form-field-wrapper {
+    padding: 0 !important;
+    .mat-form-field-infix {
+      border: 1px solid #9fb2bf !important;
+      height: 30px !important;
+      padding: 0 10px !important;
+      display: flex;
+      align-items: center;
+    }
+  }
+  .OutOfService {
+    .mat-form-field-infix {
+      border: 1px solid #ff5d6a !important;
+      .mat-select-arrow {
+        color: #ff5d6a !important;
+      }
+      span {
+        color: #ff5d6a !important;
+      }
+    }
+  }
+  .InService {
+    .mat-form-field-infix {
+      border: 1px solid #86cf52 !important;
+      .mat-select-arrow {
+        color: #86cf52 !important;
+      }
+      span {
+        color: #86cf52 !important;
+      }
+    }
+  }
+}

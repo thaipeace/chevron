@@ -1,0 +1,17 @@
+<div [class.mat-elevation-z8]="true" class="d-flex flex-column">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">{{title}}</span>
+      <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+    </div>
+  </div>
+  <div mat-dialog-content class="flex-grow-1">
+    <span>{{message}}</span>
+    <div class="d-flex mt-3">
+      <div class="flex-grow-1"></div>
+      <button mat-raised-button [class.mat-elevation-z8]="true" type="button" class="btn btn-blue"
+              (click)="onCancel()">Ok
+      </button>
+    </div>
+  </div>
+</div>

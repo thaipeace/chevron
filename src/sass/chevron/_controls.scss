@@ -1,0 +1,517 @@
+.append-input-wrapper {
+    position: relative;
+
+    .append {
+        position: absolute;
+        right: 1px;
+        top: 1px;
+        bottom: 1px;
+        width: 30px;
+        background: transparent;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+.input-sm {
+    width: 170px;
+    // height: 24px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+}
+
+.date-picker {
+    text-align: center;
+}
+
+snack-bar-container {
+    &.mat-snack-bar-container {
+        background: $cl_blue_darken;
+    }
+
+    .mat-simple-snackbar-action {
+        color: $cl_blue;
+    }
+
+    .mat-simple-snackbar {
+        color: white;
+    }
+}
+
+.card {
+    border-radius: 8px;
+    border: 1px solid $cl_border_grey;
+
+    .card-item {
+        padding: 15px 0;
+
+        &:not(:last-child) {
+            border-bottom: 1px solid $cl_border_grey;
+        }
+    }
+}
+
+.rotage-180 {
+    transform: rotate(180deg);
+}
+
+.animated-control {
+    transition: 200ms cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.collapse {
+    display: none;
+
+    td,
+    td,
+    .collapsible {
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 0 !important;
+        line-height: 0 !important;
+        border: none !important;
+
+        button,
+        input {
+            display: none;
+        }
+    }
+}
+
+mat-select {
+    .mat-select-value {
+        .mat-select-value-text {
+            color: white;
+        }
+    }
+}
+
+.paginator {
+    .mat-form-field-underline {
+        display: none;
+    }
+
+    .mat-form-field-appearance-legacy {
+        .mat-form-field-wrapper {
+            padding-bottom: 0;
+        }
+
+        .mat-form-field-infix {
+            border-top-width: 0;
+        }
+    }
+}
+
+ngx-daterangepicker-material {
+    .md-drppicker {
+        background: $cl_blue_darken;
+
+        .calendar-table {
+            background: $cl_blue_darken;
+        }
+    }
+}
+
+.daterange-picker {
+    width: 195px;
+}
+
+.mat-select-panel .mat-option.mat-selected:not(.mat-option-multiple) {
+    background-color: white;
+}
+
+.bg-charcoal {
+    background-color: $cl_charcoal !important;
+}
+
+.bg-medium-dark {
+    background-color: $cl_blue_medium_dark !important;
+}
+
+.bg-input {
+    background-color: $cl_input;
+}
+
+.product-item {
+    // border-top: 2px solid $cl_blue_darkest;
+    border-right: 2px solid $cl_blue_darkest;
+
+    // &:last-child {
+    //   border-right-width: 0;
+    // }
+}
+
+.product-item-row {
+    border-top: 2px solid $cl_blue_darkest;
+}
+
+.bg-blue-darkest {
+    background-color: $cl_blue_darkest !important;
+}
+
+.bg-blue {
+    background-color: $cl_blue !important;
+}
+
+.product-item-wrapper {
+    padding: 5px 16px 16px 16px;
+
+    .fal {
+        font-size: 16px;
+        margin-right: 10px;
+    }
+
+    .title {
+        margin: 0;
+        font-size: 20px;
+        font-weight: bold;
+        text-align: left;
+        line-height: 29px;
+        color: $cl_blue;
+
+        &.euro4-97 {
+            color: $cl_red;
+        }
+
+        &.premium-95 {
+            color: $cl_golden;
+        }
+
+        &.diesel-c,
+        &.b10-diesel {
+            color: $cl_brown;
+        }
+
+        &.euro5-b7 {
+            color: $cl_blue;
+        }
+    }
+}
+
+.product-code-title {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: left;
+    line-height: 17px;
+    color: $cl_blue !important;
+
+    &.euro4-97 {
+        color: $cl_red !important;
+
+        &.product-code-background {
+            background-color: $cl_red !important;
+        }
+    }
+
+    &.premium-95 {
+        color: $cl_golden !important;
+
+        &.product-code-background {
+            background-color: $cl_golden !important;
+        }
+    }
+
+    &.diesel-c,
+    &.b10-diesel {
+        color: $cl_brown !important;
+
+        &.product-code-background {
+            background-color: $cl_brown !important;
+        }
+    }
+
+    &.euro5-b7 {
+        color: $cl_blue !important;
+
+        &.product-code-background {
+            background-color: $cl_blue !important;
+        }
+    }
+
+    &.balance {
+        color: $cl_charcoal !important;
+
+        &.product-code-background {
+            background-color: $cl_dollar_bill !important;
+        }
+    }
+
+    &.no-stk {
+        background-color: #7e8591 !important;
+    }
+
+    &.na {
+        color: $cl_white !important;
+    }
+}
+
+.status-style {
+    padding: 4px 16px;
+    border: 1px solid $cl_blue;
+    color: $cl_blue;
+    @extend .text-center;
+    @extend .text-ellipsis;
+}
+
+.status- {
+    &truck {
+        @extend .status-style;
+        width: 140px;
+        //truck status
+        &.InService {
+            color: $cl_dollar_bill;
+            border-color: $cl_dollar_bill;
+        }
+
+        &.OutOfService {
+            color: $cl_red;
+            border-color: $cl_red;
+        }
+
+        i {
+            padding-top: 2px;
+        }
+    }
+
+    &driver {
+        @extend .status-style;
+        padding: 3px 6px;
+        height: 24px;
+        min-width: 24px;
+        text-align: center;
+        width: auto;
+        color: rgb(159, 178, 191) !important;
+
+        &.A {
+            color: $cl_tangerine !important;
+            border-color: $cl_tangerine;
+        }
+
+        &.P {
+            border: 1px solid $cl_water_spout;
+            color: $cl_water_spout !important;
+        }
+    }
+}
+
+.order-status {
+    //display: inline-block;
+    padding: 4px 16px;
+    border: 1px solid $cl_blue;
+    color: $cl_blue;
+
+    width: 140px;
+    @extend .text-center;
+    @extend .text-ellipsis;
+    //order status
+
+    &.Potential {
+        color: $cl_patel_yellow;
+        border-color: $cl_patel_yellow;
+    }
+
+    &.OnHold {
+        color: $cl_neon_carrot;
+        border-color: $cl_neon_carrot;
+    }
+
+    &.Approved {
+        color: $cl_bright_cerulean;
+        border-color: $cl_bright_cerulean;
+    }
+
+    &.Canceled,
+    &.Cancelled {
+        color: $cl_red;
+        border-color: $cl_red;
+    }
+
+    &.Rescheduled {
+        color: $cl_light_sea_green;
+        border-color: $cl_light_sea_green;
+    }
+
+    &.Loading {
+        color: $cl_carolina_blue;
+        border-color: $cl_carolina_blue;
+    }
+
+    &.OnTransit {
+        color: $cl_golden;
+        border-color: $cl_golden;
+    }
+
+    &.UnLoading {
+        color: $cl_carolina_pink;
+        border-color: $cl_carolina_pink;
+    }
+
+    &.Delivered {
+        color: $cl_dollar_bill;
+        border-color: $cl_dollar_bill;
+    }
+
+    //&.truck {
+    //    //truck status
+    //    &.InService {
+    //        color: $cl_dollar_bill;
+    //        border-color: $cl_dollar_bill;
+    //    }
+    //
+    //    &.OutOfService {
+    //        color: $cl_red;
+    //        border-color: $cl_red;
+    //    }
+    //}
+
+    // driver status
+
+    //&.driver {
+    //    padding: 3px 6px;
+    //    height: 24px;
+    //    min-width: 24px;
+    //    text-align: center;
+    //    color: $cl_blue;
+    //    width: auto;
+    //
+    //    &.A {
+    //        color: $cl_golden;
+    //        border-color: $cl_golden;
+    //    }
+    //
+    //    &.P {
+    //        border: 1px solid $cl_blue;
+    //        color: $cl_blue;
+    //    }
+    //}
+}
+
+.text-bigger {
+    font-size: 1.16em;
+}
+
+.text-light-green {
+    color: $cl_light_sea_green !important;
+}
+
+.text-grey {
+    color: $cl_text_grey !important;
+}
+
+.text-default {
+    color: $cl_text !important;
+}
+
+.text-green {
+    color: $cl_dollar_bill !important;
+}
+
+.text-aquamarine {
+    color: $cl_aquamarine !important;
+}
+
+.chevron-paginator {
+    .mat-paginator-container {
+        align-items: baseline;
+        justify-content: initial;
+        min-height: 0;
+        padding: 0;
+
+        .mat-paginator-navigation-next,
+        .mat-paginator-navigation-previous {
+            color: $cl_text_default;
+        }
+
+        .mat-form-field-wrapper {
+            padding-bottom: 0;
+        }
+    }
+}
+
+mat-select + .mat-form-field-label-wrapper {
+    label.mat-form-field-empty {
+        mat-label {
+            color: white;
+        }
+    }
+}
+
+.mat-form-field.select {
+    padding-top: 4px;
+    padding-bottom: 5px;
+}
+
+.search {
+    font-family: "Roboto", "Font Awesome 5 Pro", sans-serif;
+    font-weight: normal;
+
+    &::placeholder {
+        color: $cl_manatee !important;
+    }
+}
+
+.btn.btn-icon-add {
+    outline: none;
+    height: 30px;
+    width: 30px;
+    min-width: 30px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.quantity {
+    font-size: 18px;
+}
+
+.actions-bar {
+    .select-box {
+        width: 200px;
+    }
+}
+
+.action-icon {
+    min-width: 1rem;
+    display: inline-block;
+
+    i {
+        font-size: 1.2rem;
+        color: white;
+        cursor: pointer;
+
+        &.normal {
+            font-size: 1rem;
+        }
+
+        &[disabled] {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        &.green {
+            color: $cl_dollar_bill;
+        }
+
+        &.yellow {
+            color: $cl_golden;
+        }
+
+        &.red {
+            color: $cl_red;
+        }
+
+        &.blue {
+            color: $cl_blue;
+        }
+
+        &.cream {
+            color: $cl_aquamarine;
+        }
+
+        &.brown {
+            color: $cl_brown;
+        }
+    }
+}

@@ -1,0 +1,8 @@
+.mat-select-panel-wrap {
+  width: 100%;
+  overflow: hidden;
+
+  &>.mat-select-panel {
+    min-width: 0 !important;
+  }
+}

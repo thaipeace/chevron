@@ -1,0 +1,42 @@
+<div [class.mat-elevation-z8]="true">
+    <!-- <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">{{data?.title || 'Question'}}</span>
+      <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+    </div>
+  </div> -->
+    <div mat-dialog-content>
+        <p class="sub">
+            <i class="far fa-exclamation-circle fa-2x icon"></i>
+            {{ data?.question }}
+        </p>
+    </div>
+</div>
+
+<div class="btn-group d-flex align-items-center justify-content-center">
+    <ng-container *ngIf="type == 'close'; else elseblock">
+        <button
+            mat-raised-button
+            [class.mat-elevation-z8]="true"
+            class="btn btn-blue btn-cancel"
+            type="button"
+            (click)="onCancel()"
+        >
+            Close
+        </button>
+    </ng-container>
+    <ng-template #elseblock>
+        <button
+            mat-raised-button
+            [class.mat-elevation-z8]="true"
+            class="btn btn-blue btn-cancel"
+            type="button"
+            (click)="onNo()"
+        >
+            No
+        </button>
+        <button mat-raised-button [class.mat-elevation-z8]="true" class="btn btn-blue ml-10" (click)="onYes()">
+            Yes
+        </button>
+    </ng-template>
+</div>

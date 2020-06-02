@@ -1,0 +1,225 @@
+<div class="tab-container bg-blue-darkest h-100">
+  <mat-tab-group class="h-100" (selectedTabChange)="tabChanged($event)">
+    <mat-tab label="Details">
+      <div class="d-flex overflow-hidden h-100">
+        <perfect-scrollbar class="flex-grow-1">
+          <ng-container [ngTemplateOutlet]="tableTemplate"></ng-container>
+        </perfect-scrollbar>
+      </div>
+    </mat-tab>
+    <mat-tab label="Historical Location">
+      <app-fm-truck-historical-location [truck]="object"></app-fm-truck-historical-location>
+    </mat-tab>
+    <mat-tab label="Events">
+      <app-fm-truck-event-list [truck]="object"></app-fm-truck-event-list>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+<ng-template #tableTemplate>
+  <table class="tql-table table-data-detail" *ngIf="object">
+    <tbody>
+      <tr class="bg-blue-darkest">
+        <td>
+          <div class="text-white">Truck Plate</div>
+          <div class="text-blue mt-2">
+            {{ truckForm.get('truckPlate').value }}
+          </div>
+          <!-- <div class="mt-2" *ngIf="edit">
+            <text-field
+                [input]="truckForm.get('truckPlate')"
+                [class]="{ 'max-w-200px': true }"
+            ></text-field>
+        </div> -->
+        </td>
+        <td>
+          <div class="btn-group-edit" *ngIf="!popupEdit">
+            <button mat-raised-button *ngIf="edit" class="p-0 s-36 btn-save" matTooltip="Update"
+              [class.disabled-half]="!enableUpdate()" (click)="onSave()">
+              <i class="fal fa-check ml-0"></i>
+            </button>
+            <button mat-raised-button *ngIf="!edit" class="p-0 s-36 btn-edit" matTooltip="Edit" (click)="onEdit()">
+              <i class="fal fa-edit ml-0"></i>
+            </button>
+            <button mat-raised-button *ngIf="edit" class="p-0 s-36 btn-cancel ml-3" matTooltip="Cancel"
+              (click)="onCancelEdit()">
+              <i class="fal fa-times"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+      <tr *ngFor="let item of ['safeLoadingPassDate', 'totalCapacity']">
+        <td>{{ item | mappingLabel }}</td>
+        <td *ngIf="!edit">{{ truckForm.get(item).value }}</td>
+        <td *ngIf="edit" class="td-edit">
+          <ng-container [ngSwitch]="item">
+            <ng-container *ngSwitchCase="'safeLoadingPassDate'">
+              <text-field [input]="truckForm.get(item)" type="date"></text-field>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              <text-field [input]="truckForm.get(item)" type="number"></text-field>
+            </ng-container>
+          </ng-container>
+        </td>
+      </tr>
+      <tr>
+        <td>Is Pto Supported</td>
+        <td class="pt-0 pb-0">
+          <mat-radio-group [value]="truckForm.get('isPtoSupported').value" class="d-flex radio-box"
+            (change)="onChangedIsPtoSupported($event)" [disabled]="!edit">
+            <mat-radio-button value="yes">Yes</mat-radio-button>
+            <mat-radio-button value="no" class="ml-4">No</mat-radio-button>
+          </mat-radio-group>
+        </td>
+      </tr>
+      <tr>
+        <td>Dedicated</td>
+        <td class="pt-0 pb-0">
+          <mat-radio-group [value]="truckForm.get('dedicated').value" class="d-flex radio-box"
+            (change)="onChangedDedicated($event)" [disabled]="!edit">
+            <mat-radio-button value="yes">Yes</mat-radio-button>
+            <mat-radio-button value="no" class="ml-4">No</mat-radio-button>
+          </mat-radio-group>
+        </td>
+      </tr>
+      <tr>
+        <td>Truck State</td>
+        <td class="td-edit selection">
+          <div class="{{ truckForm.get('truckState').value }}">
+            <div *ngIf="!edit" class="w-150px">
+              <div class="status-truck {{ truckForm.get('truckState').value }} collapsible">
+                {{ truckForm.get('truckState').value }}
+              </div>
+            </div>
+            <mat-form-field class="h-100 w-150px" *ngIf="edit">
+              <mat-select [value]="truckForm.get('truckState').value" [disabled]="!edit"
+                (selectionChange)="selectionChange($event)">
+                <mat-option *ngFor="let food of ['InService', 'OutOfService']" [value]="food">
+                  {{ food }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </td>
+      </tr>
+      <tr *ngFor="
+                    let item of object?._data
+                        | keyValueOrder
+                            : [
+                                  'sysid',
+                                  'Compartment',
+                                  'userName',
+                                  'downloadLink',
+                                  'truckStatus',
+                                  'safeLoadingPassDate',
+                                  'totalCapacity',
+                                  'isPtoSupported',
+                                  'dedicated',
+                                  'truckState',
+                                  'truckPlate',
+                                  'region'
+                              ]
+                            : []
+                " [ngSwitch]="item.key">
+        <ng-container *ngSwitchCase="'truckInspectionDoc'">
+          <td>{{ item.key | mappingLabel }}</td>
+          <td>
+            {{ item.value }}
+            <button mat-raised-button type="button" class="btn btn-blue  ml-3" (click)="onDownload()" [ngClass]="{
+                                'disabled-half': !downloadLink || !downloadLink.length
+                            }">
+              <i class="fal fa-cloud-download"></i> Download
+            </button>
+            <label for="uploadFileInput" mat-raised-button mat-ripple
+              class="btn btn-blue ml-3 label-input mat-raised-button ">
+              <i class="fal fa-cloud-upload"></i> Upload
+            </label>
+            <input type="file" class="form-control inputfile" id="uploadFileInput" (change)="onFileChange($event)" />
+            <div class="mt-1">
+              <small class="text-danger">
+                {{
+              truckInspectionDocErrors && truckInspectionDocErrors.length
+                ? '* ' + truckInspectionDocErrors
+                : ''
+              }}
+              </small>
+            </div>
+          </td>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          <td>{{ item.key | mappingLabel }}</td>
+          <td>{{ item.value }}</td>
+        </ng-container>
+      </tr>
+      <tr>
+        <td>Dedicated in Regions</td>
+        <td>
+          <div class="table-mini-wrapper inline-block">
+            <table>
+              <thead>
+                <tr>
+                  <th>Regions</th>
+                  <th>Product Code</th>
+                  <th *ngIf="edit">&nbsp;</th>
+                </tr>
+              </thead>
+              <!-- on not editing mode-->
+              <ng-container *ngIf="!edit">
+                <tbody *ngFor="let item of selectedRegions">
+                  <tr *ngFor="let product of item?.selectedProducts; let $index = index;">
+                    <td><span *ngIf="$index === 0">{{item?.name}}</span></td>
+                    <td>
+                      <span [ngStyle]="{'color': product?.color}">{{product?.name}}</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </ng-container>
+              <!-- on editing mode-->
+              <ng-container *ngIf="edit">
+                <tbody *ngFor="let item of selectedRegions">
+                  <tr style="min-height: 50px;">
+                    <td><span>{{item?.name}}</span></td>
+                    <td>
+                      <select-menu [items]="item?.products" [bindLabel]="'name'" [bindValue]="'id'"
+                        [ngModel]="item?.selectedProductsIds" [placeHolder]="'Select Product'"
+                        (change)="item?.setProducts($event)" [multiple]="true">
+                      </select-menu>
+                    </td>
+                    <td><i class="fal fa-trash-alt color-red cursor-pointer" (click)="removeRegion(item)"></i>&nbsp;</td>
+                  </tr>
+                </tbody>
+              </ng-container>
+            </table>
+            <div class="d-flex px-3 py-2 actions" *ngIf="edit">
+              <button mat-raised-button type="button" class="btn btn-blue mr-3 new" [matMenuTriggerFor]="menu">
+                <i class="fal fa-plus"></i>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button (click)="onAddRegion(item)" mat-menu-item
+                  *ngFor="let item of availableRegions">{{item?.name}}</button>
+              </mat-menu>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Compartments</td>
+        <td>
+          <ul class="list-unstyled" *ngIf="!edit; else blockedit">
+            <li *ngFor="let item of object?.compartments">
+              <b>{{ item.getValue('compartmentNumber') }}: </b> {{ item.getValue('capacity') }} Litre
+            </li>
+          </ul>
+          <ng-template #blockedit>
+            <array-input [(formArray)]="compartments" [isSubmitted]="true" [placeholder]="'Truck Compartment'"
+              length="8" type="number" [border]="'true'" widthtype="small" [isCreateInsertable]="false"></array-input>
+          </ng-template>
+        </td>
+      </tr>
+      <tr>
+        <td>Updated By</td>
+        <td>{{ object?.userName }}</td>
+      </tr>
+    </tbody>
+  </table>
+</ng-template>

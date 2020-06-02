@@ -1,0 +1,14 @@
+<div class="row">
+  <div class="col">
+    <div *ngFor="let item of markers.slice(0,markers.length/2)" class="d-flex align-items-center mb-3">
+      <span class="mr-3" app-marker-element [icon]="item?.icon"></span>
+      <span>{{item?.name}}</span>
+    </div>
+  </div>
+  <div class="col">
+    <div *ngFor="let item of markers.slice(markers.length/2)" class="d-flex align-items-center mb-3">
+      <span class="mr-3" app-marker-element [icon]="item?.icon"></span>
+      <span>{{item?.name}}</span>
+    </div>
+  </div>
+</div>

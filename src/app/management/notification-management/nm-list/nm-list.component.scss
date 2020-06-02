@@ -1,0 +1,48 @@
+.i-close {
+  display: none;
+}
+
+.i-close:active {
+  color: #2496c9;
+}
+
+.btn-w-242 {
+  width: 242px;
+  max-width: 242px !important;
+}
+
+.mr-6 {
+  margin-right: 6px;
+}
+
+.index-adjusted-w{
+  flex: 0 0 75px;
+}
+
+.type-adjusted-w{
+  flex: 0 0 100px;
+}
+
+.priority-adjusted-w{
+  flex: 0 0 75px;
+}
+
+.reading-time-adjusted-w{
+  flex: 0 0 150px;
+}
+
+.noti-mat-paginator ::ng-deep .mat-paginator-range-actions{
+  display: none !important;
+}
+
+.mat-cell {
+  min-width: 120px;
+}
+
+.mat-column-message {
+  min-width: 300px;
+}
+
+.mat-column-index {
+  min-width: 50px;
+}

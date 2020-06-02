@@ -1,0 +1,118 @@
+<div class="table-template p-3 d-flex flex-column">
+  <div class="actions-bar">
+    <div class="mb-3 d-flex align-items-center">
+      <div class="flex-grow-1">
+        <button class="" mat-icon-button (click)="reload()">
+          <i class="fal fa-sync-alt"></i>
+        </button>
+      </div>
+      <div class="form-group d-flex justify-content-center align-items-center" [ngClass]="{'disabled-half': onLoading}">
+        <mat-menu #destinationMenu="matMenu">
+          <button mat-menu-item class="text-white" *ngFor="let item of [5, 10, 25, 100]"
+            (click)="pageSize = item; reload()">{{item}}</button>
+        </mat-menu>
+        <button mat-button [matMenuTriggerFor]="destinationMenu" class="dest-button">
+          <div class="d-flex justify-content-between align-items-baseline">
+            <span class="title text-white">Size: {{pageSize}}</span>
+            <button mat-icon-button [disableRipple]="true">
+              <i class="far fa-chevron-down"></i>
+            </button>
+          </div>
+        </button>
+        <span>
+          {{(offset * pageSize + 1)}} - {{offset * pageSize + pageSize }}
+        </span>
+
+        <button class="ml-3" [ngClass]="{'disabled-half': offset == 0}" mat-icon-button
+          (click)="onPaginateChange(false)">
+          <i class="fal fa-chevron-left"></i>
+        </button>
+        <button class="ml-3" [ngClass]="{'disabled-half': countedItem < pageSize}" mat-icon-button
+          (click)="onPaginateChange(true)">
+          <i class="fal fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <perfect-scrollbar class="table-material flex-grow-1">
+    <table mat-table [dataSource]="tableData" matSort (matSortChange)="sortChange($event)" matSortActive="datetime"
+      matSortDirection="desc">
+      <ng-container *ngFor="let key of displayedColumns" matColumnDef="{{key}}" [ngSwitch]="key">
+
+        <!-- index -->
+        <ng-container *ngSwitchCase="'index'">
+          <th mat-header-cell [ngClass]="'index-adjusted-w'" *matHeaderCellDef>#
+          </th>
+          <td mat-cell [ngClass]="'index-adjusted-w'" *matCellDef="let row; let $index = index;">
+            {{$index + 1 + offset * pageSize}}
+          </td>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'priority'">
+          <th mat-header-cell [ngClass]="'pt-3 pb-3 reading-time-adjusted-w'" *matHeaderCellDef mat-sort-header>
+            {{key | mappingLabel}}
+          </th>
+          <td mat-cell [ngClass]="'pt-3 pb-3 reading-time-adjusted-w'" *matCellDef="let row">
+            {{row[key]}}
+          </td>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'type'">
+          <th mat-header-cell [ngClass]="'pt-3 pb-3 type-adjusted-w'" *matHeaderCellDef>
+            Entry Type
+          </th>
+          <td mat-cell [ngClass]="'pt-3 pb-3 type-adjusted-w'" *matCellDef="let row">
+            {{row[key]}}
+          </td>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'username'">
+          <th mat-header-cell [ngClass]="'pt-3 pb-3 type-adjusted-w'" *matHeaderCellDef>
+            User Name
+          </th>
+          <td mat-cell [ngClass]="'pt-3 pb-3 type-adjusted-w'" *matCellDef="let row">
+            {{row[key]}}
+          </td>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'datetime'">
+          <th mat-header-cell [ngClass]="'pt-3 pb-3 reading-time-adjusted-w'" *matHeaderCellDef mat-sort-header>
+            Date Time
+          </th>
+          <td mat-cell [ngClass]="'pt-3 pb-3 reading-time-adjusted-w'" *matCellDef="let row">
+            {{row[key]}} </td>
+        </ng-container>
+
+        <!-- actions -->
+        <ng-container *ngSwitchCase="'actions'">
+          <th mat-header-cell [ngClass]="'pt-3 pb-3 reading-time-adjusted-w'" *matHeaderCellDef>
+            Actions
+          </th>
+          <td mat-cell [ngClass]="'pt-3 pb-3 reading-time-adjusted-w'" *matCellDef="let row">
+            <div class="col-action d-flex">
+              <button mat-icon-button (click)="onDetails(row)" matTooltip="View">
+                <mat-icon><i class="fal fa-poll-h cream"></i></mat-icon>
+              </button>
+              <!-- <button mat-icon-button (click)="onRemove(row)" matTooltip="Delete">
+                                <mat-icon><i class="fal fa-times-circle red"></i></mat-icon>
+                            </button> -->
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container *ngSwitchDefault>
+          <th mat-header-cell [ngClass]="'pt-3 pb-3'" *matHeaderCellDef>{{key | mappingLabel}}</th>
+          <td mat-cell [ngClass]="'pt-3 pb-3'" *matCellDef="let row"> {{row[key]}} </td>
+        </ng-container>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+      </tr>
+    </table>
+    <!-- No data -->
+    <div *ngIf="tableData?.data.length == 0" class="no-result">
+      No data found
+    </div>
+  </perfect-scrollbar>
+</div>

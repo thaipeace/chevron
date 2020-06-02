@@ -1,0 +1,38 @@
+<div [class.mat-elevation-z8]="true">
+    <div mat-dialog-title>
+        <div class="d-flex flex-row title align-items-center">
+            <span class="flex-grow-1">Estimated Inventory Information</span>
+            <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+        </div>
+    </div>
+
+    <div mat-dialog-content>
+        <table class="tql-table table-data-detail">
+            <tbody>
+            <tr>
+                <td class="text-nowrap">Negative numbers we get when</td>
+                <td>we have predicted sales more then inventory.
+                    Now, Predicted sales is fed in our system. So take a eg for a station name "ABC"
+                </td>
+            </tr>
+            <tr>
+                <td class="text-nowrap">Today (09-06-2019)</td>
+                <td>available inventory is let take "20000"</td>
+            </tr>
+            <tr>
+                <td class="text-nowrap">Today sales prediction that we get</td>
+                <td>"16000", So, inventory left at the end of the day will be "4000" (becomes
+                    predicted inventory)
+                </td>
+            </tr>
+            <tr>
+                <td class="text-nowrap">Tomorrow (10-06-2019)</td>
+                <td>Inventory "4000" and sales let assume "6000". So the station is having less fuel and we will
+                    get it as negative "-2000"
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>

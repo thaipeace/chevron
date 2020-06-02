@@ -1,0 +1,45 @@
+.bg- {
+  &blue-dark-medium {
+    background-color: $cl_blue_medium_dark !important;
+  }
+  &charcoal {
+    background-color: $cl_charcoal !important;
+  }
+  &dark-jungle-green {
+    background-color: $cl_dark_jungle_green !important;
+  }
+  &blue-darken {
+    background-color: $cl_blue_darken !important;
+  }
+  &grey {
+    background-color: $cl_grey !important;
+  }
+}
+
+.color-default {
+  color: $cl_white !important;
+}
+
+.color-text-dark {
+  color: $cl_text !important;
+}
+
+.cream {
+  color: $cl_aquamarine !important;
+}
+
+.text-grey {
+  color: $cl_text !important;
+}
+
+.text-cl_blue {
+  color: $cl_blue !important;
+}
+
+.text-cl_red {
+  color: $cl_red !important;
+}
+
+.text-cl_aquamarine {
+  color: $cl_aquamarine !important;
+}

@@ -1,0 +1,45 @@
+<div class="d-flex justify-content-end">
+  <button
+    mat-raised-button
+    class="btn btn-blue w-100 select-btn text-right"
+    value="truck"
+    [matMenuTriggerFor]="itemList"
+    [ngClass]="{ 'disabled-half': !showItems.length }"
+    type="button"
+  >
+    <div class="d-flex justify-content-between">
+      <span>{{ name | mappingLabel }}</span>
+      <i class="fal fa-plus d-flex align-items-center"></i>
+    </div>
+  </button>
+  <mat-menu #itemList="matMenu" class="select-box-menu" yPosition="above">
+    <div
+      app-custom-menu-list
+      [items]="showItems"
+      [bindLabel]="'name'"
+      [bindValue]="'name'"
+      (change)="selectNewItem($event)"
+    ></div>
+  </mat-menu>
+</div>
+<div
+  class="list-group-link-unlink"
+  style="width: 100%; min-width: 250px; max-width: 500px;"
+>
+  <ul class="list-unstyled">
+    <li class="d-flex flex-row" *ngFor="let item of selectedItems">
+      <span class="flex-grow-1">{{ item?.name }}</span>
+      <button
+        mat-icon-button
+        class="icon"
+        type="button"
+        matTooltip="unassociate"
+        (click)="disassociate(item)"
+      >
+        <mat-icon>
+          <i class="fal fa-unlink text-white"></i>
+        </mat-icon>
+      </button>
+    </li>
+  </ul>
+</div>

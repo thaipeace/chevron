@@ -1,0 +1,156 @@
+<div class="d-flex h-100 min-vw-50 p-3">
+  <div class="flex-grow-1 pr-3 d-flex flex-column">
+    <ng-container [ngTemplateOutlet]="tableTemplate"></ng-container>
+  </div>
+  <div>
+    <app-map-truck-historical-location [groups]="groups"></app-map-truck-historical-location>
+  </div>
+</div>
+
+<!--Template-->
+
+<ng-template #tableTemplate>
+  <div class="actions-bar">
+    <div class="mb-3 d-flex align-items-center">
+      <div class="flex-grow-1">
+        <button mat-icon-button (click)="onRefresh()">
+          <i class="fal fa-sync-alt refresh-icon clickable"></i>
+        </button>
+
+        <button mat-icon-button matTooltip="expand" (click)="toggleAllRows(groups, false)">
+          <i class="fal fa-angle-double-down animated-control"></i>
+        </button>
+        <button mat-icon-button matTooltip="collapse" (click)="toggleAllRows(groups, true)">
+          <i class="fal fa-angle-double-up text-white animated-control"></i>
+        </button>
+      </div>
+      <div class="form-group d-flex justify-content-center align-items-center">
+        <mat-radio-group class="d-flex" (change)="changeGroupingType($event)"
+                         [(ngModel)]="selectedGroupingTypes">
+          <mat-radio-button class="mr-4 mt-2" [value]="option?.value"
+                            *ngFor="let option of groupingTypes">{{option?.name}}</mat-radio-button>
+        </mat-radio-group>
+        <input type="text" class="date-picker" #drp="bsDaterangepicker" bsDaterangepicker placement="left"
+               [bsConfig]="{ rangeInputFormat: 'YYYY/MM/DD' }" [ngModel]="dateRange"
+               (ngModelChange)="onDateChange($event)">
+      </div>
+    </div>
+  </div>
+  <perfect-scrollbar class="flex-grow-1">
+    <table class="tql-table" *ngIf="groups && groups.length;">
+      <ng-container *ngFor="let group of groups ">
+        <ng-container>
+          <tbody class="toggle-parent border-separate">
+          <tr>
+            <td class="pl-3 pt-0 pr-0 pb-0 d-flex flex-row justify-content-between align-items-center group-heading">
+              <div class="d-flex flex-row align-items-center flex-grow-1">
+                <mat-checkbox class="historical-event-checkbox disabled-half"></mat-checkbox>
+                <span class="text-default mr-3">#{{group?.index}} </span>
+                <span class="historical-event-label">{{group?.fromLabel}}
+                  - {{group?.toLabel}}</span>
+              </div>
+              <div class="d-flex flex-row">
+                                    <span class="mr-3"><small><em>Locations:</em></small>
+                                      {{group?.data.length}}</span>
+                <span><small><em>Events:</em></small>
+                  {{group?.events.length}}</span>
+              </div>
+              <div class="d-flex flex-row align-items-center">
+                <!--<div class="text-white">
+            1 - 1 of 1
+        </div>
+        <div class="ml-3">
+            <button mat-icon-button>
+                <i class="fas fa-angle-left"></i>
+            </button>
+            <button mat-icon-button>
+                <i class="fas fa-angle-right"></i>
+            </button>
+        </div>-->
+                <button mat-icon-button class="action-icon" (click)="onGroupDetails(group)"
+                        [class.disabled-half]="!group?.data?.length">
+                  <i class="fal fa-poll-h cream"></i>
+                </button>
+                <button mat-icon-button (click)="group.isCollapsed = !group.isCollapsed;">
+                  <i class="fal  animated-control text-white"
+                     [class.fa-angle-up]="!group.isCollapsed"
+                     [class.fa-angle-down]="group.isCollapsed"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+          <tbody [class.collapse]="group.isCollapsed">
+          <ng-container [ngTemplateOutlet]="eventsTableTemplate"
+                        [ngTemplateOutletContext]="{ events: group.events}">
+          </ng-container>
+
+          </tbody>
+
+        </ng-container>
+      </ng-container>
+
+    </table>
+    <div *ngIf="!groups || !groups.length">
+      No data
+    </div>
+  </perfect-scrollbar>
+</ng-template>
+
+<ng-template #eventsTableTemplate let-events="events">
+  <ng-container *ngIf="events.length">
+    <div class="table-material">
+      <table mat-table [dataSource]="generateEventData(events)" matSort>
+        <ng-container *ngFor="let key of displayedColumns" matColumnDef="{{key}}" [ngSwitch]="key">
+
+          <!-- index -->
+          <ng-container *ngSwitchCase="'index'">
+            <mat-header-cell [ngClass]="'index-w'" *matHeaderCellDef>#</mat-header-cell>
+            <mat-cell [ngClass]="'index-w'" *matCellDef="let row; let $index = index;"> {{$index + 1}}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container *ngSwitchCase="'description'">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>{{key | mappingLabel}}</mat-header-cell>
+            <mat-cell *matCellDef="let row;">
+              {{ row.getValue('eventDetail').eventFrom}}
+              - {{ row.getValue('eventDetail').description}}
+            </mat-cell>
+          </ng-container>
+          <ng-container *ngSwitchCase="'GeoPoint'">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>{{key | mappingLabel}}</mat-header-cell>
+            <mat-cell *matCellDef="let row;">
+              {{ row.getValue('startGeoPoint')?.getLat()}}
+              - {{ row.getValue('startGeoPoint')?.getLng()}}
+            </mat-cell>
+          </ng-container>
+
+          <!-- actions -->
+          <ng-container *ngSwitchCase="'actions'">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let row" class="d-flex flex-row justify-content-center">
+              <div class="col-action d-flex justify-content-end">
+                <button mat-icon-button class="action-icon" (click)="onEventDetails(row);">
+                  <i class="fal fa-poll-h cream"></i>
+                </button>
+              </div>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container *ngSwitchDefault>
+            <mat-header-cell *matHeaderCellDef mat-sort-header>{{key | mappingLabel}}</mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.getValue(key)}} </mat-cell>
+          </ng-container>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns;"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;">
+        </mat-row>
+      </table>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="!events.length">
+    <tr>
+      <td>no event</td>
+    </tr>
+  </ng-container>
+</ng-template>

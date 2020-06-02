@@ -1,0 +1,225 @@
+<div class="table-template p-3 d-flex flex-column">
+    <div class="actions-bar">
+        <div class="mb-3 d-flex align-items-center">
+            <div class="flex-grow-1">
+                <button *ngIf="userRoleName == 'Admin' || userRoleName == 'Planner' && !selectable" mat-raised-button type="button"
+                    class="btn btn-blue" (click)="uploadSAPFile()"><i class="fal fa-file-import mr-2"></i>
+                    Import SAP File
+                </button>
+                <button *ngIf="userRoleName == 'Admin' || userRoleName == 'Planner'" mat-raised-button type="button"
+                    class="btn btn-blue mx-3" (click)="onNew()"><i class="fal fa-plus mr-2"></i>
+                    New Order
+                </button>
+                <button *ngIf="userRoleName == 'Admin' || userRoleName == 'Planner'" mat-raised-button type="button"
+                    class="btn btn-blue" (click)="importCIOrders()"><i class="fal fa-plus mr-2"></i>
+                    Import Manual - C&I Orders
+                </button>
+
+            </div>
+            <div class="form-group d-flex justify-content-center">
+                <!-- <search-box [searchControl]="searchControl"></search-box> -->
+                <!--                <mat-paginator class="chevron-paginator ml-3" [length]="100" [pageSize]="10"-->
+                <!--                               [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>-->
+                <ng-container [ngTemplateOutlet]="paginator"
+                    [ngTemplateOutletContext]="{ pagination: stationPagination, isStationsPaging: true }">
+                </ng-container>
+            </div>
+        </div>
+        <div class="mb-3 d-flex flex-row">
+            <button mat-icon-button (click)="onRefresh()">
+                <i class="fal fa-sync-alt refresh-icon clickable"></i>
+            </button>
+            <button mat-icon-button matTooltip="expand" (click)="toggleStationRows(selectedStationIds, true)">
+                <i class="fal fa-angle-double-down animated-control"></i>
+            </button>
+            <button mat-icon-button matTooltip="collapse" (click)="toggleStationRows(selectedStationIds, false)">
+                <i class="fal fa-angle-double-up text-white animated-control"></i>
+            </button>
+            <span class="flex-grow-1"></span>
+            <select-menu [items]="sourceTypes" *ngIf="sourceTypes.length" class="ml-3" [ngModel]="selectedSourceTypes"
+                [multiple]="true" [placeHolder]="'Filter by source'" (change)="onSourceSelectionChange($event)">
+            </select-menu>
+            <select-menu [items]="stations" class="ml-3" [bindLabel]="'_data.stationName'" [bindValue]="'_data.sysId'"
+                [ngModel]="selectedStationIds" [multiple]="true" [placeHolder]="'Filter by station'"
+                (change)="onStationSelectionChange($event)"></select-menu>
+            <select-menu [items]="orderStatusList | distinct" *ngIf="orderStatusList.length" class="ml-3"
+                [ngModel]="selectedStatuses" [multiple]="true" [placeHolder]="'Filter by status'"
+                (change)="onStatusSelectionChange($event)"></select-menu>
+            <input type="text" class="ml-3 date-picker" #drp="bsDaterangepicker" bsDaterangepicker placement="left"
+                [ngModel]="historyFilterDate" (ngModelChange)="onDateChange($event)">
+        </div>
+    </div>
+    <perfect-scrollbar class="flex-grow-1">
+        <ng-container *ngTemplateOutlet="orderTabBodyTemplate"></ng-container>
+    </perfect-scrollbar>
+</div>
+
+<!-- TEMPLATE -->
+<ng-template #orderTabBodyTemplate>
+    <table class="tql-table">
+        <ng-container *ngIf="!isEmpty()">
+            <ng-container *ngFor="let stationId of currentStationIds">
+                <ng-container [ngTemplateOutlet]="stationRowTemplate" [ngTemplateOutletContext]="{ stationId: stationId, stationName: dicStationName[stationId],
+                                    orders: historicalOrdersByStation[stationId].orders,
+                                    pagination: historicalOrdersByStation[stationId].pagination }">
+                </ng-container>
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf="isEmpty()">
+            <tbody>
+                <tr>
+                    <td colspan="3">
+                        <div class="d-flex justify-content-center"><i>No data found</i></div>
+                    </td>
+                </tr>
+            </tbody>
+        </ng-container>
+    </table>
+</ng-template>
+
+<ng-template #stationRowTemplate let-stationId="stationId" let-stationName="stationName" let-orders="orders"
+    let-pagination="pagination">
+    <tbody class="toggle-parent border-separate">
+        <tr class="bg-charcoal">
+            <td colspan="5" class="py-1 sticky-t bg-charcoal">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <span class="ml-3 title"><i class="fal fa-gas-pump mr-2 "></i>{{stationName}}</span>
+                    </div>
+                    <div class="d-flex align-items-center col-action">
+                        <ng-container [ngTemplateOutlet]="paginator"
+                            [ngTemplateOutletContext]="{ pagination: pagination, isStationsPaging: false, stationId: stationId }">
+                        </ng-container>
+                        <button mat-icon-button (click)="onStationDetails(stationId)" matTooltip="view">
+                            <i class="fal fa-poll-h cream"></i>
+                        </button>
+                        <button mat-icon-button (click)="toggleStationRow(stationId)"
+                            [class.invisible]="!orders.length">
+                            <i class="fal fa-angle-up animated-control"
+                                [class.rotage-180]="expansionGroupByStation[stationId].isExpand === false"></i>
+                        </button>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+    <ng-container *ngIf="orders.length > 0">
+        <ng-container *ngFor="let order of orders; let i = index;">
+            <tbody class="toggle-parent border-cadet collapsible"
+                   [class.opacity-05]="selectable && order?.isOrderScheduled"
+                [class.border-top]="expansionGroupByStation[stationId].isExpand === true"
+                [class.collapse]="expansionGroupByStation[stationId].isExpand === false">
+                <tr class="bg-medium-dark">
+                    <td colspan="4" class="py-1">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="mx-3 d-flex flex-row">
+                                <mat-checkbox [value]="order?.getId()" (change)="selectOrder(order)"
+                                    [disabled]="order?.isOrderScheduled" *ngIf="selectable"
+                                    [checked]="selectedOrders.indexOf(order) >=0"></mat-checkbox>
+                                #{{getPageStartIndex(pagination) + i + 1}}
+                                {{'salesOrderNumber'|mappingLabel}}
+                                <em class="text-white ml-2">{{order?.salesOrderNumber || '___'}}</em>
+                            </span>
+                            <div class="col-action d-flex flex-row align-items-center justify-content-center">
+                                <button mat-icon-button (click)="onRequestMessage(order)"
+                                    matTooltip="view request cancellation message" *ngIf="order.orderStatus == ORDER_STATUS.ON_HOLD
+                                    || order.orderStatus == ORDER_STATUS.CANCELED
+                                    || order.orderStatus == ORDER_STATUS.RESCHEDULED">
+                                    <i class="fal fa-engine-warning yellow"></i>
+                                </button>
+                                <div class="collapsible source"
+                                    [title]="order?.source == undefined ? 'No source' : order?.source">
+                                    {{order?.source == undefined ? 'No source' : order?.source}}
+                                </div>
+                                <div class="mr-4 order-status {{order.orderStatus}} collapsible"
+                                    [title]="order?.orderStatus">{{order?.orderStatus}}
+                                </div>
+                                <span class="mr-2 time collapsible" *ngIf="order.orderStatus == DELIVERED_STATUS">ATA:
+                                    {{order?.deliveredTime || '____-__-__ (__:__)'}}</span>
+                                <span class="mr-2 time collapsible" *ngIf="order.orderStatus !== DELIVERED_STATUS">ETA:
+                                    {{order?.estimatedTime || '____-__-__ (__:__)'}}</span>
+                                <button mat-icon-button (click)="openOrderDetailDialog(order)" matTooltip="view">
+                                    <i class="fal fa-poll-h cream"></i>
+                                </button>
+                                <button mat-icon-button (click)="toggleOrderRow(stationId, order.getId())">
+                                    <i class="fal fa-angle-up animated-control text-white"
+                                        [class.rotage-180]="!isExpandedRow(stationId, order.getId())"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody
+              [class.opacity-05]="selectable && order?.isOrderScheduled"
+                [class.collapse]="expansionGroupByStation[stationId].isExpand === false || !isExpandedRow(stationId, order.getId())">
+                <tr class="bg-medium-dark product-item-row collapsible">
+                    <td class="d-flex p-0">
+                        <div [ngStyle]="{'width': getProductItemWidth(productItems)}" class="product-item collapsible"
+                            *ngFor="let orderItem of order?.item | arrangeKeyValue : ['Euro4-97', 'Premium-95', 'B10-Diesel', 'Euro5-B7'] : 'productCode'">
+                            <ng-container [ngTemplateOutlet]="productItem"
+                                [ngTemplateOutletContext]="{ productName: productItems[orderItem?.productCode], productItem: orderItem, order: order }">
+                            </ng-container>
+                        </div>
+                        <div *ngIf="!order?.item?.length" class="p-3">
+                            No order item found
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="orders.length === 0">
+        <tbody class="toggle-parent border-cadet collapsible border-top">
+            <tr class="bg-medium-dark">
+                <td colspan="4" class="py-1">
+                    <div class="d-flex justify-content-center">
+                        <i>No order found</i>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </ng-container>
+</ng-template>
+
+<ng-template #paginator let-pagination="pagination" let-stationId="stationId" let-isStationsPaging="isStationsPaging">
+    <div class="d-flex align-items-center paginator ml-3">
+        <div class="text-white">
+            {{getCurrentPageInfo(pagination)}}
+        </div>
+        <div class="ml-3">
+            <button mat-icon-button [disabled]="pagination.currentPage === 0"
+                (click)="onPreviousPage(pagination, isStationsPaging, stationId)">
+                <i class="fas fa-angle-left"></i>
+            </button>
+            <button mat-icon-button
+                [disabled]="pagination.total === 0 || pagination.currentPage === (getPageList(pagination).length - 1)"
+                (click)="onNextPage(pagination, isStationsPaging, stationId)">
+                <i class="fas fa-angle-right"></i>
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #productItem let-productItem="productItem" let-productName="productName" let-order="order">
+    <div class="product-item-wrapper collapsible" *ngIf="!!productItem">
+        <div class="d-flex align-items-center mb-3 collapsible">
+            <h3 class="collapsible title mr-3 {{getProductCodeClass(productItem.productCode)}}">
+                {{productItem.productCode}}
+            </h3>
+            <span>{{productName}}</span>
+        </div>
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <i class="fal fa-oil-can text-white collapsible"></i> <span
+                    class="text-white quantity collapsible">{{productItem.quantity}}</span> Litres
+            </div>
+            <div>
+                <i class="fal fa-truck-container text-white collapsible"></i> {{getTruckPlate(order)}}
+            </div>
+        </div>
+    </div>
+
+</ng-template>
+
+<!-- END TEMPLATE -->

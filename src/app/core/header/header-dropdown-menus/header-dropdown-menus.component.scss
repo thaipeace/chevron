@@ -1,0 +1,33 @@
+@import '~src/sass/chevron/variables';
+
+.header-dropdown-menus-wrapper {
+  background-color: $cl_charcoal;
+  padding: 20px 30px;
+
+  .group {
+    .title {
+      color: $cl_blue;
+      height: 40px;
+      line-height: 40px;
+      padding-right: 30px;
+
+      i {
+        width: 30px;
+      }
+    }
+
+    .item {
+      padding-left: 30px;
+      padding-right: 30px;
+      color: $cl_blue_wild;
+      height: 40px;
+      line-height: 40px;
+      cursor: pointer;
+
+      &:hover, &.active {
+        color: white;
+        background-color: $cl_dark_jungle_green;
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+<div class="d-flex flex-column align-items-right pr-4">
+  <app-associated-list [name]="'Associated station'" [items]="stations" [selectedItems]="selectedAssociatedStations"
+    (selectItem)="associate($event)" (removeItem)="disassociate($event)">
+  </app-associated-list>
+</div>
+
+<ngui-map class="h-100 station-map" zoom="10" center="{{associatedStations[0]?.streetAddress}}, malaysia"
+  (mapReady$)="onMapReady($event)" (mapClick)="onMapClick($event)" (idle)="onIdle($event)">
+  <marker *ngFor="let item of associatedStations; let i = index" position="{{item?.streetAddress}}"></marker>
+</ngui-map>

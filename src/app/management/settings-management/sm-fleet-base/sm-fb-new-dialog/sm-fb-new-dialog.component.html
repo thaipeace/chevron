@@ -1,0 +1,64 @@
+<div [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">New Fleet Base</span>
+      <button class="close" mat-icon-button (click)="onCancel()">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <div mat-dialog-content class="layout-dialog-form edit">
+    <div mat-dialog-content class="dialog-content-full layout-dialog-form settings">
+      <form #editForm="ngForm" name="form">
+        <div class="infos">
+          <div class="row">
+            <div class="item col-6">
+              <label class="label" for="fleetBaseName">Fleet Base Name</label>
+              <div class="form-group">
+                <input class="form-control control no-radius-input" type="text" name="fleetBaseName"
+                  required pattern="^(?!\s+$).+" appInputTextValidator
+                  [(ngModel)]="selectedItem.fleetBaseName">
+              </div>
+            </div>
+            <div class="item col-6">
+              <label class="label" for="description">Description</label>
+              <div class="form-group">
+                <input class="form-control control no-radius-input" type="text" name="description"
+                  required pattern="^(?!\s+$).+"
+                  [(ngModel)]="selectedItem.description">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="item col-12">
+              <label class="label" for="rotaTimeSpan">RotaA (Timespan)</label>
+              <div class="form-group">
+                <!-- <input class="form-control control no-radius-input" type="text" name="rotaTimeSpan"
+                  required pattern="^(?!\s+$).+"
+                  [(ngModel)]="selectedItem.rotaTimeSpan"> -->
+
+                <timepicker [(ngModel)]="selectedItem.rotaTimeSpan" name="myTime" [showSeconds]="true"
+                  [showMeridian]="false" required></timepicker>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="item col">
+              <app-table-geo-small [points]="geoLocations" (onPointChange)="onTableChange($event)" [isEditing]="true">
+              </app-table-geo-small>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="form-buttons">
+  <button mat-raised-button [class.mat-elevation-z8]="true" class="btn btn-blue ml-10" (click)="onCreate()"
+    [ngClass]="{'disabled-half': editForm.form.invalid || editForm.form.pristine}">
+    <i class="fal fa-check"></i>
+    <span class="ml-2">Create New</span>
+  </button>
+</div>

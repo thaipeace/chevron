@@ -1,0 +1,68 @@
+<div class="p-3 flex-row d-flex flex-wrap">
+  <div class="panel tql-panel profile-group mb-3 flex-grow-1">
+    <div class="p-5">
+      <div class="d-flex flex-lg-row flex-column">
+        <div class="d-flex flex-row">
+          <div class="mr-5">
+            <div class="avatar d-flex align-items-center justify-content-center cursor-pointer"
+              [ngStyle]="{'background-image': 'url('+imgSrc+')'}" layout="row" (click)="changeAvatar()"
+              layout-align="center center">
+              <i class="fal fa-upload" [ngClass]="{'hide': !!imgSrc}"></i>
+            </div>
+          </div>
+          <div>
+            <h2 class="mb-2 mt-0">{{user?.username}}</h2>
+            <div class="text-blue">
+              <small>{{user?.roleName}}</small>
+            </div>
+            <div class="mt-4">
+              <button matRipple class="mr-3 btn btn-blue" (click)="openUpdateUserDetail()">Update
+                profile
+              </button>
+              <button matRipple class="btn btn-blue" (click)="openChangePassword()">Change password
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="has-left-border ml-5 pl-5 mt-4">
+          <table>
+            <tbody>
+              <tr>
+                <td class="pb-3 pr-5"><b>First Name</b></td>
+                <td class="pb-3">{{user?.firstName}}</td>
+              </tr>
+              <tr>
+                <td class="pb-3 pr-5"><b>Last Name</b></td>
+                <td class="pb-3">{{user?.lastName}}</td>
+              </tr>
+              <tr>
+                <td class="pb-3 pr-5"><b>Email</b></td>
+                <td class="pb-3">{{user?.email}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel tql-panel min-w-300px d-flex flex-column" *ngIf="stations?.length" style="max-height: 264px;">
+    <div class="panel-heading d-flex align-items-center">
+      <span class="title flex-grow-1"><i class="fal fa-gas-pump mr-2"></i> Stations</span>
+    </div>
+    <perfect-scrollbar class="flex-grow-1">
+      <table class="tql-table table-data-detail">
+        <tbody>
+          <tr *ngFor="let station of stations;">
+            <td>{{station?.stationName}}</td>
+            <td class="col-action d-flex justify-content-end">
+              <span (click)="onDetails(station)" matTooltip="View">
+                <mat-icon class="d-flex align-items-center"><i class="fal fa-poll-h cream"></i>
+                </mat-icon>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </perfect-scrollbar>
+  </div>
+</div>

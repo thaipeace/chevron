@@ -1,0 +1,20 @@
+<div class="p-3 d-flex align-items-center">
+  <div class="d-flex justify-content-between">
+    <button *ngFor="let button of actionButtons" class="tql-button tql-button-blue mr-2"><i class="{{button.icon}}"></i> {{button.text}}</button>
+    <div class="ml-2 tql-form-group d-flex">
+      <input type="text" class="tql-input" />
+      <button class="tql-button tql-button-outline-blue"><i class="fas fa-sync-alt"></i></button>
+    </div>
+  </div>
+  <ul class="list-unstyled flex-grow-1 d-flex justify-content-around">
+    <li><span>Customers: </span><span><strong>130</strong></span></li>
+    <li><span>Ready for refill: </span><span><strong>20</strong></span></li>
+    <li><span>Alerts: </span><span><strong>0</strong></span></li>
+  </ul>
+  <div class="d-flex align-items-center">
+    <div><a href="#">Map</a> | <a href="#">List</a></div>
+    <div class="ml-1 tql-form-group">
+      <input type="text" class="tql-input" placeholder="Search">
+    </div>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+.radio-group {
+  .mat-radio-label-content {
+    color: #9fb2bf !important;
+  }
+}
+
+.radio-box {
+  .mat-radio-disabled {
+    .mat-radio-label-content {
+      color: #9fb2bf !important;
+    }
+    .mat-radio-container {
+      opacity: 0.7;
+    }
+  }
+}

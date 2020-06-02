@@ -1,0 +1,141 @@
+@import "~src/sass/chevron/variables";
+
+.table-wrapper {
+  height: calc(100vh - 190px);
+}
+
+.truck-driver-item-box {
+  padding: 7px 10px;
+  border-bottom: none;
+  color: rgba(0, 0, 0, 0.87);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  .mat-icon-button {
+    height: 30px;
+    line-height: 30px;
+  }
+
+  hr {
+    display: none;
+  }
+}
+
+.driver-item-box {
+  padding: 0px 20px;
+
+  &:nth-child(even) {
+    background-color: $cl_border_2;
+  }
+
+  &:nth-child(odd) {
+    background-color: $cl_border_1;
+  }
+
+  &.cdk-drag-preview {
+    background-color: $cl_input;
+  }
+}
+
+.truck-menu-status.mat-menu-panel {
+  background-color: transparent !important;
+  box-shadow: none !important;
+
+  .status-InService {
+    color: #86cf52 !important;
+  }
+
+  .status-OutOfService {
+    color: #ff5d6a !important;;
+  }
+
+}
+
+//.col-action {
+//  max-width: initial;
+//  width: initial;
+//}
+
+.tql-panel {
+  &.right {
+    width: 350px;
+  }
+}
+
+.w-350px {
+  width: 350px;
+}
+
+.topbar {
+  .icon {
+    font-size: 1.2rem;
+  }
+}
+
+.driver-list {
+  min-width: 200px;
+  max-width: 300px;
+
+  .title {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}
+
+.truck-driver-mapping-tr {
+  background-color: #263653 !important;
+  border-top: solid 2px #142134;
+  border-bottom: solid 2px #142134;
+}
+
+.disabled-max-driver {
+  background-color: $cl_text_grey;
+  cursor: not-allowed;
+}
+
+//::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+//  background-color: white;
+//}
+//
+//::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+//  background-color: $cl_blue_dark;
+//}
+//
+//::ng-deep .mat-slide-toggle .mat-slide-toggle-ripple {
+//  display: none;
+//}
+
+.dnd-list .cdk-drag-disabled {
+  cursor: default;
+}
+
+.disabled-driver {
+  display: none;
+}
+
+.disabled-click {
+  cursor: not-allowed;
+}
+
+::ng-deep {
+  .mat-menu-item {
+    .status-driver {
+      line-height: initial;
+    }
+
+    .status-InService {
+      display: block;
+      width: 108px;
+      color: #86cf52;
+    }
+  
+    .status-OutOfService {
+      display: block;
+      width: 108px;
+      color: #ff5d6a;
+    }
+  }
+}

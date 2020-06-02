@@ -1,0 +1,17 @@
+input {
+    height: 25px !important;
+    padding: 5px !important;
+    font-size: 12 !important;
+    width: 100%;
+}
+
+.reading {
+    border: 1px dashed rgba(159, 178, 191, 1);
+    padding: 5px !important;
+    cursor: text !important;
+    min-height: 28px;
+}
+
+.input-wrapper {
+    display: flex;
+}

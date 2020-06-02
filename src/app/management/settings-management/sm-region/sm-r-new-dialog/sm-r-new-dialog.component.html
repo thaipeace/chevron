@@ -1,0 +1,53 @@
+<div [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">New Region</span>
+      <button class="close" mat-icon-button (click)="onCancel()">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <div mat-dialog-content class="layout-dialog-form edit" style="overflow: visible;">
+    <div mat-dialog-content class="dialog-content-full layout-dialog-form settings" style="overflow: visible;">
+      <form #editForm="ngForm" name="form">
+        <div class="infos">
+          <div class="d-flex">
+            <div class="item mr-3">
+              <label class="label" for="regionName">Region Name</label>
+              <div class="form-group">
+                <input class="form-control control no-radius-input" type="text" name="regionName"
+                       required pattern="^(?!\s+$).+"
+                       [(ngModel)]="selectedItem.regionName">
+              </div>
+            </div>
+            <div class="item">
+              <label class="label" for="description">Description</label>
+              <div class="form-group">
+                <input class="form-control control no-radius-input" type="text" name="description"
+                       required pattern="^(?!\s+$).+"
+                       [(ngModel)]="selectedItem.description">
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <label class="label" for="associatedTerminalName">Associated Terminal</label>
+            <div class="form-group">
+              <ng-select [items]="associatedTerminals" bindLabel="TerminalName" bindValue="TerminalId"
+                         [(ngModel)]="selectedItem.associatedTerminalName" name="associatedTerminalName"
+                         [clearable]="false" required></ng-select>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="form-buttons">
+  <button mat-raised-button [class.mat-elevation-z8]="true" class="btn btn-blue ml-10" (click)="onCreate()"
+          [ngClass]="{'disabled-half': editForm.form.invalid || editForm.form.pristine}">
+    <i class="fal fa-check"></i>
+    <span class="ml-2">Create New</span>
+  </button>
+</div>

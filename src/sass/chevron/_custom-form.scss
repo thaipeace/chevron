@@ -1,0 +1,97 @@
+$width: 191px;
+
+.custom-form {
+  input[type='text'],
+  input[type='password'],
+  input[type='email'],
+  input[type='number'] {
+    width: $width !important;
+  }
+
+  .time-picker {
+    input {
+      width: 50px !important;
+    }
+
+    .btn-link {
+      cursor: pointer;
+    }
+
+    .btn:not(.btn-link) {
+      @extend .btn-blue;
+      min-width: 50px;
+    }
+  }
+
+  .product-code-title {
+    line-height: 16px !important;
+  }
+
+  .input-group {
+    justify-content: space-between;
+    flex-direction: column;
+  }
+
+  .label {
+    margin-bottom: 7px;
+    margin-right: 0 !important;
+    font-size: calc(1em / 14 * 12) !important;
+    font-weight: normal !important;
+    width: fit-content !important;
+    min-width: 100%;
+  }
+
+  & > .d-flex {
+    flex-direction: column;
+  }
+
+  & > .d-grid {
+    & > .d-flex {
+      flex-direction: column;
+    }
+  }
+}
+
+.input-custom-form {
+  width: $width;
+}
+
+.padding-input {
+  margin-top: 0;
+  margin-bottom: 20px !important;
+
+  &:last-child {
+    margin-bottom: 0 !important;
+  }
+}
+
+.dialog-content-full {
+  max-height: calc(80vh - 40px) !important;
+}
+
+.required {
+  padding-left: 3px;
+  color: $cl_red !important;
+}
+
+.item-input-group {
+  margin-bottom: 20px;
+}
+
+.mtb {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+#editForm {
+  .item-required {
+    label {
+      &::after {
+        content: " *";
+        color: $cl_red;
+        font-size: calc(1em / 14 * 12) !important;
+        font-weight: normal !important;
+      }
+    }
+  }
+}

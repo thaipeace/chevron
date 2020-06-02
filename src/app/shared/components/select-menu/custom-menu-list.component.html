@@ -1,0 +1,52 @@
+<ng-template [ngTemplateOutlet]="itemList">
+</ng-template>
+
+<!-- TEMPLATE -->
+<ng-template #itemList>
+    <div (click)="stopPropagation($event)" class="input-search">
+        <input autofocus type="text"
+               [formControl]="searchControl" (click)="stopPropagation($event)"
+               placeholder="Type to search">
+    </div>
+    <div class="actions-group" *ngIf="multiple && multipleSelect && internalItems.length > 1">
+        <span class="action" (click)="selectAll($event)">
+            Select all
+        </span>
+        <span>|</span>
+        <span class="action" (click)="clearAll($event)">
+            Clear
+        </span>
+    </div>
+    <div class="divider"></div>
+    <div class="item-list">
+        <ng-container *ngFor="let item of internalItems | searchBy:searchControl.value:'label'">
+            <ng-template
+                [ngTemplateOutlet]="multiple ? defaultMultipleSelectTemplate : (itemTemplate || defaultItemTemplate)"
+                [ngTemplateOutletContext]="{ item: item }">
+            </ng-template>
+        </ng-container>
+
+        <ng-container *ngIf="internalItems?.length == 0">
+            <ng-template [ngTemplateOutlet]="emptyTemplate || defaultEmptyTemplate">
+            </ng-template>
+        </ng-container>
+    </div>
+</ng-template>
+<ng-template #defaultItemTemplate let-item="item">
+    <button mat-menu-item class="item" (click)="onChange(item)">{{item.label}}
+    </button>
+</ng-template>
+
+<ng-template #defaultMultipleSelectTemplate let-item="item">
+    <button mat-menu-item class="item d-flex justify-content-between" (click)="onItemCheck($event, item)">
+        <span class="text" title="{{item.label}}">{{item.label}}</span>
+        <span class="item-check">
+            <i *ngIf="item.checked" class="fal fa-check"></i>
+        </span>
+    </button>
+</ng-template>
+
+<ng-template #defaultEmptyTemplate let-item="item">
+    <button mat-menu-item>No Item Available
+    </button>
+</ng-template>

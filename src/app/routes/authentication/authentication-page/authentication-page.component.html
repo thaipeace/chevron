@@ -1,0 +1,11 @@
+<div class="login-background flex justify-center items-center fixed top-0 right-0 bottom-0 left-0" appSpinLoading>
+  <div class="middle-app fit flex-grow-1 mb-5">
+    <div class="text-center mb-5">
+      <img *ngIf="!settingsLogo" src="assets/images/Chevron_Logo_white.png" height="90" width="auto">
+      <img *ngIf="settingsLogo" [src]="'data:image/png;base64,' + settingsLogo" height="90" width="auto">
+    </div>
+    <h1 class="text-center layout-title pb-3" *ngIf="solutionName">{{solutionName.VarValue || 'Welcome to ATMOS!'}}</h1>
+    <router-outlet></router-outlet>
+  </div>
+</div>
+

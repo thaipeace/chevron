@@ -1,0 +1,12 @@
+<ngx-loading-bar [includeSpinner]="false"></ngx-loading-bar>
+<div>
+  <tql-header></tql-header>
+  <app-menu-bar></app-menu-bar>
+  <div class="d-flex flex-row">
+    <div class="main-wrapper flex-grow-1" appSpinLoading>
+      <router-outlet></router-outlet>
+    </div>
+    <app-sbd-main class=""></app-sbd-main>
+  </div>
+  <tql-footer></tql-footer>
+</div>

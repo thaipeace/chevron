@@ -1,0 +1,38 @@
+<div class="dialog-map-content" [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">Map Coordinates</span>
+      <button class="close" mat-icon-button (click)="onCancel()">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <div mat-dialog-content class="p-0">
+    <div class="d-flex h-100">
+      <div class="coordinate-controls h-100">
+        <app-table-geo-small [isEditing]="!readonly" [points]="geoLocations" (onPointChange)="onTableChange($event)"
+                             [styleClass]="'mh-100'" [maxPoint]="maxPoint"
+                             [isEditing]="true"></app-table-geo-small>
+      </div>
+      <div class="flex-grow-1 h-100">
+        <app-mpm-terminal [readonly]="readonly" [drawable]="drawable" (onPointChange)="onMapCoordinateChange($event)"
+                          [points]="geoLocations" [maxPoint]="maxPoint"></app-mpm-terminal>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="form-buttons">
+  <button *ngIf="!readonly" mat-raised-button class="btn btn-cancel mr-3" (click)="onCancel()">Cancel</button>
+  <button
+    *ngIf="!readonly"
+    mat-raised-button
+    [class.mat-elevation-z8]="true"
+    (click)="onUpdate()"
+    class="btn btn-blue ml-10"
+  >
+    <i class="fal fa-check"></i>
+    <span class="ml-2">Update</span>
+  </button>
+</div>

@@ -1,0 +1,32 @@
+<div [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">About</span>
+      <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+    </div>
+  </div>
+  <div mat-dialog-content class="text-white about" *ngIf="siteParam">
+    <div>
+      <img src="assets/images/atomiton_logo_white.png">
+    </div>
+    <div class="mt-5">
+      <h3 class="size-16 font-weight-bold text-grey">{{siteParam.solutionName.VarValue}}</h3>
+    </div>
+    <div class="size-14 mt-4 text-grey">
+      <span class="d-block">Version: {{version}}</span>
+      <span class="d-block mt-1">Belongs to: {{siteParam.companyName.VarValue}}</span>
+      <span class="d-block mt-1">&#169; 2019 Atomiton. All rights reserved</span>
+    </div>
+    <div class="mt-3 border p-3 legal-text">
+      <perfect-scrollbar class="table-material flex-grow-1">
+        <pre class="text-grey">{{siteParam.legalText.VarValue}}</pre>
+      </perfect-scrollbar>
+    </div>
+    <div class="cl-des mt-5">
+      <p class="size-12">Warning: This computer program is protected by copyright law
+        and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it, may
+        result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the
+        law.</p>
+    </div>
+  </div>
+</div>

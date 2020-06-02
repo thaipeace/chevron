@@ -1,0 +1,274 @@
+<div [class.mat-elevation-z8]="true" class="dialog-full d-flex flex-column">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">Order and Truck Compartment Association Wizard</span>
+      <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+    </div>
+  </div>
+  <div mat-dialog-content class="flex-grow-1 p-0 overflow-hidden">
+    <div class="wizard-wrapper d-flex flex-column h-100">
+      <div class="wizard-heading">
+        <div *ngIf="step === STEPS.ONE" class="d-flex">
+          <span class="mr-5"><b>Step:</b> 1 of 2</span>
+          <span><b>To do:</b> SELECT one or more Order(s) to be assigned THEN click 'Next'</span>
+        </div>
+        <div *ngIf="step === STEPS.TWO" class="d-flex">
+          <span class="mr-5"><b>Step:</b> 2 of 2</span>
+          <span><b>To do:</b> FOR EACH Order-Line-item SELECT Truck
+                           Compartment(s), Customer Tank(s).
+                           THEN click 'Associate' until all Line-item(s) has been associated.</span>
+        </div>
+        <div class="d-flex mt-3">
+          <div class="pointer-right d-flex justify-content-center align-items-center mr-4"
+               [class.active]="step === STEPS.ONE">
+            Step 1
+          </div>
+          <div class="pointer-right d-flex justify-content-center align-items-center"
+               [class.active]="step === STEPS.TWO">
+            Step 2
+          </div>
+          <span class="flex-grow-1"></span>
+        </div>
+      </div>
+
+      <div class="wizard-content flex-grow-1">
+        <app-om-list [stations]="allStations" [selectable]="true" [class.invisible]="step !== STEPS.ONE"
+                     [startDate]="defaultOrderStartDate" [endDate]="defaultOrderEndDate"
+                     (selectOrderCallback)="selectOrder($event)"></app-om-list>
+        <div class="col">
+          <div [class.invisible]="step !== STEPS.TWO" class="row mt-3 h-50">
+            <div class="row col-9">
+              <div class="col-6 d-flex flex-column h-100">
+                <div class="mb-3"><i class="fal fa-receipt mr-3"></i>Order Line Items</div>
+                <perfect-scrollbar class="table-material flex-grow-1">
+                  <table mat-table [dataSource]="orderItemTableData" matSort matSortActive=""
+                         matSortDirection="asc">
+                    <ng-container *ngFor="let key of orderItemTableColumns" matColumnDef="{{ key }}"
+                                  [ngSwitch]="key" [stickyEnd]="key === 'lineItem'">
+                      <ng-container *ngSwitchCase="'salesOrderNumber'">
+                        <th mat-header-cell *matHeaderCellDef
+                            mat-sort-header>Order #
+                        </th>
+                        <td mat-cell *matCellDef="let row">{{ row?._data[key] }}</td>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'shipToName'">
+                        <th mat-header-cell *matHeaderCellDef
+                            mat-sort-header>{{ key | mappingLabel }}</th>
+                        <td mat-cell class="text-no-break"
+                            *matCellDef="let row">{{ row?.order?.station?.stationName}}</td>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'lineItem'">
+                        <th mat-header-cell *matHeaderCellDef
+                            mat-sort-header>{{ key | mappingLabel }}</th>
+                        <td mat-cell class="text-no-break" *matCellDef="let row">
+                                    <span
+                                      class="product-code-title {{ row?._data['productCode']?.toLowerCase() }}">{{ row?._data['productCode'] }}</span>
+                          - {{ row?._data['quantity'] }} Litres
+                        </td>
+                      </ng-container>
+                      <!--<ng-container *ngSwitchCase="'productCode'">
+                        <th mat-header-cell *matHeaderCellDef
+                            mat-sort-header>{{ key | mappingLabel }}</th>
+                        <td mat-cell *matCellDef="let row">{{ row?._data[key] }}</td>
+                      </ng-container>-->
+                      <ng-container *ngSwitchDefault>
+                        <th mat-header-cell *matHeaderCellDef
+                            mat-sort-header>{{ key | mappingLabel }}</th>
+                        <td mat-cell *matCellDef="let row">{{ row?._data[key] }}</td>
+                      </ng-container>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="orderItemTableColumns; sticky: true"></tr>
+                    <tr mat-row *matRowDef="let row; columns: orderItemTableColumns"></tr>
+                  </table>
+                </perfect-scrollbar>
+              </div>
+              <div class="col-6 px-1 d-flex flex-column h-100">
+                <div class="mb-3 d-flex">
+                  <span class="flex-grow-1"><i class="fal fa-truck-container mr-3"></i>Truck Compartments</span>
+                  <span>{{truck?.truckPlate}} <i class="fal fa-poll-h cream cursor-pointer ml-2"
+                                                 (click)="onTruckDetails(truck?.getId())"
+                                                 matTooltip="view truck"></i></span>
+                </div>
+                <perfect-scrollbar class="table-material flex-grow-1">
+                  <table mat-table [dataSource]="compartmentTableData" matSort matSortActive=""
+                         matSortDirection="asc">
+                    <ng-container *ngFor="let key of compartmentTableColumns"
+                                  [ngSwitch]="key" matColumnDef="{{ key }}" [stickyEnd]="key === 'order'">
+                      <ng-container *ngSwitchCase="'compartmentNumber'">
+                        <th mat-header-cell *matHeaderCellDef
+                            mat-sort-header><span [matTooltip]="'Compartment Number'">Comp. #</span></th>
+                        <td mat-cell *matCellDef="let row">{{ row?._data[key] }} Litres</td>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'capacity'">
+                        <th mat-header-cell *matHeaderCellDef
+                            mat-sort-header>{{ key | mappingLabel }}</th>
+                        <td mat-cell class="text-no-break" *matCellDef="let row">{{ row?._data[key] }} Litres</td>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'order'">
+                        <th mat-header-cell *matHeaderCellDef
+                            mat-sort-header>Order #
+                        </th>
+                        <td mat-cell *matCellDef="let row">
+                          <!--                        assign order-->
+                          <div class="d-flex align-items-center"
+                               *ngIf="!divertCompartments.length">
+                            <div class="flex-grow-1">
+                                        <span *ngIf="row?.orderItem && !row?.currentProduct"
+                                              class="text-no-break">{{row?.orderItem?._data?.salesOrderNumber}}
+                                          - <span
+                                            class="product-code-title {{row?.orderItem?._data?.productCode?.toLowerCase()}}">{{row?.orderItem?._data?.productCode}}</span></span>
+                              <span *ngIf="row?.currentProduct"
+                                    class="text-no-break product-code-title {{row?.currentProduct?.toLowerCase()}}">{{row?.currentProduct}}</span>
+                            </div>
+                            <button mat-icon-button *ngIf="row?.orderItem && !row?.currentProduct"
+                                    (click)="unlinkOrderItem(row)">
+                              <mat-icon>
+                                <i class="fal fa-times-circle color-red size-16"></i>
+                              </mat-icon>
+                            </button>
+                            <button mat-icon-button *ngIf="!row?.orderItem && !row?.currentProduct"
+                                    [matMenuTriggerFor]="orderItemsMenu">
+                              <mat-icon>
+                                <i class="fal fa-plus-square color-blue size-16"></i>
+                              </mat-icon>
+                            </button>
+                            <mat-menu #orderItemsMenu="matMenu">
+                              <button *ngFor="let item of orderItems" (click)="linkOrderItem(row, item)" mat-menu-item>
+                                          <span>{{item?._data?.salesOrderNumber}} - <span
+                                            class="product-code-title {{item?._data?.productCode?.toLowerCase()}}">{{item?._data?.productCode}}</span></span>
+                              </button>
+                              <br>
+                            </mat-menu>
+                          </div>
+                          <!--                        divert order-->
+                          <div class="d-flex align-items-center"
+                               *ngIf="divertCompartments.length">
+                            <div class="flex-grow-1">
+                                        <span *ngIf="row?.orderItem"
+                                              class="text-no-break">{{row?.orderItem?._data?.salesOrderNumber}}
+                                          - </span>
+                              <span
+                                class="text-no-break product-code-title {{row?.currentProduct?.toLowerCase()}}">{{row?.currentProduct}}</span>
+                            </div>
+                            <button mat-icon-button *ngIf="row?.orderItem && row?.divert"
+                                    (click)="unlinkOrderItem(row)">
+                              <mat-icon>
+                                <i class="fal fa-times-circle color-red size-16"></i>
+                              </mat-icon>
+                            </button>
+                            <span matTooltip="No available item"
+                                  [matTooltipDisabled]="filterByProductCode(orderItems,row?.currentProduct).length !== 0">
+                                        <button mat-icon-button *ngIf="!row?.orderItem && row?.divert"
+                                                [class.disabled-half]="filterByProductCode(orderItems,row?.currentProduct).length === 0"
+
+                                                [matMenuTriggerFor]="orderItemsMenu">
+                                                                  <mat-icon>
+                                                                    <i
+                                                                      class="fal fa-plus-square color-blue size-16"></i>
+                                                                  </mat-icon>
+                                                                </button>
+                                      </span>
+                            <mat-menu #orderItemsMenu="matMenu">
+                              <ng-container *ngFor="let item of filterByProductCode(orderItems,row?.currentProduct)">
+                                <button (click)="linkOrderItem(row, item)" mat-menu-item>
+                                                    <span>{{item?._data?.salesOrderNumber}} - <span
+                                                      class="product-code-title {{item?._data?.productCode?.toLowerCase()}}">{{item?._data?.productCode}}</span></span>
+                                </button>
+                              </ng-container>
+                              <br>
+                            </mat-menu>
+                          </div>
+                        </td>
+                      </ng-container>
+                      <ng-container *ngSwitchDefault>
+                        <th mat-header-cell *matHeaderCellDef
+                            mat-sort-header>{{ key | mappingLabel }}</th>
+                        <td mat-cell *matCellDef="let row"><span
+                          [class.opacity-05]="row?.currentProduct">{{ row?._data[key] }}</span></td>
+                      </ng-container>
+                    </ng-container>
+
+                    <!--                  <ng-container matColumnDef="order"  stickyEnd>-->
+                    <!--                    <th mat-header-cell *matHeaderCellDef-->
+                    <!--                        mat-sort-header>Order #</th>-->
+                    <!--                    <td mat-cell *matCellDef="let row">-->
+
+                    <!--                    </td>-->
+                    <!--                  </ng-container>-->
+                    <tr mat-header-row *matHeaderRowDef="compartmentTableColumns; sticky: true"></tr>
+                    <tr mat-row *matRowDef="let row; columns: compartmentTableColumns"></tr>
+                  </table>
+                </perfect-scrollbar>
+              </div>
+            </div>
+            <div class="col-3 d-flex flex-column h-100">
+              <div class="mb-3"><i class="fal fa-gas-pump mr-3"></i>Customer Tanks</div>
+              <perfect-scrollbar class="table-material flex-grow-1">
+                <table mat-table [dataSource]="tanksTableData" matSort matSortActive=""
+                       matSortDirection="asc">
+                  <ng-container *ngFor="let key of tanksTableColumns" matColumnDef="{{ key }}"
+                                [ngSwitch]="key">
+                    <ng-container *ngSwitchCase="'shipTo'">
+                      <th mat-header-cell *matHeaderCellDef
+                          mat-sort-header>{{ key | mappingLabel }}</th>
+                      <td mat-cell *matCellDef="let row">{{ row?._data['tankNumber'] }}</td>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'shipToName'">
+                      <th mat-header-cell *matHeaderCellDef
+                          mat-sort-header>{{ key | mappingLabel }}</th>
+                      <td mat-cell *matCellDef="let row">{{ row?._data['stationName'] }}</td>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'productCode'">
+                      <th mat-header-cell *matHeaderCellDef
+                          mat-sort-header>{{ key | mappingLabel }}</th>
+                      <td mat-cell *matCellDef="let row"><span
+                        class="product-code-title {{ row?._data[key]?.toLowerCase()}}">{{ row?._data[key]}}</span></td>
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                      <th mat-header-cell *matHeaderCellDef
+                          mat-sort-header>{{ key | mappingLabel }}</th>
+                      <td mat-cell *matCellDef="let row">{{ row?._data[key] }}</td>
+                    </ng-container>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="tanksTableColumns; sticky: true"></tr>
+                  <tr mat-row *matRowDef="let row; columns: tanksTableColumns"></tr>
+                </table>
+              </perfect-scrollbar>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="form-buttons d-flex">
+  <div class="flex-grow-1">
+    <button mat-raised-button [class.mat-elevation-z8]="true" [class.disabled-half]="selectedOrders?.length <= 0"
+            *ngIf="step === STEPS.TWO"
+            class="btn btn-blue" (click)="back()">
+      <span><i class="fal fa-arrow-to-left mr-3"></i>Back</span>
+    </button>
+  </div>
+  <div>
+    <button mat-raised-button [class.mat-elevation-z8]="true"
+            class="btn btn-cancel" (click)="onCancel()">
+      <span><i class="fal fa-ban mr-3"></i>Cancel</span>
+    </button>
+    <button mat-raised-button [class.mat-elevation-z8]="true"
+            *ngIf="step === STEPS.TWO && _isValidated"
+            class="btn btn-blue ml-3" (click)="finish(compartments)">
+      <span><i class="fal fa-check mr-3"></i>Finish</span>
+    </button>
+    <button mat-raised-button [class.mat-elevation-z8]="true"
+            *ngIf="step === STEPS.TWO && !_isValidated"
+            class="btn btn-save ml-3" (click)="validate(compartments)">
+      <span><i class="fal fa-check mr-3"></i>Validate</span>
+    </button>
+
+    <button mat-raised-button [class.mat-elevation-z8]="true" [class.disabled-half]="selectedOrders?.length <= 0"
+            *ngIf="step === STEPS.ONE"
+            class="btn btn-blue ml-3" (click)="next()">
+      <span><i class="fal fa-arrow-to-right mr-3"></i>Next</span>
+    </button>
+  </div>
+</div>

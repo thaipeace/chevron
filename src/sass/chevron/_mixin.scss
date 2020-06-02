@@ -1,0 +1,31 @@
+@import '~src/sass/chevron/variables';
+
+@mixin driverStatus() {
+    &.rd {
+        color: $cl_dollar_bill !important;
+    }
+
+    &.t {
+        color: $cl_dollar_bill !important;
+    }
+
+    &.mc {
+        color: $cl_red !important;
+    }
+
+    &.p {
+        color: $cl_blue !important;
+    }
+
+    &.el {
+        color: $cl_red !important;
+    }
+
+    &.a {
+        color: $cl_tangerine !important;
+    }
+
+    &.l {
+        color: $cl_red !important;
+    }
+}

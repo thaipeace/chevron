@@ -1,0 +1,69 @@
+<div [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">New Delivery Window</span>
+      <button class="close" mat-icon-button (click)="onCancel()">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+  </div>
+  <div mat-dialog-content class="dialog-content-full layout-dialog-form">
+    <perfect-scrollbar class="h-full">
+      <form class="default-form custom-form" name="form" id="form" #f="ngForm" (ngSubmit)="formDOM.valid &&  onNew()">
+        <div class="d-grid two-col-table">
+          <div class="item d-flex flex-wrap" *ngFor="let key of keys">
+            <label class="label d-flex">
+              <ng-container [ngSwitch]="key">
+                <span *ngSwitchCase="'duration'">Duration (days)</span>
+                <span *ngSwitchDefault>{{ key | mappingLabel}}</span>
+              </ng-container>
+              <span class="required">*</span>
+              <!-- <span class="flex-grow-1 text-right text-blue"
+                *ngIf="key === 'endTime' && formDOM.get('endTime').value?.valueOf() < formDOM.get('startTime').value?.valueOf()">
+                (Over night)
+              </span> -->
+            </label>
+            <ng-container [ngSwitch]="key">
+              <!-- date -->
+              <ng-container *ngSwitchCase="'startDate'">
+                <input-field [type]="'date'" [input]="formDOM.get(key)" [isSubmit]="f.submitted" [placeholder]="key">
+                </input-field>
+              </ng-container>
+              <ng-container *ngSwitchCase="'duration'">
+                <input-field [type]="'number'" [input]="formDOM.get(key)" [isSubmit]="f.submitted" [placeholder]="key">
+                </input-field>
+              </ng-container>
+              <ng-container *ngSwitchCase="'startTime'">
+                <timepicker [(ngModel)]="formDOM.get(key).value" name="startTime" class="time-picker"
+                  [formControl]="formDOM.get(key)" [mousewheel]="true" [showMeridian]="false"></timepicker>
+                <small class="text-danger" *ngIf="!formDOM.get(key).valid">Invalid time</small>
+              </ng-container>
+              <ng-container *ngSwitchCase="'endTime'">
+                <timepicker name="endTime" class="time-picker"
+                  [formControl]="formDOM.get(key)" [mousewheel]="true" [showMeridian]="false"></timepicker>
+                <small class="text-danger" *ngIf="!formDOM.get(key).valid">Invalid time</small>
+              </ng-container>
+              <!-- number -->
+              <ng-container *ngSwitchCase="'maxMonthlyDeliveryDistribution'">
+                <input-field [type]="'number'" [input]="formDOM.get(key)" [isSubmit]="f.submitted" [placeholder]="key">
+                </input-field>
+              </ng-container>
+              <!-- DEFAULT -->
+              <ng-container *ngSwitchDefault>
+                <input-field [class.disabled-half]="key.indexOf('station') !== -1" [input]="formDOM.get(key)"
+                  [isSubmit]="f.submitted" [placeholder]="key"></input-field>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </form>
+    </perfect-scrollbar>
+  </div>
+</div>
+
+<div class="form-buttons">
+  <button mat-raised-button [class.mat-elevation-z8]="true" type="submit" form="form" class="btn btn-blue">
+    <i class="fal fa-check"></i>
+    <span class="ml-2">Create</span>
+  </button>
+</div>

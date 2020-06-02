@@ -1,0 +1,63 @@
+@import '~src/sass/chevron/variables';
+@import '~src/sass/chevron/mixin';
+
+::ng-deep.status-button-group {
+    line-height: 24px;
+
+    * {
+        line-height: 24px !important;
+    }
+
+    .mat-button-toggle {
+        background-color: $cl_input;
+        color: $cl_blue_wild;
+        @include driverStatus();
+
+        .mat-button-toggle-label-content {
+            min-width: 24px;
+            padding: 0 5px;
+            text-align: center;
+        }
+
+        &.selected, &:hover {
+            background-color: $cl_dark_jungle_green;
+        }
+    }
+}
+
+::ng-deep.driver-status-list {
+    .mat-menu-item {
+        @include driverStatus();
+
+        &.selected, &:hover {
+            background-color: $cl_dark_jungle_green !important;
+        }
+    }
+}
+
+.tab-selection {
+    position: fixed;
+    bottom: 0;
+    width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: $cl_blue_medium_dark;
+
+    .item {
+        padding: 15px 30px;
+        border-bottom: 1px solid transparent;
+        cursor: pointer;
+
+        &.active {
+            border-bottom: 1px solid $cl_blue;
+            color: $cl_blue;
+            background-color: $cl_charcoal;
+            cursor: default;
+        }
+    }
+}
+
+.tab {
+    padding: 0 15px;
+}

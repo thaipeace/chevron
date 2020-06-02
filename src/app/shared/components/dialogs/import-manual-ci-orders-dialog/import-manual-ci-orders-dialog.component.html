@@ -1,0 +1,26 @@
+<div mat-dialog-title>
+  <div class="d-flex flex-row title align-items-center">
+    <span class="flex-grow-1">Import Manual - C&I Orders</span>
+    <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+  </div>
+</div>
+<div mat-dialog-content>
+  <form name="form" (ngSubmit)="f.form.valid && submit()" #f="ngForm" novalidate>
+    <div class="p-2 d-flex flex-column">
+      <button mat-raised-button class="btn btn-blue" type=button (click)="triggerUploadFile($event)">Add file <i
+          class="fal fa-upload"></i></button>
+      <input type="file" class="form-control hide" #uploadInput (change)="onFileChange($event)"
+        placeholder="Search for...">
+      <span class="mt-2" *ngIf="file">[{{file.fileName}}]</span>
+      <div class="text-center mt-2">
+        <div *ngFor="let error of errors">
+          <small class="error">{{error}}</small>
+        </div>
+      </div>
+    </div>
+    <div class=" justify-content-center d-flex pb-2">
+      <button matRipple type="submit" class="btn-blue" [disabled]="!tmpFileInBase64">Import
+      </button>
+    </div>
+  </form>
+</div>

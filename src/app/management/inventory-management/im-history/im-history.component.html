@@ -1,0 +1,192 @@
+<div class="table-template p-3 d-flex flex-column">
+	<div class="actions-bar">
+		<div class="mb-3 d-flex align-items-center">
+			<div class="flex-grow-1">
+				<button mat-icon-button (click)="onRefresh()">
+					<i class="fal fa-sync-alt refresh-icon clickable"></i>
+				</button>
+				<button mat-icon-button matTooltip="expand" *ngIf="currentViewMode !== viewModeEnum.Chart"
+					(click)="toggleStationRows(selectedStationIds, true)">
+					<i class="fal fa-angle-double-down animated-control"></i>
+				</button>
+				<button mat-icon-button matTooltip="collapse" *ngIf="currentViewMode !== viewModeEnum.Chart"
+					(click)="toggleStationRows(selectedStationIds, false)">
+					<i class="fal fa-angle-double-up text-white animated-control"></i>
+				</button>
+			</div>
+			<div class="form-group d-flex justify-content-center">
+				<!--                <ng-container [ngTemplateOutlet]="paginator"-->
+				<!--                              [ngTemplateOutletContext]="{ pagination: stationPaginator, isStationsPaging: true }">-->
+				<!--                </ng-container>-->
+				<button matTooltip="List View" mat-icon-button (click)="changeViewMode(viewModeEnum.Grid)">
+					<i class="far fa-list" [class.text-grey]="currentViewMode !== viewModeEnum.Grid"></i>
+				</button>
+				<button matTooltip="Chart View" mat-icon-button (click)="changeViewMode(viewModeEnum.Chart)">
+					<i class="far fa-chart-bar" [class.text-grey]="currentViewMode !== viewModeEnum.Chart"></i>
+				</button>
+				<app-paginator-custom *ngIf="stationPaginator" (onChangePage)="onGroupPaginationChange($event)"
+					[paginator]="stationPaginator"></app-paginator-custom>
+			</div>
+		</div>
+		<div class="mb-3 d-flex flex-row justify-content-end">
+			<select-menu [items]="stations" [bindLabel]="'_data.stationName'" [bindValue]="'_data.sysId'"
+				[ngModel]="selectedStationIds" [multiple]="true" [placeHolder]="'Filter by station'"
+				*ngIf="stations?.length > 1" (change)="onStationSelectionChange($event)"></select-menu>
+			<input type="text" class="date-picker ml-3" #drp="bsDaterangepicker" bsDaterangepicker placement="left"
+				[bsConfig]="{ rangeInputFormat: 'YYYY/MM/DD' }" [ngModel]="inventoryFilterDate"
+				(ngModelChange)="onInventoryDateChange($event)">
+		</div>
+	</div>
+	<perfect-scrollbar class="flex-grow-1">
+		<ng-container *ngTemplateOutlet="inventoryTabBodyTemplate"></ng-container>
+	</perfect-scrollbar>
+</div>
+
+<!-- TEMPLATE -->
+<ng-template #inventoryTabBodyTemplate>
+	<table class="tql-table" [hidden]="currentViewMode !== viewModeEnum.Grid">
+		<ng-container *ngIf="!isEmpty()">
+			<ng-container *ngFor="let stationId of currentSelectedStationIds; let $indexStation = index">
+				<ng-container [ngTemplateOutlet]="inventoryRowTemplate" [ngTemplateOutletContext]="{inventoryByStation: inventoryByStation,
+                               stationId: stationId, stationName: dicStationName[stationId],
+                            keys: inventoryByStation?inventoryByStation[stationId]?.keys:null,
+                            pagination: inventoryByStation?inventoryByStation[stationId]?.pagination:null,
+                             index: ($indexStation + 1 + this.stationPaginator.getPageStartIndex())}">
+				</ng-container>
+			</ng-container>
+		</ng-container>
+		<ng-container *ngIf="isEmpty()">
+			<tbody>
+				<tr>
+					<td colspan="5">
+						<div class="d-flex justify-content-center"><i>No data found</i></div>
+					</td>
+				</tr>
+			</tbody>
+		</ng-container>
+	</table>
+	<div id="inventoryChartContainer" *ngIf="currentViewMode === viewModeEnum.Chart">
+		<ng-container *ngFor="let stationId of currentSelectedStationIds">
+			<div class="panel tql-panel mb-2"
+				*ngIf="!!inventoryChartDataByStation && !!inventoryChartDataByStation[stationId]">
+				<button mat-button class="station-name" (click)="onStationDetails(stationId)" matTooltip="more details">
+					<i class="fal fa-gas-pump mr-2"></i>{{dicStationName[stationId]}}
+				</button>
+				<div class="panel-body chart-body">
+					<app-chart-column-line-daily [container]="'chart_' + stationId" [unit]="'l'"
+						[data]="inventoryChartDataByStation[stationId]"
+						[categories]="inventoryChartDataByStation[stationId].category">
+					</app-chart-column-line-daily>
+					<!--              <div class="pt-3 d-flex justify-content-center"-->
+					<!--                   *ngIf="!inventoryChartDataByStation || !inventoryChartDataByStation[stationId]"><i>No data found</i>-->
+					<!--              </div>-->
+				</div>
+			</div>
+		</ng-container>
+
+	</div>
+</ng-template>
+
+<!--<ng-template #paginator let-pagination="pagination" let-stationId="stationId" let-isStationsPaging="isStationsPaging">-->
+<!--    <div class="d-flex align-items-center paginator ml-3">-->
+<!--        <div class="text-white">-->
+<!--            {{printCurrentPageInfo(pagination)}}-->
+<!--        </div>-->
+<!--        <div class="ml-3">-->
+<!--            <button mat-icon-button [disabled]="pagination.currentPage === 0"-->
+<!--                    (click)="onPreviousPage(pagination, isStationsPaging, stationId)">-->
+<!--                <i class="fas fa-angle-left"></i>-->
+<!--            </button>-->
+<!--            <button mat-icon-button-->
+<!--                    [disabled]="pagination.total === 0 || pagination.currentPage === (getPageList(pagination).length - 1)"-->
+<!--                    (click)="onNextPage(pagination, isStationsPaging, stationId)">-->
+<!--                <i class="fas fa-angle-right"></i>-->
+<!--            </button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</ng-template>-->
+
+<ng-template #inventoryRowTemplate let-stationId="stationId" let-stationName="stationName" let-keys="keys"
+	let-pagination="pagination" let-index="index" let-inventoryByStation="inventoryByStation">
+	<tbody class="toggle-parent border-separate">
+		<tr>
+			<td class="py-1 bg-charcoal sticky-t">
+				<div class="d-flex justify-content-between ">
+					<div class="d-flex align-items-center flex-grow-1 pl-3">
+						# {{index}}
+						<span class="ml-3 title"><i class="fal fa-gas-pump mr-2"></i>{{stationName}}</span>
+					</div>
+					<div class="d-flex flex-row col-action">
+						<ng-container [ngTemplateOutlet]="paginator" *ngIf="inventoryByStation  && inventoryByStation[stationId]"
+							[ngTemplateOutletContext]="{ pagination: pagination }">
+						</ng-container>
+						<button mat-icon-button class="mr-2" (click)="onStationDetails(stationId)" matTooltip="view">
+							<i class="fal fa-poll-h cream"></i>
+						</button>
+						<button mat-icon-button [class.invisible]="!(inventoryByStation  && inventoryByStation[stationId])"
+							(click)="expansionInventoryGroupByStation && expansionInventoryGroupByStation[stationId] &&
+                            expansionInventoryGroupByStation[stationId].isExpand = !expansionInventoryGroupByStation[stationId].isExpand">
+							<i class="fal fa-angle-up animated-control text-white" [class.rotage-180]="expansionInventoryGroupByStation && expansionInventoryGroupByStation[stationId] &&
+                            expansionInventoryGroupByStation[stationId].isExpand === false"></i>
+						</button>
+					</div>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+	<tbody class="" *ngIf="inventoryByStation  && inventoryByStation[stationId]"
+		[class.collapse]="expansionInventoryGroupByStation[stationId].isExpand === false && currentViewMode !== viewModeEnum.Chart">
+		<tr *ngFor="let key of getDisplayedItem(keys, pagination); let i = index">
+			<td>
+				<div class="d-flex">
+					<div class="col-index">#
+						{{pagination?.currentPage * pagination?.pageSize + i + 1}}
+					</div>
+					<div class="flex-grow-1 d-flex flex-row flex-wrap items">
+						<div class="w-25 item"
+							*ngFor="let inventory of inventoryByStation[stationId][key] | arrangeKeyValue : ['Euro4-97', 'Premium-95', 'B10-Diesel', 'Euro5-B7']:'productCode'; let $index = index;"
+							[class.mt-4]="$index >= 4">
+							<span
+								class="product-code-title collapsible mr-3 {{getProductCodeClass(inventory.productCode)}}">{{inventory.productCode}}</span>
+							<span *ngIf="!!inventory.totalQuantity">{{inventory.totalQuantity}} L</span>
+						</div>
+					</div>
+					<div class="col-time">{{key}}</div>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+	<tbody *ngIf="!(inventoryByStation  && inventoryByStation[stationId])">
+		<tr>
+			<td>No data</td>
+		</tr>
+	</tbody>
+</ng-template>
+
+<ng-template #paginator let-pagination="pagination">
+	<div class="d-flex ml-5 align-items-center paginator">
+		<label>Page:</label>
+		<mat-form-field class="mx-3">
+			<mat-select [(value)]="pagination.currentPage">
+				<mat-option *ngFor="let page of getPageList(pagination); let pageIndex = index" [value]="pageIndex">
+					{{pageIndex + 1}}</mat-option>
+			</mat-select>
+		</mat-form-field>
+		<div class="text-white">
+			{{getCurrentPageInfo(pagination)}}
+		</div>
+		<div class="ml-3">
+			<button mat-icon-button [disabled]="pagination.currentPage === 0"
+				(click)="pagination.currentPage = pagination.currentPage - 1">
+				<i class="fas fa-angle-left"></i>
+			</button>
+			<button mat-icon-button [disabled]="pagination.currentPage === (getPageList(pagination).length - 1)"
+				(click)="pagination.currentPage = pagination.currentPage + 1">
+				<i class="fas fa-angle-right"></i>
+			</button>
+		</div>
+	</div>
+</ng-template>
+
+
+<!-- END TEMPLATE -->

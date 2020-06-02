@@ -1,0 +1,48 @@
+<div [class.mat-elevation-z8]="true" class="activity-dialog" [ngClass]="{'disabled': isTriggering}">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center py-3">
+      <span class="flex-grow-1">Activity</span>
+      <div class="loader ml-3" *ngIf="isTriggering"></div>
+      <button class="close" mat-icon-button (click)="onCancel()" *ngIf="!isTriggering">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+  </div>
+  <div mat-dialog-content>
+    <div class="text-cl_red mb-3" *ngIf="warningMessage"><b>Note: </b>{{warningMessage}}</div>
+    <div class='mb-3'>Activity to be processed:</div>
+    <table class="tql-table">
+      <tr>
+        <td>Activity</td>
+        <td>DeliveryOptimization</td>
+      </tr>
+      <tr>
+        <td>Queued Datetime</td>
+        <td>{{today | date : 'yyyy-MM-dd (HH:mm)'}}</td>
+      </tr>
+      <tr>
+        <td>Start Datetime</td>
+        <td>{{today | date : 'yyyy-MM-dd (HH:mm)'}}</td>
+      </tr>
+      <tr>
+        <td>Progress Status %</td>
+        <td>0</td>
+      </tr>
+      <tr>
+        <td>Average Execution Time Span</td>
+        <td>00:30:00:00</td>
+      </tr>
+      <tr>
+        <td>Requested By</td>
+        <td>{{user.username}}</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<div class="form-buttons d-flex flex-row">
+  <button mat-raised-button [class.mat-elevation-z8]="true" class="btn btn-blue btn-reschedule ml-3"
+    (click)="onTrigger()" [disabled]="isTriggering" *ngIf="!isTriggered">OK</button>
+  <button mat-raised-button [class.mat-elevation-z8]="true" class="btn btn-blue btn-reschedule ml-3"
+    (click)="onCancel()" [disabled]="isTriggering" *ngIf="isTriggered">CLOSE</button>
+</div>

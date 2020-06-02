@@ -1,0 +1,13 @@
+@import '~src/sass/chevron/variables';
+
+.driver-dialog {
+  width: 80vw;
+}
+
+html.tql mat-tab-group .mat-tab-label-active {
+  background-color: $cl_charcoal !important
+}
+
+.driver-dialog {
+  width: calc(80vw - 40px);
+}

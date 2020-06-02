@@ -1,0 +1,10 @@
+<div class="search-box" [class.show]="searchControl.value">
+    <span class="search-btn">
+        <i class="fal fa-search size-16"></i>
+    </span>
+    <input type="text" class="fas search"
+           placeholder="Search" [formControl]="searchControl"/>
+    <i class="fal fa-times i-close mr-6"
+       [class.invisible]="!searchControl.value"
+       (click)="clearSearch()"></i>
+</div>

@@ -1,0 +1,36 @@
+.icon-group {
+  .title {
+    margin-left: 15px;
+  }
+  li {
+    margin-top: 15px;
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+}
+
+.table-icon {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  grid-gap: 15px 0;
+  span {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.h-34px {
+  height: 34px;
+}
+
+.hint-wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  &>div {
+    padding-left: 20px;
+    &:first-child {
+      padding-left: 0;
+    }
+  }
+}

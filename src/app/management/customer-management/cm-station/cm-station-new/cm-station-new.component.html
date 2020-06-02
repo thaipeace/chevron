@@ -1,0 +1,115 @@
+<div [class.mat-elevation-z8]="true">
+    <div mat-dialog-title>
+        <div class="d-flex flex-row title align-items-center">
+            <span class="flex-grow-1">{{ isNew ? 'New Station' : 'Edit Station' }}</span>
+            <button class="close" mat-icon-button (click)="onCancel()">
+                <i class="fal fa-times"></i>
+            </button>
+        </div>
+    </div>
+    <div mat-dialog-content class="dialog-content-full layout-dialog-form">
+        <perfect-scrollbar class="h-full">
+            <form
+                class="default-form custom-form"
+                name="form"
+                id="form"
+                (ngSubmit)="enableUpdate() && doUpdate()"
+                #f="ngForm"
+            >
+                <div class="d-grid two-col-table">
+                    <div class="item d-flex flex-wrap" *ngFor="let key of keys">
+                        <label class="label" for="input_{{ key }}">
+                            <span>{{ key | mappingLabel: { customerId: 'Customer' } }}</span>
+                            <span class="required">*</span>
+                        </label>
+                        <ng-container [ngSwitch]="key">
+                            <!-- CONTACT NUMBER -->
+                            <ng-container *ngSwitchCase="'contactNumber'">
+                                <contact-numbers
+                                    [formArray]="contactNumberControls"
+                                    [isSubmitted]="f.submitted"
+                                ></contact-numbers>
+                            </ng-container>
+                            <!-- Customer Id -->
+                            <ng-container *ngSwitchCase="'customerId'">
+                                <div class="form-group" [class.disabled-half]="disabledSelect">
+                                    <select-menu
+                                        [items]="customers"
+                                        [bindLabel]="'_data.customerName'"
+                                        [bindValue]="'_data.sysId'"
+                                        (change)="formData[key].value = $event.value"
+                                        [classes]="'input-custom-form arb-input'"
+                                        #control="ngModel"
+                                        [placeHolder]="'Select Customer'"
+                                        required
+                                        [ngModel]="formData[key].value"
+                                        name="input_{{ key }}"
+                                    >
+                                    </select-menu>
+                                    <div *ngIf="f.submitted && control.invalid" class="error">
+                                        <small *ngIf="control?.errors.required">* Field is required</small>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <!-- STREET ADDRESS -->
+                            <ng-container *ngSwitchCase="'streetAddress'">
+                                <div class="form-group">
+                                    <input-field
+                                        [input]="rfStation.get(key)"
+                                        [isSubmit]="f.submitted"
+                                        [placeholder]="key"
+                                        type="pickUpLocation"
+                                    ></input-field>
+                                </div>
+                            </ng-container>
+                            <ng-container
+                                *ngSwitchCase="
+                                    [
+                                        'distanceFromTerminal',
+                                        'estimatedHoursFromTerminal',
+                                        'truckSize',
+                                        'shipTo'
+                                    ].includes(key)
+                                        ? key
+                                        : ''
+                                "
+                            >
+                                <div class="form-group">
+                                    <input-field
+                                        [input]="rfStation.get(key)"
+                                        [isSubmit]="f.submitted"
+                                        [placeholder]="key"
+                                        type="number"
+                                    >
+                                    </input-field>
+                                </div>
+                            </ng-container>
+                            <!-- DEFAULT -->
+                            <ng-container *ngSwitchDefault>
+                                <input-field
+                                    [input]="rfStation.get(key)"
+                                    [isSubmit]="f.submitted"
+                                    [placeholder]="key"
+                                ></input-field>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                    <div *ngIf="!isNew" class="d-flex flex-row pt-1 justify-content-end text-default">
+                        <app-last-updated-info
+                            [username]="stationDetail?.userName"
+                            [lastUpdated]="stationDetail?.lastUpdated"
+                        >
+                        </app-last-updated-info>
+                    </div>
+                </div>
+            </form>
+        </perfect-scrollbar>
+    </div>
+</div>
+
+<div class="form-buttons">
+    <button mat-raised-button [class.mat-elevation-z8]="true" type="submit" form="form" class="btn btn-blue">
+        <i class="fal fa-check"></i>
+        <span class="ml-2">{{ isNew ? 'New Station' : 'Update' }}</span>
+    </button>
+</div>

@@ -1,0 +1,26 @@
+.form-buttons {
+  justify-content: flex-end;
+}
+
+button:first-child {
+  margin-left: 0;
+}
+
+.btn-i {
+  color: white;
+  &>i {
+      padding-right: 8px;
+  }
+  &:disabled {
+      color: #ffffff !important;
+  }
+}
+
+.tql-table > tbody > tr > td {
+  padding: 5px 20px;
+}
+
+.btn-action-group {
+  background-color: #1f2b43;
+  border-radius: 3px;
+}

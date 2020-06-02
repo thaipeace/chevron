@@ -1,0 +1,54 @@
+<div class="edit-item p-3">
+  <div class="settings w-100 position-relative cl_medium_jungle_green-background">
+    <i class="fal fa-times position-absolute cursor-pointer cl_cool_grey-color" style="right: 10px;"
+      (click)="onCloseEditing()"></i>
+    <h4 class="title">Base Product Type</h4>
+    <form #editForm="ngForm" name="form">
+      <div class="infos">
+        <div class="item">
+          <label class="label" for="baseProductCode">Base Product Code</label>
+          <div class="form-group">
+            <input class="form-control control no-radius-input" type="text" name="baseProductCode"
+              required pattern="^(?!\s+$).+"
+              [disabled]="!isEditing" [(ngModel)]="selectedBaseProductType.BaseProductCode">
+          </div>
+        </div>
+        <div class="item">
+          <label class="label" for="baseProductDescription">Description</label>
+          <div class="form-group">
+            <input class="form-control control no-radius-input" type="text" name="baseProductDescription"
+              required pattern="^(?!\s+$).+"
+              [disabled]="!isEditing" [(ngModel)]="selectedBaseProductType.Description">
+          </div>
+        </div>
+        <div class="item">
+          <label class="label" for="baseProductCategory">Product Category</label>
+          <div class="form-group">
+            <ng-select [items]="['Fuel', 'Additive']" required [disabled]="!isEditing"
+              [(ngModel)]="selectedBaseProductType.BaseProductCategory"
+              name="baseProductCategory" [clearable]="false"></ng-select>
+          </div>
+        </div>
+        <div class="d-flex mb-4 align-items-center">
+          <label class="label mr-3" for="color">Color</label>
+          <div class="form-group" style="width: 30px; height: 30px;">
+            <input class="w-100 h-100 cursor-pointer" [(colorPicker)]="selectedBaseProductType.ColorCode"
+              [style.background]="selectedBaseProductType.ColorCode" name="color" [cpDisabled]="!isEditing" 
+              (colorPickerChange)="isColorChanged=true" />
+          </div>
+        </div>
+        <div class="d-flex justify-content-end mt-2 mb-1 footer">
+          <button type="submit" class="btn-i btn-i-icon btn-edit text-white" *ngIf="!isEditing" mat-raised-button
+            [class.mat-elevation-z8]="true" (click)="isEditing=true"><i class="fal fa-edit ml-0 mr-1"></i> Edit</button>
+          <button type="button" class="mx-2 btn-i btn-i-icon btn-cancel ml-3 text-white" *ngIf="isEditing"
+            mat-raised-button [class.mat-elevation-z8]="true" (click)="doCancel()"><i class="far fa-ban mr-1"></i>
+            Cancel</button>
+          <button type="submit" class="btn-i btn-i-icon btn-save text-white" *ngIf="isEditing" mat-raised-button
+            [class.mat-elevation-z8]="true" (click)="onUpdate()"
+            [ngClass]="{'disabled-half': editForm.form.invalid || (editForm.form.pristine && !isUpdatable())}">
+            <i class="fal fa-check ml-0 mr-1"></i> Update</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

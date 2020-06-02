@@ -1,0 +1,56 @@
+<div class="tree-view-group p-3 d-flex flex-row height-100">
+    <div class="side-content height-100" appToggleCollapse>
+        <div class="panel tql-panel height-100 overflow-hidden">
+            <!--          TODO, disable, nam, 07/05/2019-->
+            <!--          [addNewMenu]="['Customer', 'Station', 'Tank']"-->
+            <app-chevron-treeview
+                [readonly]="true"
+                treeOf="cm"
+                [dataSource]="dataSource"
+                [treeControl]="treeControl"
+                [selectedNode]="selectedNode"
+                [hasChild]="hasChild"
+                [canRemove]="canRemove"
+                [searchControl]="searchControl"
+                [promise]="promise"
+                (add)="onAddNew($event)"
+                (edit)="onEdit($event)"
+                (delete)="onDelete($event)"
+                (refresh)="onRefresh()"
+                (toggleNode)="toggleNode($event)"
+                (selectedNodeChanged)="onSelectedNodeChanged($event)"
+            >
+            </app-chevron-treeview>
+        </div>
+    </div>
+    <div class="main-content pl-3 flex-grow-1 max-height-100">
+        <ng-container [ngSwitch]="selectedNode?.levelName">
+            <app-cm-customer-details
+                *ngSwitchCase="'Customer'"
+                [customer]="selectedNode?.nodeData"
+                [node]="selectedNode"
+                (refreshed)="onDetailRefreshed($event)"
+                (onPromise)="onRefreshDetails($event)"
+                (refresh)="onRefresh()"
+            ></app-cm-customer-details>
+            <app-cm-station-details
+                *ngSwitchCase="'Station'"
+                [customer]="selectedNode?.parent.nodeData"
+                [station]="selectedNode?.nodeData"
+                [readonly]="false"
+                (refreshed)="onDetailRefreshed($event)"
+                (refresh)="onRefresh()"
+                (onPromise)="onRefreshDetails($event)"
+            ></app-cm-station-details>
+            <app-cm-tank-details
+                *ngSwitchCase="'Tank'"
+                [customer]="selectedNode?.parent.parent.nodeData"
+                [station]="selectedNode?.parent.nodeData"
+                [tank]="selectedNode?.nodeData"
+                (refresh)="onRefresh()"
+                (onPromise)="onRefreshDetails($event)"
+            >
+            </app-cm-tank-details>
+        </ng-container>
+    </div>
+</div>

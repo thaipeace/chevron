@@ -1,0 +1,72 @@
+<perfect-scrollbar class="position-relative">
+  <table class="panel-time-range-wrapper d-flex flex-row" cellpadding="0" cellscapcing="0">
+    <tbody>
+    <tr>
+      <td class="left-content left-content-1">
+        <div class="item title" (click)="toggleSort()">Truck Plate
+          <i class="fal ml-3 sort" [class.stick]="sortAsc !== null"
+             [class.fa-long-arrow-up]="sortAsc === null || sortAsc === true"
+             [class.fa-long-arrow-down]="sortAsc === false"></i>
+        </div>
+        <div class="item d-flex flex-row" *ngFor="let item of groups">
+          <div class="flex-grow-1">{{item?.name}}</div>
+        </div>
+        <div class="item" *ngIf="schedules.length ===  0">
+          No Data
+        </div>
+      </td>
+      <td class="left-content left-content-2">
+        <div class="item title" (click)="toggleSort()">Trips
+        </div>
+        <div class="item d-flex justify-content-center" *ngFor="let item of groups">
+          <div class="circle align-self-center" *ngIf="item?.array?.length">
+            <span>{{item?.array?.length}}</span>
+          </div>
+        </div>
+        <div class="item" *ngIf="schedules.length ===  0">
+        </div>
+      </td>
+      <td class="main-content" [ngStyle]="{'width': (timeRange.length * 100) + 'px'}">
+        <div class="time-range">
+          <div class="labels">
+            <div class="label" *ngFor="let item of timeRange">
+              <span>{{item?.label}}</span>
+            </div>
+          </div>
+          <div class="ticks-group">
+            <div class="ticks" *ngFor="let item of timeRange">
+              <div class="tick"></div>
+              <div class="tick"></div>
+              <div class="tick"></div>
+              <div class="tick"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="groups">
+          <div class="group" *ngFor="let item of groups">
+            <ng-container *ngFor="let group of item?.array">
+              <div class="bar justify-content-center d-flex align-items-center" *ngIf="group?.chart"
+                   [class.selected]="selectedTrip === group"
+                   (click)="openCompact(group)" [matTooltipClass]="'my-tooltip'" [matTooltip]="group?.chart?.drops?.length + ' '+(group?.chart?.drops?.length > 1?'drops':'drop')
+                                 +'\nfrom ' + group?.chart?.startTime?.format('YYYY-MM-DD (HH:mm)')
+                                 + ' to ' +  group?.chart?.endTime?.format('YYYY-MM-DD (HH:mm)') " [ngStyle]="{'left': group?.chart?.start + 'px',
+                                         'width':(group?.chart?.end - group?.chart?.start) + 'px'}">
+                  <span *ngIf="group?.chart?.end - group?.chart?.start > 100">{{group?.chart?.drops?.length}}
+                    {{group?.chart?.drops?.length > 1 ? 'drops' : 'drop'}}</span>
+                <div class="start" *ngIf="group?.chart?.end - group?.chart?.start > 100">
+                  {{group?.chart?.startTime?.format('HH:mm')}}</div>
+                <div class="end" *ngIf="group?.chart?.end - group?.chart?.start > 100">
+                  {{group?.chart?.endTime?.format('HH:mm')}}</div>
+              </div>
+            </ng-container>
+
+          </div>
+
+        </div>
+
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</perfect-scrollbar>

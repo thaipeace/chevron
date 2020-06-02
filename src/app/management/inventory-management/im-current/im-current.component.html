@@ -1,0 +1,110 @@
+<div class="table-template p-3 d-flex flex-column">
+  <div class="actions-bar">
+    <div class="mb-3 d-flex align-items-center">
+      <div class="flex-grow-1">
+        <button mat-icon-button (click)="onRefresh()">
+          <i class="fal fa-sync-alt refresh-icon clickable"></i>
+        </button>
+      </div>
+      <div class="form-group d-flex justify-content-center">
+        <mat-paginator class="chevron-paginator" [pageIndex]="paginationOptions.pageIndex"
+          [length]="paginationOptions.length" [pageSize]="paginationOptions.pageSize"
+          [pageSizeOptions]="paginationOptions.pageSizeOptions" (page)="onPaginationChange()">
+        </mat-paginator>
+      </div>
+    </div>
+    <div class="mb-3 d-flex flex-row justify-content-end">
+      <div class="mr-3">
+        <span class="title truck-action-bar-text truck-action-bar-text-spacing-left">By Tank</span>
+        <button class="" mat-button [disableRipple]="true">
+          <mat-slide-toggle [checked]="showByProductCode" (change)="onChangeShowBy($event)" color="accent"
+            [disableRipple]="true">
+          </mat-slide-toggle>
+        </button>
+
+        <span class="title truck-action-bar-text truck-action-bar-text-spacing-left">By Product Type</span>
+      </div>
+      <select-menu [items]="stations" [bindLabel]="'_data.stationName'" [bindValue]="'_data.sysId'"
+        [ngModel]="selectedStationIds" [multiple]="true" [placeHolder]="'Filter by station'" *ngIf="stations.length"
+        (change)="onStationSelectionChange($event)"></select-menu>
+    </div>
+  </div>
+  <perfect-scrollbar class="flex-grow-1">
+    <ng-container *ngTemplateOutlet="inventoryTabBodyTemplate"></ng-container>
+  </perfect-scrollbar>
+</div>
+
+<!-- TEMPLATE -->
+<ng-template #inventoryTabBodyTemplate>
+  <table class="tql-table">
+    <ng-container *ngIf="!isEmpty()">
+      <ng-container *ngFor="
+              let station of displayedStations
+                | slice
+                  : paginator.pageIndex * paginator.pageSize
+                  : (paginator.pageIndex + 1) * paginator.pageSize;
+              let $index = index
+            ">
+        <ng-container [ngTemplateOutlet]="inventoryRowTemplate" [ngTemplateOutletContext]="{
+                station: station,
+                index: paginator.pageIndex * paginator.pageSize + $index + 1
+              }">
+        </ng-container>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="isEmpty()">
+      <tbody>
+        <tr>
+          <td colspan="5">
+            <div class="d-flex justify-content-center">
+              <i>No data found</i>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </ng-container>
+  </table>
+</ng-template>
+
+<ng-template #inventoryRowTemplate let-station="station" let-index="index">
+  <tbody class="toggle-parent border-separate">
+    <tr>
+      <td class="py-1 bg-charcoal sticky-t">
+        <div class="d-flex align-items-center ">
+          <div class="d-flex align-items-center flex-grow-1 pl-3">
+            # {{ index }}
+            <span class="ml-3 title"><i class="fal fa-gas-pump mr-2"></i>{{ station?.stationName }}</span>
+          </div>
+          <div class="col-action">
+            <button mat-icon-button matTooltip="update inventory"
+              [disabled]="station?.stationTanks?.length === 0 ? true : null" (click)="selectStation(station)">
+              <i class="fal fa-sliders-v blue"></i>
+            </button>
+          </div>
+
+          <span class="mr-3"
+            *ngIf="showByProductCode && inventoryData?.products && inventoryData?.products[station?.getId()]?.data?.length">
+            {{ inventoryData?.products[station?.getId()]?.time | date:'yyyy-MM-dd (HH:mm)'}}</span>
+          <span class="mr-3" *ngIf="!showByProductCode && inventoryData?.tanks[station?.getId()]?.data?.length">
+            {{ inventoryData?.tanks[station?.getId()]?.time | date:'yyyy-MM-dd (HH:mm)'}}</span>
+          <div class="d-flex flex-row col-action ">
+            <button mat-icon-button class="mr-2" (click)="onStationDetails(station)" matTooltip="view">
+              <i class="fal fa-poll-h cream"></i>
+            </button>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+  <tbody class="">
+    <tr class="bg-blue-dark-medium">
+      <td>
+        <app-station-inventory-details *ngIf="inventoryData?.products && inventoryData?.products[station?.getId()]"
+          [station]="station" [prefix]="'inventory_current'" [type]="'currentInventory'"
+          [isShowByProduct]="showByProductCode" [inventoryByProduct]="inventoryData?.products[station?.getId()]['data']"
+          [inventoryByTank]="inventoryData?.tanks[station?.getId()]['data']">
+        </app-station-inventory-details>
+      </td>
+    </tr>
+  </tbody>
+</ng-template>

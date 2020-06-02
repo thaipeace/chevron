@@ -1,0 +1,20 @@
+.modal-dialog {
+    &.modal-dialog-scrollable {
+        @media only screen and (min-width: 576px) {
+            max-height: calc(100% - 3.5rem);
+            display: flex;
+
+            .modal-content {
+                max-height: calc(100% - 3.5rem);
+            }
+        }
+
+        .modal-header {
+            flex-shrink: 0;
+        }
+
+        .modal-body {
+            overflow-y: auto;
+        }
+    }
+}

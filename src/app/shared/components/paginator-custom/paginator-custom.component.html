@@ -1,0 +1,23 @@
+<div class="d-flex align-items-center paginator ml-3 ">
+    <label>Page:</label>
+    <mat-form-field class="mx-3">
+        <mat-select [(value)]="this.paginator.currentPage" (selectionChange)="onPageChange()">
+            <mat-option *ngFor="let page of this.paginator?.getPageList(); let pageIndex = index" [value]="pageIndex + 1">
+                {{pageIndex + 1}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <div class="text-white">
+        {{printCurrentPageInfo()}}
+    </div>
+    <div class="ml-3">
+        <button mat-icon-button [disabled]="this.paginator?.isFirstPage()"
+                (click)="onPreviousPage()">
+            <i class="fas fa-angle-left"></i>
+        </button>
+        <button mat-icon-button
+                [disabled]="this.paginator?.total === 0 || this.paginator?.isLastPage()"
+                (click)="onNextPage()">
+            <i class="fas fa-angle-right"></i>
+        </button>
+    </div>
+</div>

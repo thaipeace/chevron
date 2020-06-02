@@ -1,0 +1,40 @@
+@import '~src/sass/chevron/variables';
+
+input[type=text] {
+    font-family: 'Roboto', 'Font Awesome 5 Pro', sans-serif;
+    font-weight: normal;
+    font-size: 12px;
+    background-color: $cl_dark_jungle_green;
+    border: 1px solid $cl_medium_jungle_green;
+    max-width: 200px;
+    color: $cl_cool_grey;
+    box-shadow: none
+}
+
+.search {
+    &::placeholder {
+        color: $cl_manatee !important;
+    }
+
+}
+
+.mat-cell>div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 5px;
+    white-space: nowrap;
+    width: 100%;
+}
+
+mat-cell:first-of-type, mat-footer-cell:first-of-type, mat-header-cell:first-of-type {
+    max-width: 70px;
+}
+
+.mat-column-value {
+    max-width: 300px;
+}
+
+.mat-column-type,
+.mat-column-category {
+    max-width: 200px;
+}

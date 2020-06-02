@@ -1,0 +1,35 @@
+<div [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">Notification details</span>
+      <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+    </div>
+  </div>
+  <div mat-dialog-content>
+    <div class="tab-container bg-blue-darkest">
+      <div class="d-flex">
+        <div class="flex-grow-1">
+          <ng-container [ngTemplateOutlet]="tableTemplate"></ng-container>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #tableTemplate>
+      <table class="tql-table table-data-detail">
+        <tbody *ngIf="!!notification">
+          <tr class="bg-blue-darkest">
+            <td colspan="2">
+              <div class="text-white">Notification ID</div>
+              <div class="text-blue mt-2">{{ notification?.getValue('sysId') }}</div>
+            </td>
+          </tr>
+          <tr
+            *ngFor="let item of notificationData | keyValueOrder: ['customerName','createDate','sysId','UserName','userName'] : ['soldTo', 'lastUpdated']">
+            <td>{{item.key | mappingLabel}}</td>
+            <td class="text-break">{{item.value}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-template>
+  </div>
+</div>

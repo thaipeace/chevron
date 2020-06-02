@@ -1,0 +1,204 @@
+<div class="d-flex p-3">
+  <div class="mr-3 left-content">
+    <div class="panel tql-panel mb-3">
+      <div class="form-group">
+        <select-menu [items]="stations" [bindLabel]="'stationName'" (change)="onChangeStation($event)" color="blue"
+          default="first"></select-menu>
+      </div>
+    </div>
+    <div class="panel tql-panel">
+      <div class="panel-heading d-flex align-items-center pt-0 pr-0">
+        <span class="title flex-grow-1">Inventory</span>
+
+        <button mat-icon-button matTooltip="Update inventory" (click)="openAddDialog()">
+          <i class="fal fa-sliders-v text-blue"></i>
+        </button>
+      </div>
+      <div class="panel-body" *ngIf="selectedStation">
+        <div class="d-flex justify-content-center align-items-center">
+          <span class="title truck-action-bar-text truck-action-bar-text-spacing-left">By Tank</span>
+          <button class="" mat-button [disableRipple]="true">
+            <mat-slide-toggle [checked]="showByProductCode" (change)="onChangeShowBy($event)"
+                              color="accent" [disableRipple]="true">
+            </mat-slide-toggle>
+          </button>
+
+          <span class="title truck-action-bar-text truck-action-bar-text-spacing-left">By Product Type</span>
+        </div>
+        <app-station-inventory-details
+          [station]="selectedStation"
+          [prefix]="'customer'"
+          [type]="'currentInventory'"
+          [isShowByProduct]="showByProductCode"
+          [inventoryByProduct]="inventoryData?.products[selectedStation?.getId()]['data']"
+          [inventoryByTank]="inventoryData?.tanks[selectedStation?.getId()]['data']"
+        >
+        </app-station-inventory-details>
+        <!--<ng-container *ngIf="
+            !!inventoryMeterByStation &&
+            !!productCodeByStation &&
+            !!selectedStation &&
+            !!productCodeByStation[selectedStation.getId()] &&
+            !!inventoryMeterByStation[selectedStation.getId()]
+          ">
+          <ng-container *ngFor="let productCode of productCodeByStation[selectedStation.getId()] | arrangeKeyValue : ['Euro4-97', 'Premium-95', 'B10-Diesel', 'Euro5-B7']"
+            [ngTemplateOutlet]="chartMeter" [ngTemplateOutletContext]="{
+              chartData: inventoryMeterByStation[selectedStation.getId()][productCode],
+              productCode: productCode
+            }">
+          </ng-container>
+        </ng-container>
+        <div *ngIf="!productCodeByStation[selectedStation.getId()]
+          || !productCodeByStation[selectedStation.getId()].length">No data available</div>-->
+      </div>
+    </div>
+  </div>
+  <div class="flex-grow-1" *ngIf="enableFunctionality?.VarValue==='true'">
+    <div class="mb-3 d-flex align-items-center">
+      <div class="panel tql-panel station-product top-chart mr-3">
+        <div class="panel-heading d-flex align-items-center">
+          <span class="title flex-grow-1">Station Product Delivered</span>
+          <span class="grey-text">{{ currentMonth }}</span>
+        </div>
+        <div class="panel-body">
+          <app-chart-column *ngIf="productChart.data" 
+            [data]="productChart.data" [categories]="productChart.categories"
+            [legendWidth]="120" container="product-chart"></app-chart-column>
+          <span class="grey-text" *ngIf="!productChart.data">No data available</span>
+        </div>
+      </div>
+      <div class="panel tql-panel flex-grow-1 top-chart">
+        <div class="panel-heading d-flex align-items-center">
+          <span class="title flex-grow-1">Summary of month</span>
+          <span class="grey-text">{{ currentMonth }}</span>
+        </div>
+        <div class="panel-body">
+          <app-chart-column *ngIf="summaryOfMonthChart.data"
+            [data]="summaryOfMonthChart.data" [categories]="summaryOfMonthChart.categories"
+            [legendWidth]="170" container="summary-of-month">
+          </app-chart-column>
+          <span class="grey-text" *ngIf="!summaryOfMonthChart.data">No data available</span>
+        </div>
+      </div>
+    </div>
+    <div class="panel tql-panel mb-3">
+      <div class="panel-heading d-flex align-items-center bg-charcoal p-0">
+        <span class="title flex-grow-1 p-3">Upcoming Order</span>
+        <button mat-icon-button (click)="onRefresh()">
+          <i class="fal fa-sync-alt refresh-icon"></i>
+        </button>
+      </div>
+      <div class="table-wrapper">
+        <table class="tql-table">
+          <ng-container *ngIf="!isEmpty()">
+            <ng-container *ngFor="let order of upcomingOrdersByStation[selectedStation.getId()]; let i = index"
+              [ngTemplateOutlet]="upcomingOrderRowTemplate" [ngTemplateOutletContext]="{ index: i, order: order }">
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="isEmpty()">
+            <tbody>
+              <tr>
+                <td>
+                  <div class="d-flex justify-content-center">
+                    <i>No data found</i>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </ng-container>
+        </table>
+      </div>
+    </div>
+    <div class="panel tql-panel">
+      <div class="panel-heading d-flex pr-1">
+        <span class="title flex-grow-1">Estimated Inventory</span>
+        <span class="sub-title">
+          <button mat-icon-button (click)="onEstimatedInventoryHint()" [matTooltip]="'show hint'">
+            <mat-icon>
+              <i class="fal fa-question-circle text-blue"></i>
+            </mat-icon>
+          </button>
+        </span>
+      </div>
+      <app-chart-line *ngIf="estimatedInventoryChart.data" 
+        [container]="estimatedInventoryChart.container"
+        [categories]="estimatedInventoryChart.categories" [unit]="estimatedInventoryChart.unit"
+        [currentTimePoint]="estimatedInventoryChart.currentTimePoint" [data]="estimatedInventoryChart.data"
+        [formater]="estimatedInventoryChart.formater"></app-chart-line>
+    </div>
+  </div>
+</div>
+
+<ng-template #upcomingOrderRowTemplate let-index="index" let-order="order">
+  <tbody class="toggle-parent border-separate">
+    <tr class="bg-medium-dark">
+      <td colspan="4" class="py-1">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <span class="mx-3">#{{ index + 1 }}</span>
+            {{ 'salesOrderNumber' | mappingLabel }}
+            <em class="text-white">{{ order?.salesOrderNumber || '___' }}</em>
+          </div>
+          <div class="d-flex flex-row align-items-center ">
+            <div class="col-action">
+              <button mat-icon-button (click)="onRequestMessage(order)" matTooltip="view request cancellation message"
+                *ngIf="order.orderStatus == ORDER_STATUS.ON_HOLD || order.orderStatus == ORDER_STATUS.CANCELED">
+                <i class="fal fa-engine-warning yellow"></i>
+              </button>
+            </div>
+            <div class="order-status {{ order.orderStatus }} collapsible" title="{{ order.orderStatus }}">
+              {{ order.orderStatus }}
+            </div>
+            <button [style.visibility]="order.orderStatus === 'Potential' ? 'visible' : 'hidden'" mat-icon-button
+              matTooltip="cancel" (click)="onRequestCancellation(order)">
+              <mat-icon><i class="fal fa-ban color-red"></i></mat-icon>
+            </button>
+            <span class="mr-2 time"> ETA: {{ order.estimatedTime }} </span>
+            <button mat-icon-button (click)="openOrderDetailDialog(order)" matTooltip="view">
+              <i class="fal fa-poll-h cream"></i>
+            </button>
+            <button mat-icon-button (click)="toggleOrderRow(order.getId())">
+              <i class="fal fa-angle-up animated-control text-white"
+                [class.rotage-180]="!isExpandedRow(order.getId())"></i>
+            </button>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+  <tbody class="border-bottom" [class.collapse]="!isExpandedRow(order.getId())">
+    <tr class="bg-medium-dark product-item-row collapsible">
+      <td class="d-flex p-0">
+        <div [ngStyle]="{ width: getProductItemWidth(productItems) }" class="product-item collapsible"
+          *ngFor="let orderItem of order?.item | arrangeKeyValue : ['Euro4-97', 'Premium-95', 'B10-Diesel', 'Euro5-B7'] : 'productCode'">
+          <ng-container [ngTemplateOutlet]="productItem" [ngTemplateOutletContext]="{
+              productName: productItems[orderItem.productCode],
+              productItem: orderItem
+            }"></ng-container>
+        </div>
+        <div *ngIf="!order?.item?.length" class="p-3">
+          no order item
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</ng-template>
+
+<ng-template #productItem let-productItem="productItem" let-productName="productName">
+  <div class="product-item-wrapper collapsible" *ngIf="!!productItem">
+    <div class="d-flex align-items-center mb-3 collapsible">
+      <h3 class="collapsible title mr-3 {{ getProductCodeClass(productItem.productCode) }}">
+        {{ productItem.productCode }}
+      </h3>
+      <span>{{ productName }}</span>
+    </div>
+    <div class="d-flex align-items-center justify-content-between">
+      <div>
+        <i class="fal fa-oil-can text-white collapsible"></i>
+        <span class="text-white quantity collapsible">{{ productItem.quantity }}</span>
+        Litres
+      </div>
+      <div><i class="fal fa-truck-container text-white collapsible"></i> .--- ----</div>
+    </div>
+  </div>
+</ng-template>

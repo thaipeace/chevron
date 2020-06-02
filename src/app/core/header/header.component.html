@@ -1,0 +1,103 @@
+<div class="tql-header">
+  <div class="d-flex flex-row align-items-center h-100">
+    <div class="flex-grow-1 ml-3">
+      <ul class="list-unstyled list-inline bread-crumbs" *ngIf="breadcrumbs.length">
+        <!-- <span>You are:</span> -->
+        <ng-container *ngFor="let item of breadcrumbs;let $last=last; let $first = first;">
+          <ng-container *ngIf="$first">
+            <li>
+              <a title="Home" [routerLink]="['/'+this.menuRoles[0]?.route]" [style.font-weight]="$last?'bold':'normal'">
+                <i class="fas fa-arrow-alt-from-left"></i></a>
+            </li>
+            <li *ngIf="!$last">
+              ::
+            </li>
+          </ng-container>
+
+          <ng-container *ngIf="!$first && item.label">
+            <li *ngIf="!($last && currentRouteParent?.groups)">
+              <a [routerLink]="[item.url]" [style.font-weight]="$last?'bold':'normal'">{{item.label}}</a>
+            </li>
+            <li *ngIf="$last && currentRouteParent?.groups" class="dropdown" #dropdownToggleElement>
+              <a (click)="toggleMenuDropdown()">
+                <i class="fal fa-list-alt mr-2"></i>
+                <span>{{item.label}}</span>
+              </a>
+            </li>
+            <li *ngIf="!$last">
+              ::
+            </li>
+          </ng-container>
+        </ng-container>
+      </ul>
+    </div>
+    <div class="tql-header__right">
+      <div class="sub-navbar mr-3" *ngIf="currentRouteParent && currentRouteParent['menus'] && !currentRoute?.groups">
+        <!--<ul class="list-unstyled list-inline">
+          <li routerLinkActive="active" *ngFor="let route of currentRouteParent['menus']"><a
+              routerLink="/{{route.route}}">{{route.name}}</a></li>
+        </ul>-->
+        <mat-tab-group [selectedIndex]="currentSubmenuIndex" (selectedIndexChange)="goToUrl($event)">
+          <mat-tab [label]="route.name" *ngFor="let route of currentRouteParent['menus']"></mat-tab>
+        </mat-tab-group>
+      </div>
+      <div>
+        <div class="d-flex align-items-center">
+          <button mat-icon-button [matMenuTriggerFor]="notificationMenu" matTooltip="Events" class="size-1r4">
+            <mat-icon>
+              <i class="fal fa-bell"></i>
+            </mat-icon>
+          </button>
+          <button mat-icon-button matTooltip="help" class="size-1r4" routerLink="/account/help">
+            <mat-icon>
+              <i class="fal fa-question-circle"></i>
+            </mat-icon>
+          </button>
+          <div class="h-100 d-flex justify-content-center align-items-center" style="width: 40px"
+               *ngIf="!['customer', 'truck-company-operator', 'truck-company-owner'].includes(role)">
+            <div class="rounded-circle" style="width: 24px; height: 24px" [ngClass]="{'bg-danger': serviceSummary.enabledError !== 0,
+                'bg-success': serviceSummary.enabledError === 0}"
+                 [title]="'Enabled & Error: ' + (serviceSummary.enabledError || '0')">
+            </div>
+          </div>
+        </div>
+        <mat-menu #notificationMenu="matMenu">
+          <div class="p-3 notification-group">
+            <div class="d-flex align-items-center flex-row notification-group-header">
+              <span class="flex-grow-1">Events ({{notifications.length}})</span>
+              <button mat-icon-button (click)="reloadNotification();$event.stopPropagation();" class="mr-n3">
+                <i class="fal fa-sync-alt"></i>
+              </button>
+            </div>
+            <div class="notification-group-content">
+              <div *ngIf="!notifications?.length">No event log found</div>
+              <div *ngFor="let item of notifications; let $last = last;" [ngClass]="{'mb-3 pb-3':!$last}">
+                <div class="d-flex flex-row">
+                  <span class="flex-grow-1">{{item.getValue('type')}} <i
+                    class="fas fa-exclamation-triangle text-red ml-2"></i></span>
+                  <span>{{item?.getValue('readingTime')}}</span>
+                </div>
+                <div class="pt-3 pb-1">{{item?.station?.stationName}}</div>
+                <div class="text text-break">
+                  {{item.getValue('alertText')}}
+                </div>
+              </div>
+            </div>
+            <div class="notification-group-footer d-flex justify-content-end align-items-center cursor-pointer"
+                 (click)="onViewAllNotification()">
+              <span>View all <i class="fal fa-long-arrow-right"></i></span>
+            </div>
+          </div>
+        </mat-menu>
+      </div>
+
+      <div app-header-account></div>
+
+    </div>
+  </div>
+  <div class="dropdown-menus ml-3" *ngIf="currentRouteParent?.groups && showMenuDropdown">
+    <app-header-dropdown-menus [groups]="currentRouteParent?.groups" [current]="currentMenu"
+                               [exceptionElements]="[dropdownToggleElement]"
+                               (hide)="hideMenuDropdown()"></app-header-dropdown-menus>
+  </div>
+</div>

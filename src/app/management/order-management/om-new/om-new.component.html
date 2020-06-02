@@ -1,0 +1,174 @@
+<div [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">New Order</span>
+      <button class="close" mat-icon-button (click)="onCancel()">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <div mat-dialog-content class="layout-dialog-form">
+    <form class="default-form custom-form" id="form-new-user" name="form" (ngSubmit)="f.form.valid && doCreate()"
+      #f="ngForm" novalidate>
+      <div class="d-flex flex-row align-items-start justify-content-center">
+        <div>
+          <div [ngClass]="{ 'flex-column': key == 'item' }"
+            class="item d-flex flex-wrap align-items-center justify-content-center" *ngFor="let key of keys">
+            <ng-container [ngSwitch]="key">
+              <!-- Estimated Time -->
+              <ng-container *ngSwitchCase="'estimatedTime'">
+                <div class="form-group mb-0">
+                  <div
+                    class="d-flex input-group align-items-start item-input-group flex-column justify-content-between">
+                    <span class="label">
+                      <span>{{ key | mappingLabel }}</span>
+                      <span class="required">*</span>
+                    </span>
+                    <md2-datepicker class="time-picker-spacing" [(ngModel)]="formData[key].value" id="input_{{ key }}"
+                      name="input_{{ key }}" [openOnFocus]="true" (ngModelChange)="onTimeChange()" [type]="'datetime'"
+                      [format]="'y-MM-dd (HH:mm)'" [min]="today" #control="ngModel" required
+                      [ngModelOptions]="{ standalone: true }"></md2-datepicker>
+                    <div *ngIf="f.submitted && control.invalid" class="error">
+                      <small *ngIf="control?.errors.required || control?.errors.whitespace">* Field is required
+                      </small>
+                      <small *ngIf="control?.errors.email">* Invalid email format</small>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+
+              <!-- Stations -->
+              <ng-container *ngSwitchCase="'stationId'">
+                <div class="form-group mb-0">
+                  <div
+                    class="d-flex input-group align-items-start item-input-group flex-column justify-content-between">
+                    <div class="d-flex justify-content-between flex-row w-100 align-items-center position-relative">
+                      <span class="label w-auto" style="min-width: unset;">
+                        Station
+                        <span class="required">*</span>
+                      </span>
+                      <small class="text-grey mb-2" *ngIf="!formData['stationId'].value && !products.length">
+                        Please select station
+                      </small>
+                    </div>
+                    <select-menu [items]="availableStation" 
+                      [bindLabel]="'stationShipToLabel'" [bindValue]="'_data.sysId'"
+                      (change)="formData[key].value = $event.value; getCurrentInventoryByStationId($event.value)"
+                      [classes]="'control'" #control="ngModel" [placeHolder]="'Select ' + (key | mappingLabel)"
+                      required [ngModel]="formData[key].value" name="input_{{ key }}">
+                    </select-menu>
+                    <div *ngIf="f.submitted && control.invalid" class="error">
+                      <small *ngIf="control?.errors.required">* Field is required</small>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+
+              <!-- timeWindow -->
+              <ng-container *ngSwitchCase="'timeWindow'">
+                <div class="form-group mb-0">
+                  <div
+                    class="d-flex input-group align-items-start item-input-group flex-column justify-content-between">
+                    <span class="label">
+                      {{ key | mappingLabel }}
+                      <span class="required">*</span>
+                    </span>
+                    <select-menu [items]="timeWindows" (change)="formData[key].value = $event.value"
+                      [classes]="'control'" #control="ngModel" [placeHolder]="'Select ' + (key | mappingLabel)" required
+                      [ngModel]="formData[key].value" name="input_{{ key }}">
+                    </select-menu>
+                    <div *ngIf="f.submitted && control.invalid" class="error">
+                      <small *ngIf="control?.errors.required">* Field is required</small>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+
+              <!-- Sales Order Number -->
+              <ng-container *ngSwitchCase="'salesOrderNumber'">
+                <div class="form-group mb-0">
+                  <div
+                    class="d-flex input-group align-items-start item-input-group flex-column justify-content-between">
+                    <span class="label">
+                      {{ key | mappingLabel }}
+                      <span class="required">*</span>
+                    </span>
+                    <input class="form-control control arb-input order-new consistent-font" type="number" min="0"
+                      id="input_{{ key }}" name="input_{{ key }}" #control="ngModel" required
+                      [(ngModel)]="formData[key].value" placeholder="{{ key | mappingLabel }}" />
+                    <div *ngIf="f.submitted && control.invalid" class="error">
+                      <small *ngIf="control?.errors">* Field is required</small>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+
+              <!-- DEFAULT -->
+              <ng-container *ngSwitchDefault>
+                <div class="form-group mb-0">
+                  <div
+                    class="d-flex input-group align-items-start item-input-group flex-column justify-content-between">
+                    <span class="label">
+                      {{ key | mappingLabel }}
+                      <span class="required">*</span>
+                    </span>
+                    <input class="form-control control arb-input consistent-font" type="text" id="input_{{ key }}"
+                      name="input_{{ key }}" #control="ngModel" required [(ngModel)]="formData[key].value"
+                      placeholder="{{ key | mappingLabel }}" />
+                    <div *ngIf="f.submitted && control.invalid" class="error">
+                      <small *ngIf="control?.errors">* Field is required</small>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+        <div *ngIf="!formData['stationId'].value" class="input-custom-form ml-20 d-flex justify-content-end">
+          <small class="text-grey">Please select station - No product found</small>
+        </div>
+        <div class="ml-3" *ngIf="formData['stationId'].value">
+          <div class="d-flex input-group align-items-start item-input-group flex-column justify-content-between" *ngIf="
+              (formData['stationId'].value && !products.length && !onLoading) || !products.length
+            ">
+            <small class="text-grey">No product found</small>
+          </div>
+          <div class="form-group" *ngFor="let item of products">
+            <div class="d-flex input-group align-items-start item-input-group flex-column justify-content-between">
+              <div class="d-flex justify-content-between flex-row w-100 align-items-center"
+                style="line-height: 25px;">
+                <span class="title product-code-title mb-1 p-0 {{ item.productCode.toLowerCase() }}">
+                  {{ item.productCode }}
+                </span>
+                <small class="text-grey">Max: {{ tankMaxFillCapacities[item.productCode] }}</small>
+              </div>
+              <input class="form-control control w-100 arb-input order-new" type="number" id="input_{{ key }}"
+                name="input_{{ item.productCode }}" [formControl]="rfItem.get(item.productCode)"
+                [(ngModel)]="rfItem.get(item.productCode).value" placeholder="0" />
+              <div *ngIf="!rfItem.get(item.productCode).valid"
+                class="error d-flex flex-column justify-content-start align-items-start">
+                <small class="error">* Please enter a value between 0 and
+                  {{ tankMaxFillCapacities[item.productCode] }}</small>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="noProductError" class="input-custom-form d-flex justify-content-end">
+            <small class="error">Please fill in at least one product</small>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="form-buttons">
+  <!-- <button mat-raised-button [class.mat-elevation-z8]="true" type="button" class="btn btn-blue btn-cancel"
+            (click)="onCancel()">Cancel
+    </button> -->
+  <button mat-raised-button [ngClass]="{ 'disabled-half': !rfItem.valid }" [class.mat-elevation-z8]="true" type="submit"
+    class="btn btn-blue ml-10" form="form-new-user">
+    <i class="fal fa-check"></i>
+    <span class="ml-2">Create</span>
+  </button>
+</div>

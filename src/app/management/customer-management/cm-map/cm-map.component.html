@@ -1,0 +1,51 @@
+<div style="height: calc(100vh - 60px)" class="p-15 d-grid two-row-auto-1">
+  <div class="d-flex justify-content-between px-3 align-items-center map-head">
+    <div>
+      <ul class="d-flex align-items-center pl-0 size-14">
+        <li><span class="color-text-dark">Stations:</span><span class="color-default">&nbsp;&nbsp;{{stations?.length || 0}}</span></li>
+        <!-- <li><span class="color-text-dark">Date:</span><span class="color-default">&nbsp;&nbsp;November 14, 2018</span></li>
+        <li><span class="color-text-dark">Last updated:</span><span class="color-default">&nbsp;&nbsp;10 minutes ago</span></li>
+        <li class="hr-hoz"></li>
+        <li><span class="color-text-dark">Customer:</span><span class="color-default">&nbsp;&nbsp;120</span></li>
+        <li><span class="color-text-dark">Ready for refill:</span><span class="color-default">&nbsp;&nbsp;20</span></li> -->
+      </ul>
+    </div>
+    <div>
+      <button mat-icon-button (click)="onRefresh()" class="refresh">
+        <i class="fal fa-sync-alt refresh-icon clickable"></i>
+      </button>
+    </div>
+  </div>
+  <div class="p-15 map-body">
+    <ngui-map zoom="12" center="{{center}}" [styles]="styles" class="map-wrapper" (mapReady$)="onMapReady($event)">
+      <location *ngIf="center" [position]="center" type="center"></location>
+      <ng-container *ngFor="let station of stations">
+        <location *ngIf="station?.geoPoint?.hasPosition()" [position]="[station.geoPoint.getLat(),station.geoPoint.getLng()]"
+                  [info]="{stationName: station?.stationName, phone: station?.contactNumber, distance: station?.distanceFromTerminal}" (e)="openLocation($event)"></location>
+      </ng-container>
+      <info-window id="iw">
+        <div class="d-flex color-default align-items-center">
+          <i class="far fa-gas-pump size-16"></i>
+          <h3 class="size-14 ml-3 mt-0 mb-0">{{marker?.info?.stationName}}</h3>
+          <i class="far fa-times size-16 close-icon" (click)="closeDialogInfo()"></i>
+        </div>
+        <div class="iw-table">
+          <h4 class="iw-td color-text-dark font-weight-normal">Contact Number</h4>
+          <div class="iw-td text-right font-weight-bold">
+            <p class="iw-list" *ngFor="let data of marker?.info?.phone | array">{{data}}</p>
+          </div>
+          <h4 class="iw-td color-text-dark font-weight-normal">Distance From Terminal</h4>
+          <p class="iw-td text-right font-weight-bold">{{marker?.info?.distance}}</p>
+        </div>
+      </info-window>
+    </ngui-map>
+  </div>
+</div>
+<!-- 
+<info-window id="iw">
+  <div>
+  </div>
+  <div>
+
+  </div>
+</info-window> -->

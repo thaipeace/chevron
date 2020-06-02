@@ -1,0 +1,105 @@
+<div [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">{{ isNew ? 'New Quota' : 'Edit Quota' }}</span>
+      <button class="close" mat-icon-button (click)="onCancel()">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <div mat-dialog-content class="layout-dialog-form">
+    <form
+      class="default-form custom-form"
+      id="form"
+      name="form"
+      (ngSubmit)="f.form.valid && doUpdate()"
+      #f="ngForm"
+      novalidate
+    >
+      <div
+        class="item d-flex flex-wrap justify-content-center item-input-group"
+        *ngFor="let key of keys; last as isLast"
+        [class.mb-0]="isLast"
+      >
+        <label class="label" for="input_{{ key }}">
+          <span>{{ key | mappingLabel }}</span>
+          <span class="required">*</span>
+        </label>
+        <ng-container [ngSwitch]="key">
+          <!-- STATIONS -->
+          <ng-container *ngSwitchCase="'StationId'">
+            <div class="form-group" [ngClass]="{ 'disabled-half': !isNew }">
+              <select-menu
+                [items]="stations"
+                [bindLabel]="'_data.stationName'"
+                [bindValue]="'_data.sysId'"
+                (change)="onChangeStation($event.value)"
+                [classes]="'control'"
+                #control="ngModel"
+                [placeHolder]="'Select ' + (key | mappingLabel)"
+                required
+                [ngModel]="formData[key].value"
+                name="input_{{ key }}"
+              >
+              </select-menu>
+              <div *ngIf="f.submitted && control.invalid" class="error">
+                <small *ngIf="control?.errors.required">* Field is required</small>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngSwitchCase="'ProductCode'">
+            <select-menu
+              [items]="this.selectedStation?.products || []"
+              [bindLabel]="'name'"
+              [bindValue]="'name'"
+              [classes]="'control'"
+              [placeHolder]="'Select ' + (key | mappingLabel)"
+              (change)="formData[key].value = $event.value"
+              #control="ngModel"
+              required
+              [(ngModel)]="formData[key].value"
+              name="input_{{ key }}"
+            ></select-menu>
+            <div *ngIf="f.submitted && control.invalid" class="error">
+              <small *ngIf="control?.errors.required">* Field is required</small>
+            </div>
+            <!--              <input class="input-custom-form" [value]="PRODUCT_CODE.B10_DIESEL" disabled/>-->
+          </ng-container>
+          <!-- DEFAULT -->
+          <ng-container *ngSwitchDefault>
+            <div class="form-group">
+              <input
+                class="form-control control arb-input"
+                type="number"
+                id="input_{{ key }}"
+                name="input_{{ key }}"
+                #control="ngModel"
+                required
+                digitOnly
+                [(ngModel)]="formData[key].value"
+                placeholder="{{ key | mappingLabel }}"
+              />
+              <div *ngIf="f.submitted && control.invalid" class="error">
+                <small *ngIf="control?.errors">* Field is required</small>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="form-buttons">
+  <button
+    mat-raised-button
+    [class.mat-elevation-z8]="true"
+    type="submit"
+    class="btn btn-blue ml-10"
+    form="form"
+  >
+    <i class="fal fa-check"></i>
+    <span class="ml-2">{{ isNew ? 'New Quota' : 'Update' }}</span>
+  </button>
+</div>

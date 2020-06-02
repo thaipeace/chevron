@@ -1,0 +1,27 @@
+.text- {
+    &euro4-97 {
+        color: $cl_red;
+    }
+
+    &premium-95 {
+        color: $cl_golden;
+    }
+
+    &diesel-c, &.b10-diesel {
+        color: $cl_brown;
+    }
+
+    &euro5-b7 {
+        color: $cl_blue;
+    }
+
+    &danger {
+        color: $cl_red !important;
+    }
+
+    &ellipsis {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+}

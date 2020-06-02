@@ -1,0 +1,255 @@
+<div class="d-flex flex-row justify-content-center align-items-stretch">
+  <div [class.mat-elevation-z8]="true">
+    <div mat-dialog-title>
+      <div class="d-flex flex-row title align-items-center">
+        <span class="flex-grow-1">New Customer</span>
+        <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+      </div>
+    </div>
+
+    <div mat-dialog-content class="position-relative" style="width: 290px;height: 508px;" perfectScrollbar>
+      <form style="height: auto" class="default-form" name="form" id="form" (ngSubmit)="checkValidForm() && doUpdate()"
+        #f="ngForm">
+        <div class="item d-flex flex-wrap align-items-center justify-content-center mt-2 mb-2"
+          *ngFor="let key of viewCustomerKeys">
+          <label class="title text-left w-100 mb-2" for="input_{{ key }}">
+            {{ key | mappingLabel }}
+            <span class="required">*</span>
+          </label>
+          <ng-container [ngSwitch]="key">
+            <ng-container *ngSwitchCase="'soldTo'">
+              <div class="form-group w-100">
+                <div class="d-flex input-group align-items-start mb-3 flex-column justify-content-between">
+                  <input-field [input]="rfCustomer.get(key)" [isSubmit]="f.submitted" [placeholder]="key" type="number"
+                    class="w-100"></input-field>
+                </div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'customerAddress'">
+              <div class="form-group w-100">
+                <div class="d-flex input-group align-items-start mb-3 flex-column justify-content-between">
+                  <input-field [input]="rfCustomer.get(key)" [isSubmit]="f.submitted" [placeholder]="key" class="w-100"
+                    type="pickUpLocation"></input-field>
+                </div>
+              </div>
+            </ng-container>
+
+            <!-- DEFAULT -->
+            <ng-container *ngSwitchDefault>
+              <div class="form-group w-100">
+                <div class="d-flex input-group align-items-start mb-3 flex-column justify-content-between">
+                  <input-field [input]="rfCustomer.get(key)" [isSubmit]="f.submitted" [placeholder]="key" class="w-100">
+                  </input-field>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </form>
+    </div>
+
+    <div class="w-100 p-0" mat-dialog-content>
+      <hr class="station-tank-line" />
+    </div>
+
+    <div class="height-60 align-items-center d-none" mat-dialog-content>
+      <div class="form-group w-100 d-flex justify-content-end align-items-center" style="color: rgba(36, 150, 201, 1)">
+        <span (click)="isStationExtend = !isStationExtend" style="cursor: pointer">Station / Tank <i
+            class="far fa-long-arrow-right ml-2"></i></span>
+      </div>
+    </div>
+  </div>
+  <div class="ml-3 mr-3 d-flex justify-content-center align-items-center" *ngIf="isStationExtend">
+    <i style="color: #2496c9; font-size: 21px;" class="fas fa-caret-right"></i>
+  </div>
+
+  <div [class.mat-elevation-z8]="true" *ngIf="isStationExtend">
+    <div mat-dialog-title>
+      <div class="d-flex flex-row title align-items-center">
+        <span class="flex-grow-1">New Station</span>
+        <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+      </div>
+    </div>
+    <div class="p-0 d-flex flex-row" mat-dialog-content style="height: 508px; min-width: 290px">
+      <span class="m-3 title" *ngIf="!stations.length">Please add new station</span>
+      <div class="position-relative h-100" perfectScrollbar>
+        <div *ngFor="let station of stations; let i = index; let isLast = last" style="min-width: 290px" class="plr-15"
+          (click)="selectStation(i)" [ngClass]="{ 'selected-station': station['selected'] }">
+          <div class="w-100 pt-2 pb-2 cursor-pointer" [class.station-heading]="!isLast">
+            <div class="w-100 d-flex justify-content-between align-items-center">
+              <div class="d-flex flex-row">
+                <i class="fal fa-gas-pump mr-2"></i>
+                Station
+                <span class="font-weight-bold mr-1 ml-1">-</span>
+                <span class="truncate" matTooltip="{{ rfStationList[i].get('stationName').value }}">{{
+                  rfStationList[i].get('stationName').value
+                }}</span>
+              </div>
+              <div class="d-flex flex-row justify-content-end align-items-center">
+                <button mat-icon-button (click)="removeStation(i)"><i class="fal fa-trash-alt"></i></button>
+                <button (click)="station['isCollapse'] = !station['isCollapse']" mat-icon-button>
+                  <i *ngIf="station['isCollapse']" class="fal fa-chevron-down"></i><i *ngIf="!station['isCollapse']"
+                    class="fal fa-chevron-up"></i>
+                </button>
+              </div>
+            </div>
+            <div class="" [collapse]="station['isCollapse']" [ngClass]="{ 'selected-station': station['selected'] }">
+              <form class="default-form">
+                <div class="item d-flex flex-wrap align-items-center justify-content-center mt-2 mb-2 w-field"
+                  *ngFor="let key of viewStationKeys">
+                  <label class="title w-100 mb-2" for="input_{{ key }}">
+                    {{ key | mappingLabel }}
+                    <span class="required">*</span>
+                  </label>
+                  <ng-container [ngSwitch]="key">
+                    <ng-container *ngSwitchCase="'contactNumber'">
+                      <div class="form-group w-100">
+                        <div class="d-flex input-group align-items-start mb-3 flex-column justify-content-between">
+                          <contact-numbers [formArray]="rfStationList[i].get(key)" [isSubmitted]="f.submitted"
+                            class="w-100" wFull="true"></contact-numbers>
+                        </div>
+                      </div>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="'streetAddress'">
+                      <div class="form-group w-100">
+                        <div class="d-flex input-group align-items-start mb-3 flex-column justify-content-between">
+                          <input-field [input]="rfStationList[i].get(key)" [isSubmit]="f.submitted" [placeholder]="key"
+                            class="w-100" type="pickUpLocation"></input-field>
+                        </div>
+                      </div>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="
+                        ['distanceFromTerminal', 'estimatedHoursFromTerminal', 'shipTo', 'truckSize'].includes(key)
+                          ? key
+                          : null
+                      ">
+                      <div class="form-group w-100">
+                        <div class="d-flex input-group align-items-start mb-3 flex-column justify-content-between">
+                          <input-field [input]="rfStationList[i].get(key)" [placeholder]="key" [isSubmit]="f.submitted"
+                            type="number" class="w-100"></input-field>
+                        </div>
+                      </div>
+                    </ng-container>
+
+                    <ng-container *ngSwitchDefault>
+                      <div class="form-group w-100">
+                        <div class="d-flex input-group align-items-start mb-3 flex-column justify-content-between">
+                          <input-field [input]="rfStationList[i].get(key)" [placeholder]="key" [isSubmit]="f.submitted"
+                            class="w-100"></input-field>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </ng-container>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="stations.length && selectedIndex !== -1">
+        <div class="position-relative h-100 minw-290" perfectScrollbar>
+          <div class="m-3" *ngIf="!stations[selectedIndex]['tanks']?.length">
+            <span class="title">Please add new tank</span>
+          </div>
+          <div *ngFor="let tank of stations[selectedIndex]['tanks']; let i = index; let isLast = last" class="plr-15"
+            style="background-color: #142134;">
+            <div class="pt-2 pb-2 w-100" [class.station-heading]="!isLast">
+              <div class="w-100 d-flex justify-content-between align-items-center">
+                <div class="d-flex flex-row">
+                  <i class="fal fa-coins mr-2 fa-center"></i>
+                  Tank
+                  <span class="font-weight-bold mr-1 ml-1">-</span>
+                  <span class="truncate"
+                    matTooltip="{{ stations[selectedIndex]['rfTanks'][i].get('tankNumber').value }}">
+                    {{ stations[selectedIndex]['rfTanks'][i].get('tankNumber').value }}
+                  </span>
+                </div>
+                <div class="d-flex flex-row justify-content-end align-items-center">
+                  <button mat-icon-button (click)="removeTank(i)"><i class="fal fa-trash-alt"></i></button>
+                  <button (click)="tank['isCollapse'] = !tank['isCollapse']" mat-icon-button>
+                    <i *ngIf="tank['isCollapse']" class="fal fa-chevron-down"></i><i *ngIf="!tank['isCollapse']"
+                      class="fal fa-chevron-up"></i>
+                  </button>
+                </div>
+              </div>
+              <div [collapse]="tank['isCollapse']">
+                <form class="default-form" class="w-field">
+                  <div class="item d-flex flex-wrap align-items-center justify-content-center mt-2 mb-2"
+                    *ngFor="let key of viewTankKeys">
+                    <label class="title mb-2 w-100" for="input_{{ key }}">
+                      {{ key | mappingLabel }} <span class="required">*</span>
+                    </label>
+                    <ng-container [ngSwitch]="key">
+                      <!-- IS_PTO_REQ -->
+                      <ng-container *ngSwitchCase="'isPtoReq'">
+                        <div class="form-group w-100">
+                          <div class="d-flex input-group align-items-start mb-3 flex-column justify-content-between">
+                            <label class="tql-checkbox"><input type="checkbox" id="input_{{ key }}"
+                                name="input_{{ key }}" #control="ngModel" [(ngModel)]="tank[key].value" /><span
+                                class="tickmark"></span></label>
+                          </div>
+                        </div>
+                      </ng-container>
+
+                      <ng-container *ngSwitchCase="'maxFillCapacityPercentage'">
+                        <div class="form-group w-100">
+                          <div class="d-flex input-group align-items-start mb-3 flex-column justify-content-between">
+                            <input-field [input]="stations[selectedIndex]['rfTanks'][i].get(key)" [placeholder]="key"
+                              [isSubmit]="f.submitted" type="number" class="w-100" [min]="0" [max]="100"></input-field>
+                          </div>
+                        </div>
+                      </ng-container>
+
+                      <!-- DEFAULT -->
+                      <ng-container *ngSwitchDefault>
+                        <div class="form-group w-100">
+                          <div class="d-flex input-group align-items-start mb-3 flex-column justify-content-between">
+                            <input-field [input]="stations[selectedIndex]['rfTanks'][i].get(key)" [placeholder]="key"
+                              [isSubmit]="f.submitted" type="number" class="w-100" [min]="0"></input-field>
+                          </div>
+                        </div>
+                      </ng-container>
+                    </ng-container>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="w-100 p-0" mat-dialog-content>
+      <hr class="station-tank-line" />
+    </div>
+
+    <div class="height-60 d-flex flex-row align-items-center" mat-dialog-content>
+      <div class="form-group w-100 d-flex justify-content-start align-items-center">
+        <button mat-button class="btn btn-blue p-0 button-plus mr-3" (click)="addStation()">
+          <strong><i class="fal fa-plus"></i></strong>
+        </button>
+        Add station
+      </div>
+      <div class="form-group w-100 d-flex justify-content-start align-items-center"
+        [ngClass]="{ 'disabled-half': !stations.length }">
+        <button mat-button class="btn btn-blue p-0 button-plus mr-3" (click)="addTank()">
+          <strong><i class="fal fa-plus"></i></strong>
+        </button>
+        Add tank
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="form-buttons d-flex justify-content-center">
+  <button mat-raised-button [class.mat-elevation-z8]="true" type="button" class="btn btn-blue btn-cancel btn-125 ml-10"
+    (click)="onCancel()">
+    Cancel
+  </button>
+  <button mat-raised-button [class.mat-elevation-z8]="true" type="submit" class="btn btn-blue btn-125 ml-10"
+    form="form">
+    <i class="fal fa-check mr-1"></i>Create
+  </button>
+</div>

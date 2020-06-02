@@ -1,0 +1,42 @@
+{
+  "iconLocaltion": [{
+      "title": "Station Location",
+      "urlIcon": "assets/images/map/station.png"
+    },
+    {
+      "title": "Truck Location",
+      "urlIcon": "assets/images/map/truck.png"
+    },
+    {
+      "title": "Unloading",
+      "urlIcon": "assets/images/map/Unloading.png"
+    }
+  ],
+  "iconRouting": [{
+      "title": "Routing Line",
+      "urlIcon": "assets/images/map/route-1.png"
+    },
+    {
+      "title": "Routing Line",
+      "urlIcon": "assets/images/map/route-2.png"
+    }
+  ],
+  "iconStatus": [{
+      "title": "Order Number",
+      "faIcon": "fa-receipt",
+      "status": "On transit"
+    },
+    {
+      "title": "Order Number",
+      "faIcon": "fa-receipt",
+      "color": "#2496c9",
+      "status": "Pending"
+    },
+    {
+      "title": "Delivered",
+      "color": "#9fb2bf",
+      "faIcon": "fa-check-square",
+      "status": "Delivered"
+    }
+  ]
+}

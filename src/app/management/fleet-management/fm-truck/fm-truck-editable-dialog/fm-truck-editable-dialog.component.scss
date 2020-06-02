@@ -1,0 +1,19 @@
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+}
+
+.two-col-auto-1 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.compartment-list {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+}
+
+.label {
+  white-space: nowrap;
+}

@@ -1,0 +1,92 @@
+@import 'variables';
+
+.mat-dialog-container {
+  background: transparent;
+  color: $cl_text_default;
+  box-shadow: none;
+  border-radius: 0 !important;
+  overflow: unset;
+
+  .mat-dialog-title {
+    font-size: 14px;
+    font-weight: 500;
+    background-color: $cl_charcoal;
+    padding: 0 15px;
+    margin-bottom: 0;
+  }
+
+  .wrapper {
+    box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14),
+    0 9px 46px 8px rgba(0, 0, 0, 0.12);
+  }
+
+  //input[type='text'],
+  //input[type='number'],
+  //input[type='email'],
+  //input[type='password'] {
+    //background-color: $cl_panel_input_bg;
+  //}
+
+  //table {
+  //  input[type='text'],
+  //  input[type='number'],
+  //  input[type='password'] {
+  //    background-color: $cl_blue_darkest;
+  //  }
+  //}
+
+  .form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin: 10px 15px 0 15px;
+    //button {
+    //  margin-left: 20px;
+    //}
+  }
+}
+
+// ::-webkit-scrollbar {
+//   width: 6px;
+// }
+// ::-webkit-scrollbar-track {
+//   background: $cl_blue_darkest;
+// }
+// ::-webkit-scrollbar-thumb {
+//   background: #3d3d3d;
+// }
+.scroll {
+  padding-right: 15px !important;
+  margin-right: -15px !important;
+}
+
+.w-80vw {
+  width: calc(80vw - 30px);
+}
+
+.h-full {
+  max-height: -webkit-fill-available !important;
+}
+
+.dialog-full {
+  width: 100%;
+  height: 80vh;
+}
+
+.dialog-full-custom {
+  height: calc(80vh - 86px);
+}
+
+.layout-dialog-form {
+  padding: 10px 15px 20px 15px !important;
+}
+
+.dialog-map-content {
+  .mat-dialog-content {
+    height: calc(100vh - 200px);
+  }
+
+  .coordinate-controls {
+    width: 400px;
+    overflow-y: auto;
+  }
+}

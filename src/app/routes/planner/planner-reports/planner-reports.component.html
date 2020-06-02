@@ -1,0 +1,34 @@
+<div class="panel tql-panel m-3">
+  <div class="panel-heading">
+    <span class="title">New Report</span>
+  </div>
+  <form #editForm="ngForm" name="form" class="p-3">
+    <div class="panel-body">
+      <div class="w-50">
+        <div class="d-flex align-items-center my-3">
+          <div class="w-25">Template</div>
+          <select-menu [items]="reports" [bindLabel]="'_data.reportName'" [bindValue]="'_data.sysId'" required name="template"
+            (change)="selectedReportId = $event.value" [placeHolder]="'Select Template'" [ngModel]="selectedReportId">
+          </select-menu>
+        </div>
+        <div class="d-flex align-items-center my-3">
+          <div class="w-25">Start Date</div>
+          <input type="text" class="date-picker text-left" onkeydown="return false" bsDatepicker placement="right"
+            required name="startDate" [(ngModel)]="startDate" (bsValueChange)="onStartDateChange()">
+        </div>
+        <div class="d-flex align-items-center my-3">
+          <div class="w-25">End Date</div>
+          <input type="text" class="date-picker text-left" onkeydown="return false" bsDatepicker placement="right"
+            required name="endDate" [(ngModel)]="endDate" [minDate]="startDate">
+        </div>
+      </div>
+    </div>
+    <div class="panel-footer">
+      <button mat-raised-button [class.mat-elevation-z8]="true" class="btn-blue" (click)="generate()"
+        [ngClass]="{'disabled-half': editForm.form.invalid || editForm.form.pristine}">
+        <i class="fal fa-file-chart-pie ml-0 mr-2"></i> Generate
+      </button>
+      <i class="fal fa-question-circle ml-3 text-blue" appCopyGUID [key]="4" [matTooltip]="'Click to generate report'"></i>
+    </div>
+  </form>
+</div>

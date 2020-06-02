@@ -1,0 +1,90 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-default {
+  cursor: initial;
+}
+
+.bs-chevron {
+  margin: auto;
+}
+
+.bs-timepicker-field {
+  min-width: 70px;
+}
+
+//.cdk-overlay-pane {
+//    overflow: auto;
+//}
+
+.hidden, [hidden] {
+  display: none !important;
+}
+
+.min-vw-50 {
+  min-width: 50vw !important;
+}
+
+.min-vh-50 {
+  min-height: 50vh !important;
+}
+
+.focused-row-t {
+  border-top: 3px solid $cl_blue !important;
+}
+
+.focused-row-l {
+  border-left: 3px solid $cl_blue !important;
+}
+
+.focused-row-r {
+  border-right: 3px solid $cl_blue !important;
+}
+
+.focused-row-b {
+  border-bottom: 3px solid $cl_blue !important;
+}
+
+.custom-today-class {
+  border: 1px solid $cl_blue;
+}
+
+.two-row-auto-1 {
+  grid-template-rows: auto 1fr;
+}
+
+.my-tooltip {
+  white-space: pre-line;
+}
+
+
+.sticky {
+  &-t {
+    position: sticky;
+    top: 0;
+  }
+
+  &-r {
+    position: sticky;
+    right: 0;
+  }
+
+  &-l {
+    position: sticky;
+    left: 0;
+  }
+
+  &-b {
+    position: sticky;
+    bottom: 0;
+  }
+}
+
+.mt-150 {
+  margin-top: 150px;
+}
+
+.inline-block {
+  display: inline-block;
+}

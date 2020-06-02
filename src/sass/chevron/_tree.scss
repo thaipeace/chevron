@@ -1,0 +1,69 @@
+@import "~src/sass/chevron/variables";
+.mat-tree{
+  background-color: transparent;
+}
+.tree {
+    $height_outside: 80px;
+    min-height: calc(100vh - #{$height_outside} - #{$main_wrapper_padding_top} - #{$main_wrapper_padding_bottom});
+    max-height: calc(100vh - #{$height_outside} - #{$main_wrapper_padding_top} - #{$main_wrapper_padding_bottom});
+    overflow: auto;
+
+    .node-prefix {
+        color: $cl_deep_peach;
+        white-space: nowrap;
+    }
+
+    .node-wrapper {
+        max-width: calc(100% - 40px - 10px);
+        flex-grow: 1;
+
+        .col-action {
+            visibility: hidden;
+        }
+
+        &:hover {
+            .col-action {
+                visibility: visible;
+            }
+        }
+    }
+
+    ul {
+        padding-left: 20px;
+    }
+
+    .tree-invisible {
+        display: none;
+    }
+
+    ul,
+    li {
+        margin-top: 0;
+        margin-bottom: 0;
+        list-style-type: none;
+    }
+
+    .mat-tree-node {
+        min-height: 40px;
+    }
+}
+
+.tree-view-group {
+    $left_width: 360px;
+    overflow: hidden;
+
+    .left-content {
+        width: $left_width;
+        max-width: 40%;
+    }
+
+    .right-content {
+        max-width: calc(100% - #{$left_width});
+
+        .mat-tab-group {
+            max-height: calc(100vh - #{$main_wrapper_padding_top} - #{$main_wrapper_padding_bottom} - 30px);
+        }
+    }
+
+}
+

@@ -1,0 +1,27 @@
+@import '~src/sass/chevron/variables';
+
+app-planner-ar-page > app-planner-ar-order {
+    .overlay {
+        top: 0;
+        z-index: 99;
+        left: 0;
+        position: absolute;
+        background-color: $cl_blue_darkest;
+        height: 154px;
+        width: 100%;
+    }
+
+    perfect-scrollbar thead {
+        tr:nth-child(2) {
+            th.mat-header-cell.mat-table-sticky {
+                top: 64px !important;
+            }
+        }
+
+        tr:nth-child(3) {
+            th.mat-header-cell.mat-table-sticky {
+                top: 114px !important;
+            }
+        }
+    }
+}

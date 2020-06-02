@@ -1,0 +1,65 @@
+<div [class.mat-elevation-z8]="true">
+    <div mat-dialog-title>
+        <div class="d-flex flex-row title align-items-center">
+            <span class="flex-grow-1">{{ isNew ? 'New Company' : 'Edit Company' }}</span>
+            <button class="close" mat-icon-button (click)="onNoClick()">
+                <i class="fal fa-times"></i>
+            </button>
+        </div>
+    </div>
+    <form
+        [formGroup]="companyForm"
+        id="cform"
+        name="cform"
+        (ngSubmit)="f.form.valid && onSaveClick()"
+        #f="ngForm"
+        *ngIf="!!companyForm"
+        class="default-form custom-form"
+    >
+        <div mat-dialog-content class="layout-dialog-form">
+            <div class="table-data-detail">
+                <div class="two-col-table">
+                    <div
+                        *ngFor="
+                            let item of ['companyName', 'contactPerson', 'contactNumber', 'companyCode', 'companyId']
+                        "
+                    >
+                        <label class="label" for="{{ item }}">
+                            <span>{{ item | mappingLabel }}</span>
+                            <span class="required">*</span>
+                        </label>
+                        <div class="mt-2">
+                            <input-field
+                                [input]="companyForm.get(item)"
+                                [placeholder]="item"
+                                [isSubmit]="f.submitted"
+                            ></input-field>
+                        </div>
+                    </div>
+                    <div *ngIf="!!companyDetail && !isNew">
+                        <div class="text-default">
+                            <app-last-updated-info
+                                [username]="companyDetail?.userName"
+                                [lastUpdated]="companyDetail?.lastUpdated"
+                            >
+                            </app-last-updated-info>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="form-buttons">
+    <button
+        mat-raised-button
+        [class.mat-elevation-z8]="divue"
+        type="submit"
+        form="cform"
+        class="btn btn-blue ml-10 btn-update btn-100"
+    >
+        <i class="fal fa-check"></i>
+        <span class="ml-2">{{ isNew ? 'Create' : 'Update' }}</span>
+    </button>
+</div>

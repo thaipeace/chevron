@@ -1,0 +1,141 @@
+<div [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">{{ isNew ? 'New Tank' : 'Edit Tank' }}</span>
+      <button class="close" mat-icon-button (click)="onCancel()">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+  </div>
+  <div mat-dialog-content class="layout-dialog-form edit">
+    <div mat-dialog-content class="dialog-content-full settings" style="overflow: visible; padding: 0 !important;">
+      <form name="form" id="form" #f="ngForm" novalidate>
+        <div class="row">
+          <div class="item col-6 mb-3" *ngFor="let key of keys">
+            <div class="mb-2">
+              <label class="label" for="input_{{ key }}">
+                <span>{{ key | mappingLabel: {stationId: 'Station'} }}</span>
+                <span class="required" *ngIf="!['isPtoReq', 'archived'].includes(key)">*</span>
+              </label>
+            </div>
+            <ng-container [ngSwitch]="key">
+              <!-- EMAIL -->
+              <ng-container *ngSwitchCase="'emailAddress'">
+                <div class="form-group">
+                  <input class="form-control control arb-input" type="email" id="input_{{ key }}" name="input_{{ key }}"
+                    #control="ngModel" required noWhiteSpace email [(ngModel)]="formData[key].value"
+                    placeholder="{{ key | mappingLabel }}" />
+                  <div *ngIf="f.submitted && control.invalid" class="error">
+                    <small *ngIf="control?.errors.required || control?.errors.whitespace">* Field is
+                      required</small>
+                    <small *ngIf="control?.errors.email">* Invalid email format</small>
+                  </div>
+                </div>
+              </ng-container>
+              <!-- IS_PTO_REQ -->
+              <ng-container *ngSwitchCase="'isPtoReq'">
+                <div class="form-group control tql-button-group" style="height: 18px;">
+                  <label class="tql-checkbox">
+                    <input type="checkbox" id="input_{{ key }}" name="input_{{ key }}" #control="ngModel"
+                      [(ngModel)]="formData[key].value" />
+                    <span class="tickmark"></span>
+                  </label>
+                </div>
+              </ng-container>
+
+              <ng-container *ngSwitchCase="'archived'">
+                <div class="form-group control tql-button-group" style="height: 18px;">
+                  <label class="tql-checkbox">
+                    <input type="checkbox" id="input_{{ key }}" name="input_{{ key }}" #control="ngModel"
+                      [(ngModel)]="formData[key].value" />
+                    <span class="tickmark"></span>
+                  </label>
+                </div>
+              </ng-container>
+              <!-- STATION ID -->
+              <ng-container *ngSwitchCase="'stationId'">
+                <div class="form-group" [class.disabled-half]="disabledSelect">
+                  <select-menu [items]="stations" [bindLabel]="'_data.stationName'" [bindValue]="'_data.sysId'"
+                    (change)="formData[key].value = $event.value" [classes]="'arb-input'" #control="ngModel"
+                    [placeHolder]="'Select Station'" required [ngModel]="formData[key].value" name="input_{{ key }}">
+                  </select-menu>
+                  <div *ngIf="f.submitted && control.invalid" class="error">
+                    <small *ngIf="control?.errors.required">* Field is required</small>
+                  </div>
+                </div>
+              </ng-container>
+              <!-- Product Code -->
+              <ng-container *ngSwitchCase="'productCode'">
+                <div class="form-group">
+                  <select-menu [items]="productCodeData" type="simpleArray"
+                    (change)="formData[key].value = $event.value" [classes]="'arb-input'" #control="ngModel"
+                    [placeHolder]="'Select Product Code'" required [ngModel]="formData[key].value"
+                    name="input_{{ key }}">
+                  </select-menu>
+                </div>
+              </ng-container>
+              <!-- DEFAULT -->
+              <ng-container *ngSwitchDefault>
+                <div class="form-group">
+                  <ng-container *ngIf="
+                    [
+                      'tankNumber',
+                      'deadStock',
+                      'maxFillCapacity',
+                      'preferredMaxFill',
+                      'currentUllage',
+                      'currentVolume',
+                      'maxFillCapacityPercentage',
+                      'tankCapacity'
+                    ].includes(key);
+                    else regularInput
+                  ">
+                    <input class="form-control control arb-input" type="number" min="0" id="input_{{ key }}"
+                      name="input_{{ key }}" #control="ngModel" required [(ngModel)]="formData[key].value"
+                      placeholder="{{ key | mappingLabel }}" />
+                    <i class="fal fa-question-circle ml-3 text-blue position-absolute" style="top:45px; right: 0;"
+                      *ngIf="key==='tankNumber'" appCopyGUID [key]="2"
+                      [matTooltip]="'Unavailable tank number: ' + unAvailableTankNumbers"></i>
+
+                    <div *ngIf="f.submitted && control.invalid" class="error">
+                      <small *ngIf="control?.errors">* Field is required</small>
+                    </div>
+                  </ng-container>
+                  <ng-template #regularInput>
+                    <input class="form-control control arb-input" type="text" id="input_{{ key }}"
+                      name="input_{{ key }}" #control="ngModel" required noWhiteSpace [(ngModel)]="formData[key].value"
+                      placeholder="{{ key | mappingLabel }}" />
+                    <div *ngIf="f.submitted && control.invalid" class="error">
+                      <small *ngIf="control?.errors">* Field is required</small>
+                    </div>
+                  </ng-template>
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+          <div *ngIf="!isNew" class="d-flex flex-row pt-1 justify-content-end text-default">
+            <app-last-updated-info [username]="tankDetail?.userName" [lastUpdated]="tankDetail?.lastUpdated">
+            </app-last-updated-info>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="form-buttons">
+  <!-- <button
+      mat-raised-button
+      [class.mat-elevation-z8]="true"
+      type="button"
+      class="btn btn-blue btn-cancel btn-125"
+      (click)="onCancel()"
+    >
+      Cancel
+    </button> -->
+  <button mat-raised-button [class.mat-elevation-z8]="true" form="form" class="btn btn-blue ml-10"
+    [class.disabled-half]="!f.form.valid || !isExtraValid()" (click)="doUpdate()">
+    <i class="fal fa-check"></i>
+    <span class="ml-2">{{ isNew ? 'New Tank' : 'Update' }}</span>
+  </button>
+</div>

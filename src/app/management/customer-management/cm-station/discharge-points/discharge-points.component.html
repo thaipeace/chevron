@@ -1,0 +1,137 @@
+<div class="p-3 d-flex flex-column">
+  <div class="actions-bar">
+    <div class="mb-3 d-flex align-items-center">
+      <div class="flex-grow-1">
+        <button mat-raised-button type="button" class="btn btn-blue mr-3" (click)="onEdit(false)" *ngIf="!readonly">
+          <i class="fal fa-plus"></i>
+          New Discharge Point
+        </button>
+        <button class="" mat-icon-button (click)="onRefresh()">
+          <i class="fal fa-sync-alt"></i>
+        </button>
+      </div>
+      <div class="form-group d-flex justify-content-center">
+        <!-- Paging -->
+        <search-box [searchControl]="searchControl"></search-box>
+        <mat-paginator class="chevron-paginator ml-3" [length]="100" [pageSize]="10"
+          [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </div>
+    </div>
+  </div>
+  <perfect-scrollbar class="table-material flex-grow-1">
+    <table mat-table class="mat-elevation-z8 tql-table" [dataSource]="tableData" matSort>
+      <ng-container matColumnDef="#">
+        <th mat-header-cell *matHeaderCellDef>
+          <ng-container *ngTemplateOutlet="ind"></ng-container>
+          <ng-template #ind><span>#</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let i = index">
+          <ng-container *ngTemplateOutlet="indV"></ng-container>
+          <ng-template #indV>
+            <div class="text-left">{{i + 1}}</div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="dischargePointName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="DischargePointName">
+          <ng-container *ngTemplateOutlet="dischargePointName"></ng-container>
+          <ng-template #dischargePointName><span>Discharge Point Name</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngTemplateOutlet="dischargePointNameV"></ng-container>
+          <ng-template #dischargePointNameV>
+            <div class="text-left">{{row.DischargePointName}}</div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lat">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="Latitude">
+          <ng-container *ngTemplateOutlet="lat"></ng-container>
+          <ng-template #lat><span>Lat</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngTemplateOutlet="latV"></ng-container>
+          <ng-template #latV>
+            <div class="text-left">{{row.Latitude}}</div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lon">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="Longitude">
+          <ng-container *ngTemplateOutlet="lon"></ng-container>
+          <ng-template #lon><span>Lon</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngTemplateOutlet="lonV"></ng-container>
+          <ng-template #lonV>
+            <div class="text-left">{{row.Longitude}}</div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="alt">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="Altitude">
+          <ng-container *ngTemplateOutlet="alt"></ng-container>
+          <ng-template #alt><span>Alt</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngTemplateOutlet="altV"></ng-container>
+          <ng-template #altV>
+            <div class="text-left">{{row.Altitude}}</div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tankAssociations">
+        <th mat-header-cell *matHeaderCellDef>
+          <ng-container *ngTemplateOutlet="tankAssociations"></ng-container>
+          <ng-template #tankAssociations><span>Tank Associations</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngTemplateOutlet="tankAssociationsV"></ng-container>
+          <ng-template #tankAssociationsV>
+            <div class="text-left" *ngIf="row.TankAssociations">
+              <ng-template [ngIf]="row.TankAssociations.TankNumber.length">
+                <span *ngFor="let tank of row.TankAssociations.TankNumber; let i=index">
+                  {{i===0 ? '' : ', '}}{{tank.TankNumber}}
+                </span>
+              </ng-template>
+            </div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>
+          <ng-container *ngTemplateOutlet="action"></ng-container>
+          <ng-template #action><span>Actions</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <div class="text-left">
+            <i matTooltip="edit" class="fal fa-edit cream cursor-pointer"
+              (click)="onEdit(true, row);$event.stopPropagation();"></i>
+            <i matTooltip="delete" class="fal fa-trash-alt cursor-pointer text-red ml-3"
+              (click)="onDelete(row);$event.stopPropagation();"></i>
+          </div>
+
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row [class.selected]="selectedRow === row"
+        *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+    <!-- No search result -->
+    <div *ngIf="tableData?.data.length > 0 && tableData?.filteredData.length == 0" class="no-result">
+      No search result found
+    </div>
+    <!-- No data -->
+    <div *ngIf="tableData?.data.length == 0" class="no-result">
+      No data found
+    </div>
+
+  </perfect-scrollbar>
+</div>

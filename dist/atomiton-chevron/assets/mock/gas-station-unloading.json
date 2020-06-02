@@ -1,0 +1,50 @@
+[
+  {
+    "station": "A G Service Station",
+    "trucks": [
+      {
+        "name": "NCN 9526",
+        "data": ["8072019", "8072020"]
+      },
+      {
+        "name": "VAX 7599",
+        "data": ["8072145"]
+      }
+    ]
+  },
+  {
+    "station": "Berjaya",
+    "trucks": [
+      {
+        "name": "BPH 5299",
+        "data": ["8072145"]
+      }
+    ]
+  },
+  {
+    "station": "Bintang Cheng (45) M",
+    "trucks": [
+      {
+        "name": "NCN 4346",
+        "data": ["8072019", "8072020"]
+      },
+      {
+        "name": "VAX 7599",
+        "data": ["8072145"]
+      }
+    ]
+  },
+  {
+    "station": "C Kam Fatt (32) S",
+    "trucks": [
+      {
+        "name": "NCN 4346",
+        "data": ["8072019"]
+      },
+      {
+        "name": "VAX 7599",
+        "data": ["8072145"]
+      }
+    ]
+  }
+]

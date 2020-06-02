@@ -1,0 +1,20 @@
+<ngui-map [zoom]="zoom"
+          [center]="center"
+          [styles]="styles"
+          (mapReady$)="onMapReady($event)" class="map-wrapper">
+    <custom-marker *ngIf="currentLocation" [position]="currentLocation">
+        <div class="custom-marker">
+            <img class="icon" src="/assets/images/map/icon-truck.png"/>
+        </div>
+    </custom-marker>
+    <custom-marker *ngIf="from" [position]="from?.toArray()">
+        <div class="custom-marker">
+            <img class="" src="/assets/images/Chevron_Logo.svg.png"/>
+        </div>
+    </custom-marker>
+    <custom-marker *ngIf="to" [position]="to?.toArray()">
+        <div class="custom-marker">
+            <img class="icon" src="/assets/images/map/gas-station-marker.png"/>
+        </div>
+    </custom-marker>
+</ngui-map>

@@ -1,0 +1,54 @@
+[
+  {
+    "port": "B1",
+    "typeOil": [
+      {
+        "name": "B10-DIESEL",
+        "trucks": ["NCN 4346", "NCN 9584"]
+      }
+    ]
+  },
+  {
+    "port": "B2",
+    "typeOil": [
+      {
+        "name": "B10-DIESEL",
+        "trucks": ["NCN 9526"]
+      },
+      {
+        "name": "PREMIUM-95",
+        "trucks": ["NCN 4346"]
+      }     
+    ]
+  },
+  {
+    "port": "B3",
+    "typeOil": [
+      {
+        "name": "B10-DIESEL",
+        "trucks": ["NCN 9526"]
+      },
+      {
+        "name": "EURO4-97",
+        "trucks": ["NCN 4346", "VAX 7599"]
+      }     
+    ]
+  },
+  {
+    "port": "B4",
+    "typeOil": [
+      {
+        "name": "EURO5-B7",
+        "trucks": ["NCN 9526"]
+      },
+      {
+        "name": "B10-DIESEL",
+        "trucks": ["NCN 9526"]
+      },
+      {
+        "name": "PREMIUM-95",
+        "trucks": ["NCN 4346"]
+      }     
+    ]
+  }
+]

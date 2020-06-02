@@ -1,0 +1,22 @@
+<div [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex justify-content-between flex-row title align-items-center">
+      <span>
+        Confirmation
+      </span>
+      <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+    </div>
+  </div>
+
+  <div mat-dialog-content class="p-5">
+    <span class="flex-grow-1">Are you sure to approve AR data in this table?</span>
+  </div>
+</div>
+
+<div class="form-buttons">
+  <button mat-raised-button [class.mat-elevation-z8]="true" type="button" class="btn btn-blue btn-cancel"
+    (click)="onCancel()">Cancel
+  </button>
+  <button mat-raised-button [class.mat-elevation-z8]="true" type="button" (click)="submit()" class="btn btn-blue ml-10"
+    form="form-new-user">Approve</button>
+</div>

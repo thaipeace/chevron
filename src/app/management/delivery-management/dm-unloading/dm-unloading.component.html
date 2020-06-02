@@ -1,0 +1,59 @@
+<div class="d-flex align-items-center head">
+    <i class="far fa-gas-pump"></i>
+    <span class="size-16 color-default font-weight-bold m-0 ml-10">Unloading</span>
+</div>
+<div class="body">
+    <perfect-scrollbar class="position-relative h-full ">
+        <div class="gas-station-loading px-3">
+            <ng-container *ngIf="groups && groups.length"
+                          [ngTemplateOutlet]="itemLoading"
+                          [ngTemplateOutletContext]="{ groups: groups}">
+            </ng-container>
+            <div *ngIf="!(groups && groups.length)" class="py-3">
+                No data
+            </div>
+        </div>
+    </perfect-scrollbar>
+</div>
+
+<ng-template #itemLoading let-groups="groups">
+    <div class="item-group" *ngFor="let group of groups">
+        <div class="item ml-n2 pt-0">
+            <span class="item-port" title="{{group?.station?.stationName}}">{{group?.station?.stationName}}</span>
+        </div>
+        <div class="d-flex ml-n2 flex-column">
+            <div *ngFor="let truck of group?.trucks" class="">
+                <div class="d-flex align-items-center flex-row ">
+                    <div class="item hover d-flex flex-row align-items-center w-100">
+                        <i class="size-16 far fa-truck-container text-default"></i>
+                        <span class="ml-10 flex-grow-1">{{truck?.truckPlate}}</span>
+                        <i class="fal fa-poll-h cream size-16 ml-3 view cursor-pointer"
+                           (click)="onTruckDetails(truck)"></i>
+                    </div>
+                </div>
+                <div
+                    *ngFor="let order of truck.orders; first as isFirst; last as isLast"
+                    class="d-flex flex-row">
+                    <div class="treeline" [class.last]="isLast"></div>
+                    <div class="item hover">
+                        <i class="fal fa-receipt text-default"
+                           *ngIf="truck?.deliveredOrders.indexOf(order)<0 && order.getId() == truck.currentOrder.getId()"
+                           matTooltip="active"
+                        ></i>
+                        <i class="fal fa-receipt text-default"
+                           *ngIf="truck?.deliveredOrders.indexOf(order)<0 && order.getId() != truck.currentOrder.getId()"
+                           matTooltip="pending"></i>
+                        <i class="fal fa-check-square text-default"
+                           *ngIf="truck?.deliveredOrders.indexOf(order)>=0"
+                           matTooltip="delivered"></i>
+                        <span class=" text" [class.disabled-half]="truck?.deliveredOrders.indexOf(order)>=0"
+                              [class.active]="order.getId() == truck.currentOrder.getId()">
+                            {{order?.salesOrderNumber}}</span>
+                        <i class="fal fa-poll-h cream size-16 ml-3 view cursor-pointer"
+                           (click)="onOrderDetails(order)"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

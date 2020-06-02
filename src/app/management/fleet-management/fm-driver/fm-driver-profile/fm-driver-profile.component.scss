@@ -1,0 +1,203 @@
+@import "~src/sass/chevron/variables";
+.driver-performance-dialog {
+    .panel {
+        width: 100%;
+        //color: $cl_text_grey;
+
+        .hovering {
+            border: 3px solid $cl_blue !important;
+            // border-color: $cl_blue;
+        }
+
+        .edit-driver-palet {
+            background-color: #2f405d !important;
+        }
+
+        .hour-td {
+            height: 120px;
+            width: 100px;
+            vertical-align: top;
+            min-width: 150px;
+
+            .status-bar {
+                padding-left: 10px;
+                padding-right: 10px;
+                pointer-events: none;
+
+                .date {
+                    color: $cl_text;
+                }
+
+                .Good {
+                    color: $cl_dollar_bill;
+                    text-align: right;
+                }
+
+                .Normal {
+                    color: $cl_golden;
+                    text-align: right;
+                }
+
+                .Bad {
+                    color: $cl_red;
+                    text-align: right;
+                }
+            }
+
+            .hour-range {
+                span {
+                    color: $cl_text;
+                }
+
+                padding-left: 1px;
+                padding-right: 1px;
+                pointer-events: none;
+            }
+
+            .corner {
+                height: 20px;
+                width: 20px;
+                position: absolute;
+                right: 0;
+                top: 0;
+                border-style: solid;
+                border-width: 0 20px 20px 0;
+                border-color: transparent #62e8c8 transparent transparent;
+            }
+
+            .no-data {
+                height: 100%;
+            }
+        }
+
+        .hours-slider {
+            padding-left: 1px;
+            padding-right: 1px;
+            pointer-events: none;
+
+            hr {
+                width: 100%;
+                border: solid 1px $cl_text_grey;
+                background: $cl_text_grey;
+                border: none;
+                height: 4px;
+            }
+
+            hr.sleepactive {
+                background: $cl_ultramarine_blue;
+            }
+
+            hr.workactive {
+                background: $cl_golden;
+            }
+
+            &.sleeptime {
+                padding-top: 10px;
+            }
+
+            &.worktime {
+                padding-top: 15px;
+            }
+        }
+    }
+
+    .driver-performance-table {
+        th {
+            border: 2px solid $cl_charcoal !important;
+        }
+
+        td {
+            border: 2px solid $cl_charcoal;
+            background-color: $cl_border_2 !important;
+        }
+
+        td.in-month {
+            background-color: $cl_border_1 !important;
+            position: relative;
+        }
+    }
+
+    hr.sleepactive {
+        background: $cl_ultramarine_blue;
+    }
+
+    hr.workactive {
+        background: $cl_golden;
+    }
+
+    hr.info {
+        height: 4px;
+        width: 12px;
+        border: none;
+    }
+
+    .info-bar {
+        font-size: 12px;
+    }
+
+    .month {
+        font-size: 14px;
+    }
+
+    .no-schedule {
+        display: flex;
+        border: none !important;
+    }
+}
+
+::ng-deep .no-backdrop {
+    background: none !important;
+    display: none !important;
+}
+
+.driver-daily-dialog-wrapper {
+    min-width: 380px;
+    background: $cl_charcoal;
+
+    .driver-daily-dialog-table {
+        width: 100%;
+
+        td {
+            border-right: 1px $cl_charcoal solid;
+            padding: 15px 20px;
+        }
+    }
+}
+
+.btn-status {
+    background: $cl_charcoal;
+    padding-right: 0;
+}
+
+.bs-timepicker-field {
+    width: 70px;
+}
+
+.status {
+    .Good {
+        color: $cl_dollar_bill;
+        width: 45px;
+        text-align: right;
+    }
+
+    .Normal {
+        color: $cl_golden;
+        width: 45px;
+        text-align: right;
+    }
+
+    .Bad {
+        color: $cl_red;
+        width: 45px;
+        text-align: right;
+    }
+}
+
+.grid {
+    display: grid;
+    grid-template-rows: auto 1fr;
+}
+
+.leave-display {
+    opacity: 0.4;
+}

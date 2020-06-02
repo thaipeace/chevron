@@ -1,0 +1,72 @@
+<div [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">New Terminal</span>
+      <button class="close" mat-icon-button (click)="onCancel()">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <div mat-dialog-content class="layout-dialog-form edit">
+    <div mat-dialog-content class="dialog-content-full layout-dialog-form settings">
+      <form #editForm="ngForm" name="form">
+        <div class="infos">
+          <div class="row">
+            <div class="item col-6">
+              <label class="label" for="terminalName">Terminal Name</label>
+              <div class="form-group">
+                <input class="form-control control no-radius-input" type="text" name="terminalName"
+                       required pattern="^(?!\s+$).+"
+                       [(ngModel)]="selectedItem.terminalName">
+              </div>
+            </div>
+            <div class="item col-6">
+              <label class="label" for="description">Description</label>
+              <div class="form-group">
+                <input class="form-control control no-radius-input" type="text" name="description"
+                       required pattern="^(?!\s+$).+"
+                       [(ngModel)]="selectedItem.description">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="item col-4">
+              <label class="label" for="longitude">Longitude</label>
+              <div class="form-group">
+                <input class="form-control control no-radius-input" type="number" name="longitude"
+                       required pattern="^(?!\s+$).+"
+                       [(ngModel)]="selectedItem.longitude">
+              </div>
+            </div>
+            <div class="item col-4">
+              <label class="label" for="latitude">Latitude</label>
+              <div class="form-group">
+                <input class="form-control control no-radius-input" type="number" name="latitude"
+                       required pattern="^(?!\s+$).+"
+                       [(ngModel)]="selectedItem.latitude">
+              </div>
+            </div>
+            <div class="item col-4">
+              <label class="label" for="altitude">Altitude</label>
+              <div class="form-group">
+                <input class="form-control control no-radius-input" type="number" name="altitude"
+                       required pattern="^(?!\s+$).+"
+                       [(ngModel)]="selectedItem.altitude">
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="form-buttons">
+  <button mat-raised-button [class.mat-elevation-z8]="true" class="btn btn-blue ml-10" (click)="onCreate()"
+          [ngClass]="{'disabled-half': editForm.form.invalid || editForm.form.pristine}">
+    <i class="fal fa-check"></i>
+    <span class="ml-2">Create New</span>
+  </button>
+</div>

@@ -1,0 +1,32 @@
+.input-contact-number {
+    margin-top: 7px;
+    &:first-child {
+        margin-top: 0;
+    }
+}
+
+.btn {
+    border: none;
+    border-radius: 3px;
+}
+
+.input-box {
+    display: flex;
+    align-items: center;
+    width: 191px;
+    input {
+        min-width: 154px !important;
+        background-color: #3c4d6a !important;
+    }
+}
+
+.style-details {
+    height: 30px;
+    border-color: #9fb2bf;
+    color: #9fb2bf;
+    border-radius: 0;
+}
+
+.small {
+    max-width: 250px !important;
+}

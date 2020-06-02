@@ -1,0 +1,22 @@
+<div [class.mat-elevation-z8]="true" style="height: 90vh;" class="d-flex flex-column">
+  <div mat-dialog-title>
+    <div class="d-flex title align-items-center justify-content-between">
+      <div class="d-flex">
+        <div>{{title}}</div>
+      </div>
+      <div class="d-flex align-items-center">
+        <div class="mr-3">{{topRight}}</div>
+        <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+      </div>
+    </div>
+  </div>
+  <div mat-dialog-content class="flex-grow-1 p-0 overflow-hidden">
+    <iframe [src]="src" width="100%" height="100%" style="border: none;">
+      <p>Your browser does not support PDFs.
+        <a [href]="src">Download the PDF</a>.</p>
+    </iframe>
+    <div *ngIf="!src">
+      Help link not found
+    </div>
+  </div>
+</div>

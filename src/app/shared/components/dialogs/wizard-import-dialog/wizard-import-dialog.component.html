@@ -1,0 +1,102 @@
+<div [class.mat-elevation-z8]="true" class="dialog-full d-flex flex-column">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">Import Wizard</span>
+      <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+    </div>
+  </div>
+  <div mat-dialog-content class="flex-grow-1 p-0 overflow-hidden position-relative">
+    <div class="wizard-wrapper d-flex flex-column h-100">
+      <div class="wizard-heading">
+        <div class="d-flex">
+          <span class="mr-5"><b>Step:</b> {{step}} of {{(STEPS|objectToArray)?.length}}</span>
+          <div class="flex-grow-1">
+            <span *ngIf="step === STEPS.ONE"><b>To do:</b> Select file to import</span>
+            <span *ngIf="step === STEPS.TWO"><b>To do:</b> Select date to import</span>
+            <span *ngIf="step === STEPS.THREE"><b>To do:</b> Select data to import</span>
+          </div>
+        </div>
+        <div class="d-flex mt-3">
+          <div class="pointer-right d-flex justify-content-center align-items-center mr-4"
+               *ngFor="let s of STEPS | keyValueOrder: []:[]:true"
+               [class.active]="step === s?.value">
+            Step {{s?.value}}
+          </div>
+          <span class="flex-grow-1"></span>
+        </div>
+      </div>
+
+      <div class="wizard-content flex-grow-1">
+        <div [class.invisible]="step !== STEPS.ONE" class="h-100 import-area">
+          <div class="content d-flex justify-content-center align-items-center"
+               #dropContainer>
+            <div class="text-center">
+              <p class="mb-4 text">Drag and drop file to import onto this page <br>or add one using the button</p>
+              <button mat-raised-button [class.mat-elevation-z8]="true"
+                      class="btn btn-blue ml-3" (click)="triggerUploadFile($event)">
+                <span><i class="fal fa-file-import ml-0 mr-2"></i>Select file from computer</span>
+              </button>
+              <p class="mt-3" *ngIf="file">[{{file?.fileName}}]</p>
+              <div class="text-center mt-3" *ngIf="errors?.length">
+                <div *ngFor="let error of errors" class="text-red">
+                  <b>{{error}}</b>
+                </div>
+              </div>
+              <input type="file" class="invisible"
+                     #uploadInput
+                     (change)="onClickToUpload($event)">
+            </div>
+          </div>
+        </div>
+        <div [class.invisible]="step !== STEPS.TWO"
+             class="h-100 d-flex justify-content-center align-items-center">
+          <div>
+            <!--            <div class="d-flex justify-content-center align-items-center mb-5">-->
+            <!--              <div class="mr-5 d-flex align-items-center"><span class="circle green mr-3"></span>Completed Dataset</div>-->
+            <!--              <div class="d-flex align-items-center"><span class="circle yellow mr-3"></span>Parcial Dataset</div>-->
+            <!--            </div>-->
+            <bs-datepicker-inline [bsConfig]="{
+            customTodayClass: 'custom-today-class',
+      containerClass: 'theme-chevron'}" [bsValue]="selectedDate"
+                                  (bsValueChange)="onDateChange($event)"></bs-datepicker-inline>
+          </div>
+        </div>
+        <div [class.invisible]="step !== STEPS.THREE"
+             class="d-flex flex-column h-100">
+COMING SOON
+        </div>
+      </div>
+    </div>
+    <div class="loading-progress d-flex flex-column justify-content-center align-items-center" *ngIf="$promise">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      <div class="mt-3">Please patient</div>
+    </div>
+  </div>
+</div>
+<div class="form-buttons d-flex">
+  <div class="flex-grow-1">
+    <button mat-raised-button [class.mat-elevation-z8]="true"
+            *ngIf="step !== STEPS.ONE"
+            class="btn btn-blue" (click)="back()">
+      <span><i class="fal fa-arrow-to-left mr-3"></i>Back</span>
+    </button>
+  </div>
+  <div>
+    <button mat-raised-button [class.mat-elevation-z8]="true"
+            class="btn btn-cancel" (click)="onCancel()">
+      <span><i class="fal fa-ban mr-3"></i>Cancel</span>
+    </button>
+    <button mat-raised-button [class.mat-elevation-z8]="true"
+            *ngIf="step === STEPS.THREE"
+            class="btn btn-blue ml-3" (click)="import()">
+      <span><i class="fal fa-check mr-3"></i>Import</span>
+    </button>
+
+    <button mat-raised-button [class.mat-elevation-z8]="true"
+            *ngIf="step !== STEPS.THREE" [class.disabled-half]="!uploadFileName"
+            class="btn btn-blue ml-3" (click)="next()">
+      <span><i class="fal fa-arrow-to-right mr-3"></i>Next</span>
+    </button>
+  </div>
+</div>
+

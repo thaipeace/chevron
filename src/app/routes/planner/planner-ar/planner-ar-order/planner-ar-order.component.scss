@@ -1,0 +1,438 @@
+@import '~src/sass/chevron/variables';
+.station-col {
+  min-width: 22em;
+  flex-shrink: 0;
+}
+
+.station-col-name {
+  max-width: 17em;
+  .station-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 10px;
+  }
+}
+
+.station-col-half {
+  max-width: 8em;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.table-wrapper {
+  overflow-y: auto;
+}
+
+.focused-row-t {
+  border-top: 3px solid $cl_blue !important;
+}
+
+.focused-row-l {
+  border-left: 3px solid $cl_blue !important;
+}
+
+.focused-row-r {
+  border-right: 3px solid $cl_blue !important;
+}
+
+@for $i from 2 through 10 {
+  .zoom-#{$i} {
+    font-size: 10px + $i;
+    /deep/ tr {
+      font-size: 10px + $i !important;
+    }
+  }
+}
+
+.index-station-col {
+  //width: 20px;
+}
+
+.station-col {
+  min-width: 500px;
+}
+
+.br-15 {
+  border-right: solid 15px $cl_blue_darkest !important;
+}
+
+.b-1 {
+  border: solid 1px $cl_blue_darkest !important;
+}
+
+.bt-1 {
+  border-top: solid 1px $cl_blue_darkest !important;
+}
+
+.bb-1 {
+  border-bottom: solid 1px $cl_blue_darkest !important;
+}
+
+.br-1 {
+  border-right: solid 1px $cl_blue_darkest !important;
+}
+
+.bl-1 {
+  border-left: solid 1px $cl_blue_darkest !important;
+}
+
+.ar-container {
+  max-height: calc(100vh - 220px);
+}
+
+.station-th {
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+#ar-table.ar-container-table {
+  white-space: nowrap;
+  /deep/ .mat-sort-header-button {
+    width: 100%;
+  }
+
+  .station-col-name,
+  .mat-column-dayStock {
+    &:after {
+      content: '';
+      display: block;
+      width: 16px;
+      height: calc(100% + 1px);
+      position: absolute;
+      right: -15px;
+      top: 0;
+      background-color: $cl_blue_darkest;
+    }
+  }
+
+  /deep/ tr {
+    &:not(.hasOrder) {
+      .mat-column-blockDSPOrderNumber {
+        > span, > div {
+          display: none !important;
+        }
+      }
+    }
+  }
+  
+  .mat-column-DSPOrderNumber,
+  .mat-column-blockDSPOrderNumber {
+    max-width: 80px;
+    min-width: 80px;
+    white-space: normal;
+    padding: 0 10px;
+    font-size: 90%;
+
+    > span {
+      word-wrap: break-word;
+    }
+  }
+
+  /deep/ .empty-cell {
+    width: 15px !important;
+    // min-width: unset !important;
+    // max-width: unset !important;
+    padding: 0 !important;
+    border-right: unset !important;
+  }
+
+  /deep/ .highlight {
+    outline: unset;
+    td {
+      position: relative;
+    }
+
+    .station-col-name {
+      border-left: 1px solid #fff;
+      
+      .bordered {
+        content: '';
+        display: block !important;
+        width: 16px;
+        height: calc(100% + 1px);
+        position: absolute;
+        right: -15px;
+        top: 0;
+        background-color: $cl_blue_darkest;
+        border-top: 1px solid #fff;
+        border-bottom: 1px solid #fff;
+      }
+    }
+
+    &.at-first {
+      td {
+        &:before {
+          content: "\a0";
+          display: block;
+          line-height: 1px;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          border-top: 1px solid #fff; 
+        }
+      }
+    }
+
+    &.at-bottom {
+      td {
+        &:after {
+          content: "\a0";
+          display: block;
+          line-height: 1px;
+          position: absolute;
+          top: 46px;
+          left: 0;
+          width: 100%;
+          border-top: 1px solid #fff;
+          border-bottom: unset;
+          height: unset;
+          right: unset;
+          background-color: transparent;
+        }
+      }
+    }
+  }
+
+  /deep/ thead {
+    background-color: transparent !important;
+    tr:last-child {
+      border-bottom: 2px solid transparent;
+      .station-col-name {
+        &::after {
+          top: -1px;
+        }
+      }
+    }
+  }
+
+  /deep/ tbody {
+    tr {
+      &.row-odd {
+        background-color: $cl_border_1 !important;
+      }
+
+      &.row-even {
+        background-color: $cl_border_2 !important;
+      }
+
+      &.at-bottom {
+        td {
+          border-bottom: solid 1px $cl_blue_darkest !important;
+        }
+      }
+
+      &.at-first {
+        td {
+          > span, > div {
+            display: flex !important;
+          }
+        }
+      }
+
+      td {
+        border-bottom: none !important;        
+        > span, > div {
+          display: none !important;
+        }
+
+        &.mat-column-blockDSPEuro497,
+        &.mat-column-blockDSPPremium95,
+        &.mat-column-blockDSPB10Diesel,
+        &.mat-column-blockDSPEuro5B7,
+        &.mat-column-blockTotalQuantity,
+        &.mat-column-blockETA,
+        &.mat-column-blockDSPRemarks,
+        &.mat-column-blockDSPOrderNumber {
+          > span, > div {
+            display: block !important;
+          }
+        }
+
+        & .bordered {
+          > span, > div {
+            display: inherit !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+.no-stk {
+  background-color: #7e8591 !important;
+}
+
+.more-variance {
+  background-color: #95874d !important;
+}
+
+.under-22,
+.dl-under-22 {
+  background-color: #fc5765 !important;
+  color: #fff !important;
+}
+
+.t-plan {
+  background-color: #7e8591 !important;
+}
+
+input.ar-planning {
+  border-color: transparent;
+  background-color: transparent !important;
+  height: 30px !important;
+  width: 100% !important;
+  border-radius: 0 !important;
+  color: #9fb2bf !important;
+
+  &:disabled {
+    border-color: transparent;
+    background-color: transparent !important;
+  }
+}
+
+input.ar-planning-remark {
+  background-color: transparent !important;
+  height: 30px !important;
+  border-radius: 0 !important;
+  color: #9fb2bf !important;
+
+  &:disabled {
+    border-color: transparent;
+    background-color: transparent !important;
+  }
+}
+
+input.ar-planning.edited,
+.edited {
+  border: solid 2px #1cbfae !important;
+}
+
+input.ar-planning.editable,
+.editable {
+  border: dashed 1px #9fb2bf;
+}
+
+input.ar-planning::-webkit-inner-spin-button,
+input.ar-planning::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+input.ar-planning {
+  -moz-appearance: textfield;
+}
+
+.no-order,
+.is-loading,
+.is-on-update {
+  pointer-events: none;
+}
+
+.planner-schedule-w {
+  min-width: 150px;
+}
+
+.balance {
+  color: #263653 !important;
+}
+
+.ar-scroll ::ng-deep .ps__rail-x {
+  z-index: 1000 !important;
+}
+
+.no-update {
+  pointer-events: none;
+}
+
+.highlight {
+  outline: thin solid;
+  td {
+    outline: none !important;
+  }
+}
+
+.ar-planning-schedule-w-auto {
+  width: auto !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ar-total-quantity {
+  width: 100px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 150px;
+  display: inline-block;
+}
+
+::ng-deep .md2-datepicker-button,
+::ng-deep .md2-datepicker-arrow {
+  display: none !important;
+}
+
+::ng-deep .md2-datepicker-trigger {
+  padding: 0 !important;
+}
+
+::ng-deep .md2-datepicker-input {
+  padding-right: 0 !important;
+}
+
+::ng-deep .md2-datepicker-value {
+  cursor: pointer !important;
+}
+
+.ts-calendar-icon {
+  position: absolute;
+  top: 8px;
+  right: 15px;
+}
+
+.ts-time-wrapper {
+  position: relative;
+}
+
+.time-picker-spacing ::ng-deep .md2-datepicker-value {
+  background: transparent;
+}
+
+.time-picker-spacing ::ng-deep .md2-datepicker-input {
+  border: none;
+}
+
+.remark-box,
+.station-list {
+  display: inline-block;
+  width: 180px;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+}
+
+.br-head-15 {
+  border-right: solid 15px #182130 !important;
+  border-bottom: none !important;
+}
+
+.mat-header-cell.mat-column-customerDetails {
+  word-wrap: break-word;
+  white-space: normal;
+  text-align: left;
+}
+
+.mat-radio-group {
+  display: block;
+  width: 100%;
+  white-space: normal;
+
+  mat-radio-button {
+    display: inline;
+  }
+}

@@ -1,0 +1,85 @@
+<div class="h-full perfect-scrollbar-wrapper" perfectScrollbar>
+  <div [class.mat-elevation-z8]="true">
+    <div mat-dialog-title>
+      <div class="d-flex flex-row title align-items-center">
+        <span class="flex-grow-1">User - {{user?.userName}} - Role {{user?.roleId}}</span>
+        <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+      </div>
+    </div>
+    <div mat-dialog-content class="flex-grow-1">
+      <div class="d-flex flex-row h-100">
+        <perfect-scrollbar class="h-full" [config]="{suppressScrollY: true}">
+          <div class="d-flex flex-row h-100">
+            <div class="d-flex left pr-4 h-100">
+              <div class="table-wrapper position-relative h-full" [perfectScrollbar]="{suppressScrollY: false}">
+                <table class="tql-table table-data-detail" *ngIf="user">
+                  <tbody>
+                    <tr>
+                      <td>First Name</td>
+                      <td>
+                        <text-field [input]="rfEdit.get('firstName')" [isHidden]="!edit"></text-field>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Last Name</td>
+                      <td>
+                        <text-field [input]="rfEdit.get('lastName')" [isHidden]="!edit"></text-field>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Email</td>
+                      <td>
+                        <text-field [input]="rfEdit.get('emailId')" [isHidden]="!edit"></text-field>
+                      </td>
+                    </tr>
+                    <tr *ngFor="let item of user?._data | keyValueOrder: ['sysId','ProfilePicture','pwdExpiry','pwdChangeReminder','stationIds','loginFailAttempt', 'firstName', 'lastName', 'emailId'] : ['userName', 'roleId']">
+                      <td>{{item.key | mappingLabel : {roleId: 'Role', emailId: 'Email'} }}</td>
+                      <td>
+                        <text-field [value]="item.value" [isHidden]="'false'"></text-field>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="flex-grow-1">
+              <app-associated-list [name]="'Truck Company'" [items]="aTTruckCompanies" [selectedItems]="aTSelectedTruckCompanies" (selectItem)="selectTruckCompany($event)" (removeItem)="disassociate($event)">
+              </app-associated-list>
+            </div>
+          </div>
+        </perfect-scrollbar>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-buttons d-flex justify-content-between">
+    <div class="btn-action-group" [class.mat-elevation-z8]="true">
+      <button *ngIf="!user?.isLocked" mat-raised-button class="btn-action-36 p-0 btn-locked" (click)="lockUser()" matTooltip="Locked User">
+        <i class="fal fa-lock-alt size-16 ml-0"></i>
+      </button>
+      <button *ngIf="user?.isLocked" mat-raised-button class="btn-action-36 p-0 btn-locked" (click)="unLockUser()" matTooltip="Unlocked User">
+        <i class="fal fa-lock-open-alt size-16 ml-0"></i>
+      </button>
+      <button mat-raised-button class="btn-action-36 p-0 btn-reset" (click)="resetPasswordUser()" matTooltip="Reset Password">
+        <i class="fal fa-key size-16 ml-0"></i>
+      </button>
+      <button disabled mat-raised-button class="btn-action-36 p-0 btn-copy" matTooltip="Copy User">
+        <i class="fal fa-clone size-16 ml-0"></i>
+      </button>
+      <button disabled mat-raised-button class="btn-action-36 p-0 btn-delete" matTooltip="Delete User">
+        <i class="fal fa-times-circle size-16 ml-0"></i>
+      </button>
+    </div>
+    <div class="col-action">
+      <button mat-raised-button *ngIf="edit" [disabled]="rfEdit.invalid" [class.mat-elevation-z8]="true" class="btn-i btn-i-icon btn-save" (click)="onSave()">
+        <i class="fal fa-check ml-0 mr-1"></i> Update
+      </button>
+      <button mat-raised-button *ngIf="!edit" [class.mat-elevation-z8]="true" class="btn-i btn-i-icon btn-edit" (click)="onEdit()">
+        <i class="fal fa-edit ml-0 mr-1"></i> Edit
+      </button>
+      <button mat-raised-button *ngIf="edit" [class.mat-elevation-z8]="true" class="btn-i btn-i-icon btn-cancel ml-3" (click)="onCancelEdit()">
+        <i class="fal fa-times"></i> Cancel
+      </button>
+    </div>
+  </div>
+</div>

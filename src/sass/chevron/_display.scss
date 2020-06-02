@@ -1,0 +1,25 @@
+.d-grid {
+  display: grid;
+}
+
+.two-row {
+  grid-template-rows: 1fr auto;
+}
+
+.two-row-1 {
+  grid-template-rows: auto 1fr;
+}
+
+.two-col-auto {
+  grid-template-columns: auto auto;
+}
+
+.two-col-auto-1 {
+  grid-template-columns: auto 1fr;
+}
+
+.two-col-table {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr 1fr;
+}

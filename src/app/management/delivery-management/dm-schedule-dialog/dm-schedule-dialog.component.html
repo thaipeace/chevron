@@ -1,0 +1,93 @@
+<div [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">Schedule</span>
+      <button class="close" mat-icon-button (click)="onCancel()">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <div mat-dialog-content>
+    <div class="item-input-group">
+      <div class="mb-2">Orders</div>
+      <table class="tql-table table-data-detail mb-2" *ngIf="selectedOrders?.length">
+        <tbody cdkDropList (cdkDropListDropped)="drop($event)">
+          <tr *ngFor="let order of selectedOrders; let $index = index" cdkDrag>
+            <td>Drop No.{{ $index + 1 }}</td>
+            <td>
+              <div class="d-flex flex-row align-items-center">
+                <div class="flex-grow-1">
+                  <span># {{ order?.salesOrderNumber }}</span>
+                </div>
+                <div class="col-action d-flex flex-row align-items-center">
+                  <small class="mr-3 color-text-dark">ETA: {{ order?.estimatedTime }}</small>
+                  <span (click)="removeOrder(order)" matTooltip="remove" class="mr-3">
+                    <i class="fal fa-unlink red"></i>
+                  </span>
+                  <span (click)="onOrderDetails(order)" matTooltip="view">
+                    <i class="fal fa-poll-h cream"></i>
+                  </span>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="btn btn-icon text-white" [matMenuTriggerFor]="orderList" matTooltip="Add Order">
+        <i class="fal fa-plus"></i>
+      </button>
+      <mat-menu #orderList="matMenu" class="select-box-menu" yPosition="above">
+        <div app-custom-menu-list [items]="orders" [bindLabel]="'salesOrderNumber'" [bindValue]="'salesOrderNumber'"
+          (change)="addOrder($event)"></div>
+      </mat-menu>
+    </div>
+    <div class="d-flex flex-row item-input-group">
+      <div class="d-flex input-group input-time-group align-items-start flex-column
+                        justify-content-between mr-15">
+        <span class="title">Terminal Arrival Time: </span>
+        <div class="d-flex input-time align-items-center flex-row justify-content-between"
+          [class.disabled-half]="!selectedOrders?.length">
+          <md2-datepicker class="time-picker-spacing" [(ngModel)]="scheduleFromDateTime"
+            (ngModelChange)="onScheduleTimeChange()" [format]="'y-MM-dd (HH:mm)'" [min]="currentDate"
+            [max]="orderFromDateTime" [type]="'datetime'" [openOnFocus]="true" [ngModelOptions]="{ standalone: true }">
+          </md2-datepicker>
+          <i class="fal fa-user-clock timer-pick-user-lock-icon"></i>
+        </div>
+      </div>
+      <div class="d-flex input-group input-time-group align-items-start flex-column
+                        justify-content-between">
+        <span class="title">Terminal Returned Time: </span>
+        <div class="d-flex input-time align-items-center flex-row justify-content-between"
+          [class.disabled-half]="!selectedOrders?.length">
+          <md2-datepicker class="time-picker-spacing" [(ngModel)]="scheduleToDateTime"
+            (ngModelChange)="onScheduleTimeChange()" [format]="'y-MM-dd (HH:mm)'" [min]="orderToDateTime"
+            [type]="'datetime'" [openOnFocus]="true" [ngModelOptions]="{ standalone: true }"></md2-datepicker>
+          <i class="fal fa-user-clock timer-pick-user-lock-icon"></i>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-row">
+      <div class="d-flex input-group align-items-start flex-column
+                        justify-content-between mr-15">
+        <span class="title">Truck: </span>
+        <div class="d-flex align-items-center flex-row justify-content-between"
+          [class.disabled-half]="!scheduleFromDateTime || !scheduleToDateTime">
+          <select-menu [items]="trucks" [bindLabel]="'_data.truckPlate'" [bindValue]="'_data.truckPlate'"
+            [placeHolder]="'Select Truck'" matTooltip="Select Truck" (change)="onSelectTruck($event)"></select-menu>
+        </div>
+      </div>
+      <div></div>
+    </div>
+    <div class="color-red text-center" *ngIf="isError">
+      Error! Orders must have ascending estimated time (ETA) along with drop
+      number
+    </div>
+  </div>
+</div>
+<div class="form-buttons d-flex flex-row">
+  <button mat-raised-button [class.mat-elevation-z8]="true" class="btn btn-blue btn-reschedule ml-3"
+    [class.disabled-half]="!selectedTruck" (click)="onSchedule()">
+    <i class="fal fa-calendar mr-3"></i>Schedule
+  </button>
+</div>

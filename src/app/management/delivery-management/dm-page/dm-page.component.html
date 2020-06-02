@@ -1,0 +1,81 @@
+<div class="delivery-container d-grid two-row-auto-1 one-col">
+    <div class="d-flex flex-row justify-content-between align-items-center header">
+        <div>
+            <button mat-icon-button (click)="onRefresh()">
+                <i class="fal fa-sync-alt refresh-icon clickable"></i>
+            </button>
+            <button mat-button [disableRipple]="true">
+                <mat-slide-toggle [checked]="isHistory" color="accent" [disableRipple]="true"
+                                  (toggleChange)="toggleHistory($event)"></mat-slide-toggle>
+            </button>
+            <span class="mr-2 size-14 text-blue">History</span>
+        </div>
+        <div class="flex-grow-1 p-3 custom-slider">
+            <ng5-slider [(value)]="sliderValue" [options]="sliderOptions" *ngIf="isHistory"
+                        (userChangeEnd)="onSliderValueChange($event)"></ng5-slider>
+        </div>
+        <div>
+            <span class="size-14 color-text-dark">{{isHistory ? 'Selected Date' : 'Current Date'}}:</span>
+            <input type="text" class="ml-3 date-picker" bsDatepicker placement="left" [class.disabled-half]="!isHistory"
+                   [(ngModel)]="selectedFromDateTime"
+                   (ngModelChange)="onDateTimeChange($event)" [maxDate]="currentDateTime">
+        </div>
+    </div>
+    <div class="h-100 d-grid two-row-auto-1 one-col">
+        <div class="w-100 d-flex justify-content-between delivery-content-head">
+            <div class="d-flex">
+                <div>
+                    <span class="color-text-dark mr-4">Order:</span>
+                    <span class="color-default mr-3">{{truckLoadingList?.length}}</span>
+                    <span class="mr-4 order-status {{ORDER_STATUS.LOADING}} collapsible">{{ORDER_STATUS.LOADING}}
+                    </span>
+                    <span class="color-default mr-3">{{truckOnTransitList?.length}}</span>
+                    <span class="mr-4 order-status {{ORDER_STATUS.ON_TRANSIT}} collapsible">{{ORDER_STATUS.ON_TRANSIT}}
+                    </span>
+                    <span class="color-default mr-3">{{truckUnloadingList?.length}}</span>
+                    <span class="mr-4 order-status {{ORDER_STATUS.UNLOADING}} collapsible">{{ORDER_STATUS.UNLOADING}}
+                    </span>
+                </div>
+            </div>
+
+            <div>
+                <button mat-icon-button class="mr-n3" (click)="onShowHint()">
+                    <i class="fal fa-question-circle size-16 text-blue"></i>
+                </button>
+            </div>
+        </div>
+        <div class="delivery-content-body">
+            <div class="body-wrapper">
+                <div class="delivery-panel d-grid two-row-auto-1" app-dm-loading [trucks]="truckLoadingList">
+                </div>
+                <div class="d-grid two-row">
+                    <div class="px-3 pb-3">
+                        <div class="d-grid delivery-panel w-100 h-100 two-row-auto-1">
+                            <div class="d-flex align-items-center head flex-row">
+                                <i class="far fa-truck-container"></i>
+                                <span class="size-16 color-default font-weight-bold m-0 ml-10">In Transit</span>
+                                <span class="flex-grow-1"></span>
+                                <mat-checkbox [(ngModel)]="showHistoricalRoute"
+                                              (ngModelChange)="onChangeShowHistoricalRoute($event)"
+                                              class="mr-3">Historical Route
+                                </mat-checkbox>
+                                <mat-checkbox [(ngModel)]="isAutoZoom">Auto Zoom</mat-checkbox>
+                            </div>
+                            <app-map-delivery [onTransitTrucks]="truckOnTransitList"
+                                              [unloadingTrucks]="truckUnloadingList"
+                                              [isAutoZoom]="isAutoZoom"
+                                              [showHistoricalRoute]="showHistoricalRoute"
+                                              [selectedTrucks]="selectedTruckList"
+                                              [currentTime]="selectedFromDateTime?.getTime()"></app-map-delivery>
+                        </div>
+                    </div>
+                    <div app-dm-on-transit [trucks]="truckOnTransitList"
+                         (onSelectTruckCallback)="onSelectTruckCallback($event)" class="mx-3 on-transit-content">
+                    </div>
+                </div>
+                <div class="delivery-panel d-grid two-row-auto-1" app-dm-unloading [trucks]="truckUnloadingList">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

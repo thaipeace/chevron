@@ -1,0 +1,22 @@
+<div class="user d-flex" (click)="clickEvent()">
+  <div class="user__info mr-3">
+    <div class="user__info__name d-flex flex-column text-label" [ngClass]="{active: this.showing}">
+      <span>{{displayedName}}</span>
+      <span>Chevron :: {{roleName}}</span>
+    </div>
+    <ul class="user__info__detail" [class.mat-elevation-z8]="true">
+      <li class="cursor-pointer"><a [routerLink]="['/','account', 'profile', username]"><i
+        class="fal fa-user-cog"></i>Your
+        profile</a></li>
+      <li *ngIf="roleName == 'Customer'" class="cursor-pointer"><a (click)="systemHelp()"> <i
+        class="fal fa-envelope-open-text"></i>System Help</a></li>
+      <li class="cursor-pointer"><a (click)="logout()"> <i class="fal fa-sign-out"></i>Logout</a></li>
+    </ul>
+  </div>
+  <div *ngIf="!imgSrc" class="user__image"></div>
+  <div *ngIf="!!imgSrc" class="avatar d-flex align-items-center justify-content-center cursor-pointer"
+       [ngStyle]="{'background-image': 'url('+imgSrc+')'}"
+       layout="row"
+       layout-align="center center">
+  </div>
+</div>

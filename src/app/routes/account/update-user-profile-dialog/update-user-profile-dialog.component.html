@@ -1,0 +1,89 @@
+<div [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">Update User Profile</span>
+      <button class="close" mat-icon-button (click)="onCancel()">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+  </div>
+  <div mat-dialog-content class="layout-dialog-form">
+    <form
+      class="default-form custom-form"
+      name="form"
+      id="form"
+      (ngSubmit)="f.form.valid && doUpdate()"
+      #f="ngForm"
+      novalidate
+    >
+      <div class="item d-flex flex-wrap item-input-group" *ngFor="let key of keys">
+        <label class="label" for="input_{{ key }}">{{ key | mappingLabel }}</label>
+        <ng-container [ngSwitch]="key">
+          <!-- EMAIL -->
+          <ng-container *ngSwitchCase="'emailAddress'">
+            <div class="form-group">
+              <input
+                class="control"
+                type="email"
+                id="input_{{ key }}"
+                name="input_{{ key }}"
+                #control="ngModel"
+                required
+                noWhiteSpace
+                email
+                [(ngModel)]="formData[key].value"
+                placeholder="{{ key | mappingLabel }}"
+              />
+              <div *ngIf="f.submitted && control.invalid" class="error">
+                <small *ngIf="control?.errors.required || control?.errors.whitespace"
+                  >* Field is required</small
+                >
+                <small *ngIf="control?.errors.email">* Invalid email format</small>
+              </div>
+            </div>
+          </ng-container>
+          <!-- DEFAULT -->
+          <ng-container *ngSwitchDefault>
+            <div class="form-group">
+              <input
+                class="control"
+                type="text"
+                id="input_{{ key }}"
+                name="input_{{ key }}"
+                #control="ngModel"
+                required
+                noWhiteSpace
+                [(ngModel)]="formData[key].value"
+                placeholder="{{ key | mappingLabel }}"
+              />
+              <div *ngIf="f.submitted && control.invalid" class="error">
+                <small *ngIf="control?.errors">* Field is required</small>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="form-buttons">
+  <!-- <button
+    mat-raised-button
+    [class.mat-elevation-z8]="true"
+    class="btn-blue btn-cancel btn-100"
+    (click)="onCancel()"
+  >
+    Cancel
+  </button> -->
+  <button
+    mat-raised-button
+    [class.mat-elevation-z8]="true"
+    class="btn-blue ml-3 ml-10"
+    form="form"
+    type="submit"
+  >
+    <i class="fal fa-check"></i>
+    <span class="ml-2">Update</span>
+  </button>
+</div>

@@ -1,0 +1,27 @@
+<div class="d-flex flex-row h-100">
+    <div class="d-flex flex-grow-1 mr-4 h-100">
+        <div class="table-wrapper w-100" [perfectScrollbar]="{suppressScrollY: false}">
+            <table class="tql-table table-data-detail" *ngIf="event">
+                <tbody>
+                <tr *ngFor="let item of event?._data | keyValueOrder:['sysId','truckId','eventDetail']">
+                    <td>{{item.key | mappingLabel}}</td>
+                    <td>
+                        <text-field [value]="item.value" [isHidden]="'false'"></text-field>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Event Details</td>
+                    <td>
+                        <div *ngFor="let o of event.getValue('eventDetail') | keyValueOrder">
+                            <b>{{o.key}}: </b>{{o.value}}
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div>
+        <app-map-marker [events]="[event]"></app-map-marker>
+    </div>
+</div>

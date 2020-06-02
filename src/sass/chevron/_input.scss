@@ -1,0 +1,9 @@
+.text-field {
+  padding: 5px 10px !important;
+}
+
+input { 
+  &::-ms-clear { 
+    display: none; 
+  } 
+}

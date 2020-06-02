@@ -1,0 +1,33 @@
+<ngui-map [zoom]="zoom"
+          [center]="center"
+          [styles]="styles"
+          (mapReady$)="onMapReady($event)"
+          *ngIf="stations?.length || events?.length"
+          class="map-wrapper">
+    <custom-marker *ngFor="let event of events" [position]="event?.geoPoint?.toArray()"
+                   (initialized$)="onCustomMarkerInit($event,event)"
+                   (click)="onEventDetails(event)">
+        <div class="custom-marker">
+            <img class="icon" src="/assets/images/map/event-marker.png"/>
+        </div>
+    </custom-marker>
+    <info-window id="{{iwInfos.EVENT}}">
+        <div class="d-flex color-default align-items-center mb-2">
+            <h3 class="size-14 ml-3 mt-0 mb-0">{{showEvent?._data?.vehicleNo}} - {{showEvent?._data?.EventType}}</h3>
+            <i class="far fa-times size-16 close-icon" (click)="closeDialogInfo()"></i>
+        </div>
+        <div class="d-flex justify-content-between mb-1">
+            <span class="">From</span>
+            <span class="text-default">{{showEvent?._data?.eventDetail?.eventFrom}}</span>
+        </div>
+        <div class="d-flex justify-content-between mb-1">
+            <span class="">Description</span>
+            <span class="text-default">{{showEvent?._data?.eventDetail?.description}}</span>
+        </div>
+        <div class="d-flex justify-content-between mb-1">
+            <span class="">startTime</span>
+            <span class="text-default">{{showEvent?._data?.startTime}}</span>
+        </div>
+    </info-window>
+</ngui-map>
+<app-map-default *ngIf="!(stations?.length || events?.length)"></app-map-default>

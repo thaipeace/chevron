@@ -1,0 +1,68 @@
+<div class="tql-side-bar mat-elevation-z2">
+  <div class="d-flex flex-column">
+    <ul class="list-unstyled">
+      <li>
+        <a href="{{companyLogoUrl?.VarValue}}" matRipple>
+          <span class="d-flex flex-row">
+            <img src="assets/images/Chevron_Logo_white.png" *ngIf="!settingsLogo"/>
+            <img [src]="'data:image/png;base64,' + settingsLogo" *ngIf="settingsLogo"/>
+          </span>
+        </a>
+      </li>
+    </ul>
+    <perfect-scrollbar class="">
+      <ul class="list-unstyled flex-grow-1">
+        <li *ngIf="back">
+          <a (click)="back.click()" class="pointer" matRipple>
+            <span class="d-flex flex-row">
+              <span class="icon align-self-center"><i [ngClass]="back['icon']"></i></span>
+              <span class="text align-self-center">{{back['name']}}</span>
+            </span>
+          </a>
+        </li>
+        <hr *ngIf="back">
+        <ng-container [ngTemplateOutlet]="menuList" [ngTemplateOutletContext]="{ position: null }"></ng-container>
+      </ul>
+    </perfect-scrollbar>
+    <ul class="list-unstyled">
+      <ng-container [ngTemplateOutlet]="menuList" [ngTemplateOutletContext]="{ position: 'bottom' }"></ng-container>
+      <hr>
+      <li>
+        <a class="cursor-pointer" (click)="onAbout()" matRipple>
+          <span class="d-flex flex-row">
+            <span class="icon align-self-center">
+              <i class="fal fa-info-circle"></i>
+            </span>
+            <span class="text align-self-center">About</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<ng-template #menuList let-position="position">
+
+  <ng-template ngFor let-menu [ngForOf]="menuRoles">
+    <li routerLinkActive="active"
+        *ngIf="menu?.name && (!menu?.isMarkForFunctionality || enableFunctionality?.VarValue==='true')"
+        [ngClass]="{'disabled': menu?.disabled, 'hidden': menu?.position != position}">
+      <a *ngIf="!menu.click" [routerLink]="['/' + menu['route']]"
+         matRipple>
+        <span class="d-flex flex-row">
+          <span class="icon align-self-center">
+            <i [ngClass]="menu['icon']" *ngIf="menu.icon"></i>
+            <img [src]="'assets/images/' + menu.image" style="width: 26px; height: auto;" *ngIf="menu.image"/>
+          </span>
+          <span class="text align-self-center">{{menu['name']}}</span>
+        </span>
+      </a>
+      <a *ngIf="!!menu.click" (click)="menu.click()" class="" matRipple>
+        <span class="d-flex flex-row">
+          <span class="icon align-self-center"><i [ngClass]="menu['icon']"></i></span>
+          <span class="text align-self-center">{{menu['name']}}</span>
+        </span>
+      </a>
+    </li>
+  </ng-template>
+</ng-template>

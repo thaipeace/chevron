@@ -1,0 +1,272 @@
+<div [class.mat-elevation-z8]="true" class="d-grid dialog-full-custom two-row-1">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">Order details</span>
+      <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+    </div>
+  </div>
+
+  <div mat-dialog-content class="details-dialog-wrapper overflow-hidden">
+    <!-- <div class="row d-flex flex-row title align-items-center details-dialog-title p-3">
+              <span class="flex-grow-1">Order details</span>
+            </div> -->
+    <div class="d-flex flex-row h-100 position-relative" perfectScrollbar>
+      <div class="flex-grow-1 ">
+        <div class="d-flex flex-row mr-3 details-top-content">
+          <div class="flex-grow-1 mr-3 details-dialog d-flex flex-column">
+            <div class="status-title d-flex align-items-center p-3">
+              <div class="flex-grow-1">
+                <div class="mb-3">Sales Order Number</div>
+                <div># {{orderModel?.salesOrderNumber || '___'}}</div>
+              </div>
+              <div class="col-action">
+                <button mat-icon-button (click)="onRequestMessage(orderModel)"
+                  matTooltip="view request cancellation message"
+                  *ngIf="orderModel?.orderStatus == ORDER_STATUS.ON_HOLD || orderModel?.orderStatus == ORDER_STATUS.RESCHEDULED">
+                  <i class="fal fa-engine-warning yellow"></i>
+                </button>
+              </div>
+              <div class="py-1 px-2 small order-status {{orderModel?.orderStatus}}">
+                {{orderModel?.orderStatus}}</div>
+            </div>
+            <div class="table-wrapper flex-grow-1 position-relative" perfectScrollbar>
+              <table class="tql-table table-data-detail h-50 overflow-auto">
+                <tbody>
+                  <tr>
+                    <td>Station</td>
+                    <td>{{orderModel?.station?.stationName}}</td>
+                  </tr>
+                  <tr>
+                    <td>Delivered Time</td>
+                    <td>{{orderModel?.deliveredTime}}</td>
+                  </tr>
+                  <tr>
+                    <td>Escorted</td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Source</td>
+                    <td>{{orderModel?.source}}</td>
+                  </tr>
+                  <tr>
+                    <td>Time Window</td>
+                    <td>
+                      <span *ngIf="!edit">
+                        {{orderModel?.timeWindow}}
+                      </span>
+                      <mat-menu #timeWindowMenu="matMenu">
+                        <button mat-menu-item class="text-white" *ngFor="let window of timeWindows; let j = index"
+                          (click)="rfInfo.get('timeWindow').setValue(window)">{{window}}</button>
+                      </mat-menu>
+                      <button mat-button *ngIf="edit" [matMenuTriggerFor]="timeWindowMenu" class="time-window-button">
+                        <div class="d-flex justify-content-between align-items-baseline">
+                          <span class="title">{{rfInfo.get('timeWindow').value}}</span>
+                          <button mat-icon-button [disableRipple]="true">
+                            <i class="far fa-chevron-down"></i>
+                          </button>
+                        </div>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Estimated Time</td>
+                    <td>
+                      <span *ngIf="!edit">{{rfInfo.get('estimatedTime').value | date:'yyyy-MM-dd (HH:mm)'}}</span>
+                      <div class="ts-time-wrapper d-flex justify-content-end align-items-baseline" *ngIf="edit">
+                        <md2-datepicker class="time-picker-spacing" [(ngModel)]="rfInfo.get('estimatedTime').value"
+                          (ngModelChange)="onTimeChange()" [openOnFocus]="true" [format]="'y-MM-dd (HH:mm)'"
+                          [type]="'datetime'" [min]="today" [ngModelOptions]=" {standalone:
+                                                                      true}"></md2-datepicker>
+                        <i class="far fa-calendar-alt ts-calendar-icon"></i>
+                      </div>
+                      <!-- <div *ngIf="existOrderWarning" class="error">
+                        <small>* An order exists on this day</small>
+                      </div> -->
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Remark</td>
+                    <td>{{orderModel?.remark}}</td>
+                  </tr>
+                  <tr>
+                    <td>Last Updated</td>
+                    <td>{{orderModel?.lastUpdated}}</td>
+                  </tr>
+                  <tr>
+                    <td>Last Updated By</td>
+                    <td>{{orderModel?.userName}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="details-dialog order-tracking-container p-4 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-center pb-4">
+              <div>Order tracking</div>
+              <div>
+                <i class="fal fa-truck-container mr-3"></i>
+                <span class="text-blue cursor-pointer"
+                  (click)="onTruckDetails(systemSchedule?.truck)">{{systemSchedule?.truck?.truckPlate || '_______'}}</span>
+              </div>
+            </div>
+            <div class="order-tracking-group flex-grow-1 position-relative" perfectScrollbar>
+              <ng-container *ngIf="orderStatusHistory.length">
+                <div class="d-flex item">
+                  <div class="d-flex flex-column align-items-center icon-group">
+                    <div class="circle rounded-circle d-flex justify-content-center align-items-center"
+                      *ngIf="orderStatusHistory.length"><i
+                        class="fal fa-check"></i></div>
+                    <i class="fal fa-circle" *ngIf="!orderStatusHistory.length"></i>
+                    <div class="bg-light flex-grow-1"></div>
+                  </div>
+                  <div class="ml-3 pb-3">
+                    <div>{{currentTerminal?.name}}</div>
+                    <div class="text-secondary"></div>
+                  </div>
+                </div>
+                <div class="d-flex item" *ngFor="let item of orderStatusHistory">
+                  <div class="d-flex flex-column align-items-center icon-group">
+                    <div class="circle rounded-circle d-flex justify-content-center
+                                                              align-items-center"
+                      *ngIf="isTimePassed(item.getRawValue('statusChangeTime'))"><i class="fal fa-check"></i>
+                    </div>
+                    <i class="fal fa-circle" *ngIf="!isTimePassed(item.getRawValue('statusChangeTime'))"></i>
+                    <div class="bg-light flex-grow-1"></div>
+                  </div>
+                  <div class="ml-3 pb-3">
+                    <div>{{item?.orderStatus}}</div>
+                    <div class="text-secondary">{{item?.statusChangeTime}}</div>
+                  </div>
+                </div>
+                <div class="d-flex item">
+                  <div class="d-flex flex-column align-items-center icon-group">
+                    <div class="circle rounded-circle d-flex justify-content-center
+                                                              align-items-center"
+                      *ngIf="orderModel?.orderStatus == ORDER_STATUS.DELIVERED"><i class="fal fa-check"></i>
+                    </div>
+                    <i class="fal fa-circle" *ngIf="orderModel?.orderStatus != ORDER_STATUS.DELIVERED"></i>
+                  </div>
+                  <div class="ml-3 pb-3">
+                    <div>{{orderModel?.station?.stationName}}</div>
+                    <div class="text-secondary">{{systemSchedule?.truckTrip?.to}}</div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="!orderStatusHistory.length">
+                no data
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <div class="pt-3 row  mr-3" style="overflow-y: auto">
+          <div class="col-6 litre-spacing">
+            <div class="row h-100">
+              <div class="col-12 h-100">
+                <div class="container h-100">
+                  <div class="row h-100 product-wrapper-lab">
+                    <div class="col-6 p-3 d-flex align-items-center product-wrapper"
+                      *ngFor="let orderItem of orderModel?.item | arrangeKeyValue : ['Euro4-97', 'Premium-95', 'B10-Diesel', 'Euro5-B7'] : 'productCode'">
+                      <div class="d-flex flex-column">
+                        <div
+                          class="pb-3 order-product-title product-code-title {{orderItem?.productCode?.toLowerCase()}}">
+                          {{orderItem?.productCode.toUpperCase()}}
+                        </div>
+                        <div *ngIf="!edit" class="order-product-price"><strong><i
+                              class="far fa-oil-can text-grey mr-3"></i>{{rfItem?.get(orderItem.productCode)?.value}}
+                          </strong>
+                          <span class="litre">Litres</span>
+                        </div>
+                        <div *ngIf="edit" class="order-product-price d-flex flex-row align-items-center ">
+                          <i class="far fa-oil-can text-grey mr-3"></i>
+                          <text-field type="number" [input]="rfItem.get(orderItem.productCode)" [isHidden]="!edit">
+                          </text-field>
+                          <span class="litre ml-2">Litres</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-3 more-info position-relative" perfectScrollbar>
+            <div class="d-flex justify-content-between py-3">
+              <div>Diversion charges</div>
+              <div>_.__</div>
+            </div>
+            <div class="d-flex justify-content-between border-top py-3">
+              <div>Toll charges</div>
+              <div>_.__</div>
+            </div>
+            <div class="d-flex justify-content-between border-top py-3">
+              <div>Waiting charges</div>
+              <div>_.__</div>
+            </div>
+          </div>
+          <div class="col-3 more-info position-relative" perfectScrollbar>
+            <div class="d-flex justify-content-between py-3">
+              <div class="w-50">Total Quantity</div>
+              <div class="w-50 pl-2">{{orderModel?.totalQuantity}} <span class="litre">Litres</span></div>
+            </div>
+            <div class="d-flex justify-content-between border-top py-3">
+              <div class="w-50">Total Distance</div>
+              <div class="w-50 pl-2">
+                {{orderModel?.tripDistance?orderModel?.tripDistance:'___'}} <span class="litre">Km</span>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between border-top py-3"
+              *ngIf="userRoleName == 'Admin' || userRoleName == 'Planner'">
+              <div class="w-50">Total Cost</div>
+              <div class="w-50 pl-2 order-cost">
+                <strong>{{orderModel?.deliveryCost?.totalCost ? '$' + orderModel?.deliveryCost?.totalCost : ''}}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="">
+        <app-map-order-tracking [order]="orderModel" [systemSchedule]="systemSchedule"
+          [orderStatusHistory]="orderStatusHistory"></app-map-order-tracking>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="form-buttons d-flex flex-row">
+  <button mat-raised-button [class.mat-elevation-z8]="true" class="btn btn-blue btn-cancel" *ngIf="orderModel?.orderStatus == ORDER_STATUS.POTENTIAL
+|| orderModel?.orderStatus == ORDER_STATUS.RESCHEDULED" (click)="onRequestCancellation()">
+    <i class="fal fa-ban mr-3"></i>Request Cancellation
+  </button>
+  <div class="d-flex flex-row" *ngIf="orderModel?.orderStatus == ORDER_STATUS.ON_HOLD && !readonly">
+    <button mat-raised-button [class.mat-elevation-z8]="true" class="btn btn-blue btn-cancel"
+      (click)="onApproveCancellation()"><i class="fal fa-ban mr-3"></i>Approve Cancellation
+    </button>
+    <button mat-raised-button [class.mat-elevation-z8]="true" type="botton" class="btn btn-blue btn-reschedule ml-3"
+      (click)="onReschedule()"><i class="fal fa-calendar-alt mr-3"></i>Reschedule
+    </button>
+  </div>
+  <div class="flex-grow-1"></div>
+  <button mat-raised-button [class.mat-elevation-z8]="true" type="button"
+    *ngIf="!readonly && !edit
+            && [ORDER_STATUS.POTENTIAL,ORDER_STATUS.RESCHEDULED,ORDER_STATUS.ON_HOLD].indexOf(orderModel?.orderStatus)>=0" class="btn btn-blue ml-3 text-white" (click)="edit = true"><i
+      class="fal fa-edit mr-3"></i>Edit
+  </button>
+  <!-- <button *ngIf="edit" mat-raised-button type="button"
+    class="btn-i btn-i-icon btn-cancel mat-raised-button text-white mr-3"
+    (click)="edit = false; existOrderWarning = false; onCancel()">
+    <i class="fal fa-ban mr-3"></i> Cancel
+  </button>
+  <button *ngIf="edit" [ngClass]="{'disabled-half': existOrderWarning}" mat-raised-button type="button"
+    class="btn-i btn-i-icon btn-save mat-raised-button text-white" (click)="onUpdate()">
+    <i class="fal fa-check ml-0 mr-1"></i> Update
+  </button> -->
+  <button *ngIf="edit" mat-raised-button type="button"
+    class="btn-i btn-i-icon btn-cancel mat-raised-button text-white mr-3"
+    (click)="edit = false; onCancel()">
+    <i class="fal fa-ban mr-3"></i> Cancel
+  </button>
+  <button *ngIf="edit" mat-raised-button type="button"
+    class="btn-i btn-i-icon btn-save mat-raised-button text-white" (click)="onUpdate()">
+    <i class="fal fa-check ml-0 mr-1"></i> Update
+  </button>
+</div>

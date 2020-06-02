@@ -1,0 +1,202 @@
+<div class="p-3">
+  <div class="mb-3 d-flex flex-row align-items-center topbar">
+    <div class="flex-grow-1">
+      <button mat-icon-button (click)="onRefresh()">
+        <i class="fal fa-sync-alt refresh-icon clickable"></i>
+      </button>
+    </div>
+    <div class="flex-grow-1 flex-row align-items-center">
+      <i class="fal fa-truck-container mr-3 icon"></i>
+      <span class="mr-4 text-default">Trucks:</span>
+      <ng-container>
+        <span class="mr-2">
+          {{numberOfInServiceTruck}}
+        </span>
+        <span class="mr-4 status-truck  {{TRUCK_STATUS.IN_SERVICE}}">{{TRUCK_STATUS.IN_SERVICE | mappingLabel}}</span>
+        <span class="mr-2">
+          {{trucks?.length - numberOfInServiceTruck}}
+        </span>
+        <span class="status-truck {{TRUCK_STATUS.OUT_OF_SERVICE}}">{{TRUCK_STATUS.OUT_OF_SERVICE | mappingLabel}}</span>
+      </ng-container>
+    </div>
+    <div class="flex-grow-1 flex-row align-items-center">
+      <i class="fal fa-steering-wheel mr-3 icon"></i>
+      <span class="mr-4 text-default">Drivers:</span>
+      <span class="mr-2">
+        {{numberOfADriver}}
+      </span>
+      <span class="mr-4 status-driver {{DRIVER_STATUS.A}}">AM Shift</span>
+      <span class="mr-2">
+        {{numberOfPDriver}}
+      </span>
+      <span class=" status-driver {{DRIVER_STATUS.P}}">PM Shift</span>
+    </div>
+    <div class="flex-grow-1 text-right">
+      <input type="text" class="ml-3 date-picker" bsDatepicker placement="left" [ngModel]="selectedDate"
+        (ngModelChange)="onDateChange($event)">
+    </div>
+  </div>
+  <div class="d-flex flex-row panel-container">
+    <div class="panel tql-panel mr-3 flex-grow-1">
+      <div class="panel-heading d-flex flex-row align-items-center py-2">
+        <div class="flex-grow-1">
+          <span class="title">Truck List</span>
+        </div>
+        <search-box [searchControl]="searchControlTruck"></search-box>
+      </div>
+      <div class="table-wrapper" cdkDropListGroup>
+        <table class="tql-table">
+          <thead>
+            <tr>
+              <th>Plate</th>
+              <th>Company</th>
+              <th class="text-no-break">Capacity (Litre)</th>
+              <th>State</th>
+              <th></th>
+              <th class="w-350px">Drivers</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let item of displayedTrucks">
+              <tr [class.disabled-half]="dragDriver && dragDriver?.companyId !== item?.companyId"
+                class="truck-driver-mapping-tr">
+                <td>
+                  <span class="text-white">{{item['truckPlate']}}</span>
+                </td>
+                <td>
+                  {{item['companyId']}}
+                </td>
+                <td>{{item['totalCapacity']}}</td>
+                <td>
+                  <div *ngIf="selectedDate.getDate() < today.getDate()"
+                    class="d-flex justify-content-between status-truck {{item?.truckState}}">
+                    {{item?.truckState | mappingLabel}}</div>
+                  <div *ngIf="selectedDate.getDate() >= today.getDate()"
+                    class="d-flex justify-content-between cursor-pointer status-truck {{item?.truckState}}"
+                    [matMenuTriggerFor]="truckStatus">{{item?.truckState | mappingLabel}} <i
+                      class="fal fa-angle-down ml-2 mr-n2"></i></div>
+                  <mat-menu #truckStatus="matMenu" class="truck-menu-status">
+                    <button *ngFor="let status of TRUCK_STATUS | keyvalue"
+                      (click)="changeTruckStatus(item,status?.value)" mat-menu-item><span
+                        class="status-{{status?.value}}">{{status?.value | mappingLabel}}</span>
+                    </button>
+                    <br>
+                  </mat-menu>
+                </td>
+                <td>
+                  <span matTooltip="view" matRipple class="action-icon" (click)="onTruckDetails(item);">
+                    <i class="fal fa-poll-h cream"></i>
+                  </span>
+                </td>
+                <td class="d-flex align-items-end">
+                  <div *ngIf="item['drivers']" class="driver-list flex-grow-1">
+                    <div cdkDropList class="dnd-list bg-input" [id]="item?.truckPlate"
+                      [cdkDropListData]="item['drivers']" [cdkDropListConnectedTo]="[driverList]"
+                      [class.undraggable]="item['drivers']?.length >= MAX_DRIVER_PER_TRUCK
+                                     || item?.isOutOfService() || currentTimestamp > toStartOfDay(selectedDate).valueOf()" (cdkDropListDropped)="drop($event, item)">
+                      <div *ngFor="let driver of item['drivers'];let $last = last"
+                        class="dnd-item-box truck-driver-item-box">
+                        <span (click)="openDriverDetail(driver)"
+                          class="flex-grow-1 text-white title pr-2 cursor-pointer">
+                          {{driver['fullName']}}</span>
+                        <strong class="status-driver {{driver?.driverStatus}} mr-2"
+                          *ngIf="driver?.driverStatus">{{driver?.driverStatus}}</strong>
+                        <ng-container *ngIf="currentTimestamp <= toStartOfDay(selectedDate).valueOf()">
+                          <span matTooltip="remove" matRipple class="action-icon" (click)="removeDriver(item, driver)">
+                            <i class="fal fa-times-circle red normal"></i>
+                          </span>
+                          <hr *ngIf="!$last">
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+                  <mat-menu #driverMenu="matMenu">
+                    <perfect-scrollbar class="h-full">
+                      <ng-template matMenuContent let-companyId="companyId">
+                        <ng-container *ngFor="let driver of displayedDrivers; trackBy: trackByFn">
+                          <button mat-menu-item *ngIf="driver?.companyId == companyId" (click)="addDriver(item, driver)"
+                            [ngClass]="{'disabled-driver': driver['driverStatus'] != 'A' && driver['driverStatus'] != 'P'}">
+                            <div class="row align-items-center justify-content-between">
+                              <div class="col-9" [matTooltip]="driver?.fullName">
+                                {{companyId}} - {{driver?.fullName || '' | truncate:15}}
+                              </div>
+                              <div class="col-3">
+                                <strong class="status-driver {{driver?.driverStatus}} mr-2" *ngIf="driver?.driverStatus">
+                                  {{driver?.driverStatus}}
+                                </strong>
+                              </div>
+                            </div>
+                          </button>
+                        </ng-container>
+                        <button mat-menu-item class="disabled-click" *ngIf="!checkNumberOfAvailableDriver(companyId)">
+                          No driver available
+                        </button>
+                      </ng-template>
+                    </perfect-scrollbar>
+                  </mat-menu>
+                  <button class="btn btn-icon-add btn-blue ml-2"
+                    [class.disabled-max-driver]="item['drivers'].length >= MAX_DRIVER_PER_TRUCK || item?.isOutOfService()"
+                    [class.disabled-half]="item['drivers'].length >= MAX_DRIVER_PER_TRUCK
+                                    || item?.isOutOfService() || currentTimestamp > toStartOfDay(selectedDate).valueOf()"
+                    [matMenuTriggerFor]="driverMenu" [matMenuTriggerData]="{companyId: item?.companyId}">
+                    <i class="fal fa-user-plus"></i>
+                  </button>
+                </td>
+              </tr>
+            </ng-container>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel tql-panel right">
+      <div class="panel-heading d-flex flex-row align-items-center py-2">
+        <span class="title flex-grow-1">Driver List</span>
+        <search-box [searchControl]="searchControlDriver"></search-box>
+      </div>
+      <div class="table-wrapper">
+        <table class="tql-table">
+          <thead>
+            <tr>
+              <th class="d-flex justify-content-between align-items-center">Name
+                <button class="ml-3" mat-button [disableRipple]="true">
+                  All
+                  <mat-slide-toggle class="mr-3 ml-3 dark" [checked]="isAPDriver" (change)="toggle($event)"
+                    color="#E040FB" [disableRipple]="true">
+                  </mat-slide-toggle>
+                  A/P
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody cdkDropList #driverList="cdkDropList" [cdkDropListData]="displayedDrivers"
+            [cdkDropListConnectedTo]="truckPlates" class="dnd-list">
+            <tr *ngFor="let driver of displayedDrivers; trackBy: trackByFn" cdkDrag [cdkDragData]="driver"
+              [cdkDragDisabled]="driver['driverStatus'] != 'A' && driver['driverStatus'] != 'P'"
+              (cdkDragReleased)="onDragDriverRelease($event)" (cdkDragStarted)="onDragDriver($event)"
+              class="dnd-item-box driver-item-box">
+              <td [class.btn-link]="driver['driverStatus'] == 'A' || driver['driverStatus'] == 'P'"
+                *ngIf="!(isAPDriver && !(driver['driverStatus'] == 'A' || driver['driverStatus'] == 'P'))">
+                <div class="d-flex flex-row align-items-center">
+                  <div class="flex-grow-1 pr-2">
+                    <div>{{driver?.fullName || '____________'}}</div>
+                    <div>{{driver?.companyId}}</div>
+                  </div>
+                  <div class="d-flex flex-row align-items-center">
+                    <strong class="status-driver {{driver?.driverStatus}} "
+                      *ngIf="driver?.driverStatus">{{driver?.driverStatus}}</strong>
+                    <span matTooltip="view" matRipple class="action-icon dragging-hide ml-3"
+                      (click)="openDriverDetail(driver)">
+                      <i class="fal fa-poll-h cream"></i>
+                    </span>
+                  </div>
+                </div>
+
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

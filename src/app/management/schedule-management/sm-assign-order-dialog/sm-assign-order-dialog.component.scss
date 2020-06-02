@@ -1,0 +1,12 @@
+.invisible {
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    position: absolute;
+}
+
+.mat-table {
+    th {
+        white-space: nowrap;
+    }
+}

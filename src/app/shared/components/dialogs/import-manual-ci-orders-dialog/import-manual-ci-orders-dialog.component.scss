@@ -1,0 +1,26 @@
+@import '~src/sass/chevron/variables';
+
+.avatar {
+    width: 180px;
+    height: 180px;
+    background-color: $cl_border_1;
+    color: $cl_charcoal;
+    background-size: cover;
+    background-position: center;
+    border-radius: 100%;
+    font-size: 60px;
+
+    .hide {
+        opacity: 0;
+    }
+
+    &:hover {
+        .hide {
+            opacity: 1;
+        }
+    }
+}
+
+input[type=file] {
+    display: none;
+}

@@ -1,0 +1,177 @@
+<div class="compact-wrapper d-flex flex-column min-h-100">
+  <div class="title">
+    <div class=" d-flex align-items-center flex-row">
+      <span class="text flex-grow-1">Region - {{object?.name}}</span>
+      <button mat-icon-button (click)="close()" class="icon">
+        <mat-icon><i class="fal fa-times"></i></mat-icon>
+      </button>
+    </div>
+    <hr>
+  </div>
+  <div class="forms-control py-3">
+    <form id="form-edit" name="form" #f="ngForm" (ngSubmit)="formDOM.valid && onUpdate()" *ngIf="!!formDOM">
+      <div class="pb-4" *ngFor="let key of keys" [ngSwitch]="key">
+        <ng-container *ngSwitchCase="'AssociatedTerminalId'">
+          <div class="text-white pb-2">
+            Terminal
+          </div>
+          <div class="text-grey" *ngIf="!isEditing">
+            {{selectedTerminal?.name || '[no data]'}}
+          </div>
+          <div *ngIf="isEditing">
+            <input-field [input]="formDOM.get(key)" [type]="'select-menu'" [arrayList]="terminals"
+              [arrayListLabel]="'_data.TerminalName'" [arrayListValue]="'_data.TerminalId'" [placeholder]="'Enter '+key"
+              [isSubmit]="f.submitted"></input-field>
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          <div class="text-white pb-2">
+            {{key | mappingLabel}}
+          </div>
+          <div class="text-grey" *ngIf="!isEditing">
+            {{formDOM.get(key).value || '[no data]'}}
+          </div>
+          <div *ngIf="isEditing">
+            <input-field [input]="formDOM.get(key)" [placeholder]="'Enter '+key" [isSubmit]="f.submitted"></input-field>
+          </div>
+        </ng-container>
+      </div>
+    </form>
+
+    <div class="pb-4">
+      <div class="text-white pb-3">Supply Points</div>
+      <div class="d-flex flex-column h-100 table-mini-wrapper">
+        <table class="w-100 ">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Supply Points</th>
+              <th>Product Code</th>
+              <th *ngIf="isEditing"></th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let item of selectedSupplyPoints; let $index = index;">
+            <tr>
+              <td>{{$index + 1}}</td>
+              <td>{{item?.name}}</td>
+              <td>
+                <ng-container *ngIf="item?.products?.length">
+                  <div class="text-grey" *ngFor="let p of item?.products[0].Product">{{p.ProductCode}}</div>
+                </ng-container>
+              </td>
+              <td *ngIf="isEditing"><i class="fal fa-trash-alt text-red cursor-pointer" (click)="removeSP(item)"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class=" d-flex px-3 py-2 sticky-b sticky-l actions" *ngIf="isEditing">
+          <button mat-raised-button type="button" class="btn btn-blue mr-3 new" [matMenuTriggerFor]="menu">
+            <i class="fal fa-plus"></i>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button (click)="onAddSP(item)" mat-menu-item
+              *ngFor="let item of availableSupplyPoints">{{item?.name}}</button>
+          </mat-menu>
+          <div class="flex-grow-1"></div>
+        </div>
+      </div>
+    </div>
+    <div class="pb-4">
+      <div class="text-white pb-3">Geospatial Fence Points</div>
+      <div>
+        <app-table-geo-small [points]="coordinates" (onPointChange)="onCoordinateChange($event)"
+          [isEditing]="isEditing"></app-table-geo-small>
+      </div>
+    </div>
+    <div class="pb-4">
+      <div class="text-white pb-3">Location</div>
+      <div class="map-mini">
+        <app-mpm-terminal [readonly]="true" [points]="coordinates"></app-mpm-terminal>
+        <div (click)="onCoordinateOpenDialog()" class="hint d-flex align-items-center justify-content-center">
+          Click to open
+        </div>
+      </div>
+    </div>
+    <div class="pb-4">
+      <div class="text-white pb-3">Truck Rates</div>
+      <div class="d-flex flex-column h-100 table-mini-wrapper">
+        <table class="w-100 ">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Size</th>
+              <th>Distance</th>
+              <th>Cost</th>
+              <th>Currency</th>
+              <th *ngIf="isEditing"></th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let item of truckRates; let $index = index;">
+            <tr>
+              <td>{{$index + 1}}</td>
+              <ng-container *ngIf="!isEditing">
+                <td>{{item?.size}}</td>
+                <td>{{item?.distance}}</td>
+                <td>{{item?.cost}}</td>
+                <td>{{item?.currency}}</td>
+              </ng-container>
+              <ng-container *ngIf="isEditing">
+                <td>
+                  <input type="number" [(ngModel)]="item.size" min="0" name="size">
+                </td>
+                <td>
+                  <input [(ngModel)]="item.distance" name="distance">
+                </td>
+                <td>
+                  <input type="number" [(ngModel)]="item.cost" min="0" name="cost">
+                </td>
+                <td>
+                  <input [(ngModel)]="item.currency" title="No special character" name="currency">
+
+                </td>
+                <td><i class="fal fa-trash-alt text-red cursor-pointer" (click)="removeTT($index)"></i>
+                </td>
+              </ng-container>
+            </tr>
+            <tr>
+              <td class="py-0"></td>
+              <td class="py-0"></td>
+              <td class="py-0"></td>
+              <td class="py-0"></td>
+              <td class="py-0">
+                <small class="text-danger" *ngIf="testCurrency(item.currency)">
+                  Accept only [a-z]
+                </small>
+              </td>
+              <td class="py-0" *ngIf="isEditing"></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class=" d-flex px-3 py-2 sticky-b sticky-l actions" *ngIf="isEditing">
+          <button mat-raised-button type="button" class="btn btn-blue mr-3 new" (click)="onNewTruckRate()">
+            <i class="fal fa-plus"></i>
+          </button>
+          <div class="flex-grow-1"></div>
+          <!--<i class="fal fa-cloud-download-alt cursor-pointer" (click)="downloadTemplate()"
+             matTooltip="download template"></i>
+          <button (click)="loadData($event)" mat-button><span class="text-light-green">Load Data</span></button>-->
+          <button (click)="truckRates = []" mat-button><span class="color-red">Clear Set</span></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="flex-grow-1"></div>
+  <div class="footer text-right py-3" *ngIf="!readonly">
+    <hr class="mb-3">
+    <button mat-raised-button *ngIf="!isEditing" class=" btn-edit" (click)="onEdit()">
+      <i class="fal fa-edit ml-0 mr-1"></i> Edit
+    </button>
+    <button mat-raised-button *ngIf="isEditing" class=" btn-cancel mr-3" (click)="onCancelEdit()">
+      <i class="far fa-ban mr-1"></i> Cancel
+    </button>
+    <button mat-raised-button *ngIf="isEditing" class=" btn-save" type="submit" form="form-edit">
+      <i class="fal fa-check ml-0 mr-1"></i> Update
+    </button>
+  </div>
+</div>

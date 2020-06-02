@@ -1,0 +1,173 @@
+@import 'variables';
+
+.btn-blue {
+    border-radius: 3px;
+    overflow: hidden;
+    min-width: 120px;
+    border: 1px solid transparent;
+    background-color: $cl_blue;
+    color: white;
+    height: 36px;
+    font-size: 14px;
+
+    &.btn-outline {
+        border-color: $cl_blue;
+        color: $cl_blue;
+        background-color: transparent;
+    }
+
+    &:disabled {
+        border-color: #aeaeae;
+        color: white;
+        background-color: #aeaeae;
+    }
+}
+
+//[class*=btn-] {
+//    [class*=fa] {
+//        font-size: 16px;
+//        margin-right: 10px;
+//        vertical-align: top;
+//        line-height: 36px;
+//    }
+//}
+
+.btn-icon {
+    font-size: 14px;
+    background-color: $cl_blue;
+    color: white;
+    overflow: hidden;
+    height: 24px;
+    width: 24px;
+    border-color: transparent;
+    padding: 0;
+    text-align: center;
+    border-radius: 3px;
+
+    &.mat-button {
+        min-width: 0 !important;
+        padding: 0 0 10px 0 !important;
+        line-height: 25px !important;
+        border-radius: 0;
+    }
+}
+
+.mat-button.btn-small {
+    line-height: 1.5em;
+}
+
+.btn-cancel {
+    background-color: $cl_pastel_red;
+    color: $cl_text_default;
+    border-color: $cl_pastel_red;
+}
+
+.btn-group {
+    margin: 10px 15px 0 15px;
+}
+
+.btn-125 {
+    width: 125px;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.btn-i {
+    & > span {
+        display: flex;
+        align-items: baseline;
+
+        & > i {
+            padding-right: 3px;
+        }
+    }
+}
+
+.btn-i-icon > span {
+    display: flex;
+    align-items: center;
+}
+
+.btn-locked i {
+    color: $cl_lion;
+}
+
+.btn-reset i {
+    color: $cl_golden;
+}
+
+.btn-copy i {
+    color: $cl_dollar_bill;
+}
+
+.btn-delete i {
+    color: $cl_pastel_red;
+}
+
+.btn-save {
+  color: white;
+    border-color: $cl_light_sea_green;
+    background-color: $cl_light_sea_green;
+
+    &:disabled {
+        background-color: $cl_light_sea_green !important;
+    }
+}
+
+.btn-update {
+  color: white;
+    border-color: $cl_blue;
+    background-color: $cl_blue;
+
+    &:disabled {
+        background-color: $cl_blue !important;
+        color: $cl_white !important;
+    }
+}
+
+.btn-edit {
+  color: white;
+    border-color: $cl_white;
+    background-color: $cl_blue;
+
+    &:disabled {
+        background-color: $cl_blue !important;
+    }
+}
+
+.btn-action-36 {
+    width: 36px;
+    min-width: 36px !important;
+    height: 36px;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+
+.btn-100 {
+    width: 100px !important;
+}
+
+.btn-group-edit {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0;
+
+    & > button {
+        color: #ffffff;
+    }
+}
+
+.form-buttons {
+    .mat-button-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.mat-raised-button:not([class*='mat-elevation-z']) {
+    box-shadow: none !important;
+}

@@ -1,0 +1,61 @@
+<ngui-map [zoom]="zoom"
+          [center]="center"
+          [styles]="styles"
+          [streetViewControl]="mapOptions?.streetViewControl"
+          [zoomControl]="mapOptions?.zoomControl"
+          [fullscreenControl]="mapOptions?.fullscreenControl"
+          [mapTypeControl]="mapOptions?.mapTypeControl"
+          [scaleControl]="mapOptions?.scaleControl"
+          (zoom_changed)="onZoomChange($event)"
+          (mapReady$)="onMapReady($event)"
+          class="map-wrapper h-100 w-100">
+  <ng-container *ngIf="drawable">
+    <drawing-manager
+      [drawingMode]="'polygon'"
+      [drawingControl]="true"
+      [drawingControlOptions]="{
+            position: 'TOP_CENTER',
+            drawingModes: ['polygon']
+           }"
+      [polygonOptions]="{
+            strokeColor: '#2496C9',
+            strokeOpacity: 1,
+            strokeWeight: 2,
+            fillColor: '#2496C9',
+            fillOpacity: 0.33,
+            zIndex: 1
+          }"></drawing-manager>
+  </ng-container>
+
+  <!--editableObject-->
+  <ng-container *ngFor="let group of coordinates; let $index = index;">
+    <custom-marker [position]="group?.toArray()">
+      <div class="custom-marker">
+        <span class="number">{{$index + 1}}</span>
+        <img class="icon" src="/assets/images/map/marker.png"/>
+      </div>
+    </custom-marker>
+  </ng-container>
+
+  <ng-container *ngFor="let group of centerBounds; let $index = index;">
+    <custom-marker [position]="group?.toArray()">
+      <div class="custom-marker logo">
+        <img class="" src="/assets/images/Chevron_Logo.svg.png"/>
+      </div>
+    </custom-marker>
+  </ng-container>
+
+  <!--groups-->
+  <ng-container *ngIf="groups.length">
+    <ng-container *ngFor="let group of groups; let $index = index;">
+      <ng-container *ngIf="group?.coordinates?.length">
+        <custom-marker [position]="group?.coordinates[0]?.toArray()" (click)="onClick(group)">
+          <div class="custom-marker">
+            <span class="number">{{$index + 1}}</span>
+            <img class="icon" src="/assets/images/map/marker.png"/>
+          </div>
+        </custom-marker>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</ngui-map>

@@ -1,0 +1,12 @@
+.tree-view-group{
+    height: 100%;
+    $left_width: 350px;
+    .side-content {
+        width: $left_width;
+        max-width: $left_width;
+    }
+
+    .main-content {
+        overflow: auto;
+    }
+}

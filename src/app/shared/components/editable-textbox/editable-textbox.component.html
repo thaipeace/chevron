@@ -1,0 +1,10 @@
+<div class="reading" (click)="switchToEdit(textbox)" [hidden]="!isReading()">{{displayValue}}</div>
+<div [class.d-none]="!isEditing()" class="input-wrapper">
+  <input id="hero" #textbox (blur)="blur()" type="text" [formControl]="textBoxControl" />
+  <button class="btn btn-icon text-white ml-2" matTooltip="Save" (click)="save()">
+    <i class="fal fa-check"></i>
+  </button>
+  <button class="btn btn-icon text-white ml-2" matTooltip="Discard" (click)="discard()">
+    <i class="fal fa-times"></i>
+  </button>
+</div>

@@ -1,0 +1,36 @@
+@import '~src/sass/chevron/variables';
+
+.not-found {
+    width: 100vw;
+    height: 100vh;
+    background-color: $cl_dark_jungle_green;
+    
+    .not-found-image {
+        background-image: url("~src/assets/images/404-2x.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center center;
+    }
+    
+    .not-found-wrap {
+        .logo {
+            margin: 0 0 30px 0;
+            img {
+                width: 100px;
+            }
+        }
+        h1 {
+            font-size: 400%;
+            margin: 0 0 30px 0;
+            line-height: 1;
+            color: $cl-blue;
+        }
+        .subheading {
+            font-size: 150%;
+        }
+    }
+    
+    button {
+        background-color: $cl_blue;
+    }
+}

@@ -1,0 +1,97 @@
+<div [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+    <div class="d-flex flex-row title align-items-center">
+      <span class="flex-grow-1">{{ isNew ? 'New Driver' : 'Edit Driver' }}</span>
+      <button class="close" mat-icon-button (click)="onCancel()">
+        <i class="fal fa-times"></i>
+      </button>
+    </div>
+  </div>
+  <div mat-dialog-content *ngIf="!!formData" class="layout-dialog-form">
+    <perfect-scrollbar class="h-full">
+      <form class="default-form custom-form" name="form" id="form" (ngSubmit)="f.form.valid && doUpdate()" #f="ngForm"
+        novalidate>
+        <div class="d-grid two-col-table">
+          <div class="d-flex" *ngFor="let key of keys">
+            <label class="label d-flex align-items-center" for="input_{{ key }}">
+              {{ key | mappingLabel: { companyId: 'Company' } }}
+              <span class="required">*</span>
+            </label>
+            <ng-container [ngSwitch]="key">
+              <!-- COMPANY ID -->
+              <ng-container *ngSwitchCase="'companyId'">
+                <div class="form-group" [class.disabled-half]="disabledSelect">
+                  <select-menu [items]="companies" [bindLabel]="'_data.companyName'" [bindValue]="'_data.companyName'"
+                    (change)="formData[key].value = $event.value" [classes]="'input-custom-form arb-input'"
+                    #control="ngModel" [placeHolder]="'Select Company'" required [ngModel]="formData[key].value"
+                    name="input_{{ key }}"></select-menu>
+                  <div *ngIf="f.submitted && control.invalid" class="error">
+                    <small *ngIf="control?.errors.required">
+                      * Field is required
+                    </small>
+                  </div>
+                </div>
+              </ng-container>
+              <!-- CONTACT NUMBER -->
+              <ng-container *ngSwitchCase="'contactNumber'">
+                <div class="form-group">
+                  <input class="form-control control arb-input" type="tel" pattern="([0-9]*)" id="input_{{ key }}"
+                    name="input_{{ key }}" #control="ngModel" required [(ngModel)]="formData[key].value"
+                    placeholder="{{ key | mappingLabel }}" />
+                  <div *ngIf="f.submitted && control.invalid" class="error">
+                    <small *ngIf="control?.errors.pattern; else elseBlock">
+                      * Tel is wrong format
+                    </small>
+                    <ng-template #elseBlock>
+                      <small>* Field is required</small>
+                    </ng-template>
+                  </div>
+                </div>
+              </ng-container>
+              <!-- Date Input -->
+              <ng-container *ngSwitchCase="'terminalPassExpiryDate'">
+                <div class="form-group">
+                  <div class="d-flex input-group align-items-start mb-2">
+                    <input type="text" class="text-left date-picker" bsDatepicker placement="left"
+                      [(ngModel)]="formData[key].value" require #control="ngModel"
+                      [ngModelOptions]="{ standalone: true }" />
+                  </div>
+                  <div *ngIf="f.submitted && control.invalid" class="error">
+                    <small *ngIf="control?.errors">* Field is required</small>
+                  </div>
+                </div>
+              </ng-container>
+              <!-- DEFAULT -->
+              <ng-container *ngSwitchDefault>
+                <div class="form-group">
+                  <input class="form-control control arb-input" type="text" id="input_{{ key }}" name="input_{{ key }}"
+                    #control="ngModel" pattern="^\S[_A-z0-9]*((-|\s)*[_A-z0-9\s])*$" required
+                    [(ngModel)]="formData[key].value" placeholder="{{ key | mappingLabel }}" />
+                  <div *ngIf="f.submitted && control.invalid" class="error w-191">
+                    <small *ngIf="control?.errors.required; else whitespace">* Field is required</small>
+                    <ng-template #whitespace>
+                      <small *ngIf="control?.errors.pattern">
+                        * Can't contain whitespace at head or special character
+                      </small>
+                    </ng-template>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+          <div *ngIf="!isNew" class="d-flex flex-row pt-1 justify-content-end text-default">
+            <app-last-updated-info [username]="driverDetail?.userName" [lastUpdated]="driverDetail?.lastUpdated">
+            </app-last-updated-info>
+          </div>
+        </div>
+      </form>
+    </perfect-scrollbar>
+  </div>
+</div>
+
+<div class="form-buttons">
+  <button mat-raised-button [class.mat-elevation-z8]="true" type="submit" form="form" class="btn btn-blue">
+    <i class="fal fa-check"></i>
+    <span class="ml-2">{{ isNew ? 'Create' : 'Update' }}</span>
+  </button>
+</div>

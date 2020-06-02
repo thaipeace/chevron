@@ -1,0 +1,297 @@
+<div class="compact-wrapper pb-3">
+  <div class="title">
+    <div class=" d-flex align-items-center flex-row">
+      <span class="text flex-grow-1">
+        <i class="fal fa-truck-container mr-3"></i>Trip Index {{tripIndex}}
+      </span>
+      <div class="d-flex align-items-center">
+        <small class="text-grey">{{extra.date | date:'yyyy-MM-dd (HH:mm)'}}</small>
+        <button mat-icon-button (click)="close()" class="icon">
+          <mat-icon><i class="fal fa-times"></i></mat-icon>
+        </button>
+      </div>
+    </div>
+    <hr>
+  </div>
+  <br>
+
+  <div class="collapse-group mb-3">
+    <div class="heading d-flex flex-row pl-3">
+      <div class="flex-grow-1 text-ellipsis">
+        <i class="fal fa-road mr-3"></i>Trip Details
+      </div>
+      <button mat-icon-button (click)="collapseArray[0] = !collapseArray[0]" class="icon">
+        <mat-icon>
+          <i class="fal" [class.fa-angle-down]="!collapseArray[0]" [class.fa-angle-up]="collapseArray[0]"></i>
+        </mat-icon>
+      </button>
+    </div>
+    <div *ngIf="collapseArray[0]">
+      <table class="table-schedule">
+        <tbody>
+          <tr>
+            <td class="pr-3">Truck Plate</td>
+            <td>
+              <ng-container>
+                <div class="d-flex">
+                  <span class="flex-grow-1">{{selectedTrip?.TruckPlate}}</span>
+                  <!-- <i class="fal fa-question-circle"
+                    matTooltip="editable only time not pass and status not LOADING yet"></i> -->
+                </div>
+              </ng-container>
+              <!-- <ng-container *ngIf="!(errors.has(errorTypes.IN_PAST) || errors.has(errorTypes.AFTER_LOADING))">
+                <span class="text" *ngIf="!isEditing[0]">{{selectedTrip?.TruckPlate}}</span>
+                <div class="flex-grow-1 d-flex align-items-center" *ngIf="isEditing[0]">
+                  <mat-menu #truckMenu="matMenu">
+                    <ng-template ngFor let-dest let-j="index" [ngForOf]="trucks | distinct : 'truckPlate'">
+                      <button mat-menu-item class="text-grey" (click)="selectedTrip.TruckPlate = dest.truckPlate"
+                        *ngIf="freeTruckPlates.includes(dest['truckPlate'])">{{dest.truckPlate}}</button>
+                    </ng-template>
+                    <button mat-menu-item class="text-grey" *ngIf="!trucks?.length">No available truck found</button>
+                  </mat-menu>
+                  <button mat-button [matMenuTriggerFor]="truckMenu" class="dest-button">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="text">{{selectedTrip.TruckPlate}}</span>
+                      <button mat-icon-button [disableRipple]="true" *ngIf="trucks?.length">
+                        <i class="far fa-chevron-down text-grey"></i>
+                      </button>
+                    </div>
+                  </button>
+                </div>
+              </ng-container> -->
+            </td>
+          </tr>
+          <tr>
+            <td class="pr-3">Total Drop</td>
+            <td>
+              <span class="text">{{extra.totalDrop}}</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="pr-3">Terminal Arr. Time</td>
+            <td>
+              <div class="d-flex input-group align-items-center justify-content-between" *ngIf="isEditing[0]">
+                <md2-datepicker class="time-picker-spacing" [(ngModel)]='selectedTrip.TerminalArrivalTime'
+                  [format]="'y-MM-dd (HH:mm)'" [type]="'datetime'" [openOnFocus]="true" [min]="today"
+                  [max]="selectedTrip.TerminalReturnTime" [ngModelOptions]="{standalone: true}">
+                </md2-datepicker>
+                <i class="far fa-calendar-alt ts-calendar-icon text-grey ml-2"></i>
+              </div>
+              <div *ngIf="!isEditing[0]" class="text">
+                {{selectedTrip.TerminalArrivalTime  | date:'yyyy-MM-dd (HH:mm)'}}
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="pr-3">Terminal Ret. Time</td>
+            <td>
+              <div class="d-flex input-group align-items-center justify-content-between" *ngIf="isEditing[0]">
+                <md2-datepicker class="time-picker-spacing" [(ngModel)]='selectedTrip.TerminalReturnTime'
+                  [format]="'y-MM-dd (HH:mm)'" [type]="'datetime'" [openOnFocus]="true"
+                  [min]="selectedTrip.TerminalArrivalTime" [ngModelOptions]=" {standalone: true}">
+                </md2-datepicker>
+                <i class="far fa-calendar-alt ts-calendar-icon text-grey ml-2"></i>
+              </div>
+              <div *ngIf="!isEditing[0]" class="text">
+                {{selectedTrip.TerminalReturnTime  | date:'yyyy-MM-dd (HH:mm)'}}
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="pr-3">Truck Capacity</td>
+            <td>
+              <span class="text">{{selectedTrip.TruckCapacity}} Litres</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="pr-3">PTO</td>
+            <td>
+              <span
+                [ngClass]="{'text-danger': selectedTrip.PTO === 'false', 'text-success': selectedTrip.PTO !== 'false'}">
+                {{selectedTrip.PTO === "true" ? 'Yes' : selectedTrip.PTO === "false" ? 'No' : ''}}
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="pr-3">Mode</td>
+            <td>
+              <span class="text">{{selectedTrip?.ModeOfUpdatingStatus | mappingLabel}}</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="pr-3">Trip Status</td>
+            <td>
+              <ng-container *ngIf="errors.has(errorTypes.AWAITING_APPROVAL)">
+                <div class="d-flex">
+                  <span class="flex-grow-1">{{selectedTrip?.TripStatus}}</span>
+                  <i class="fal fa-question-circle text-blue" appCopyGUID [key]="3" matTooltip="editable only when trip is approved"></i>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="!errors.has(errorTypes.AWAITING_APPROVAL)">
+                <ng-select *ngIf="isEditing[0]" [items]="tripStatusList" name="trip-status-list" bindValue="value"
+                  bindLabel="label" [(ngModel)]="selectedTrip.TripStatus" [clearable]="false" [searchable]="false"
+                  class="no-bg">
+                  <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                    <span [title]="item.label">{{item?.label}}</span>
+                  </ng-template>
+                </ng-select>
+                <div *ngIf="!isEditing[0]" class="text">{{selectedTrip.TripStatus}}</div>
+              </ng-container>
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="col-action d-flex align-items-center justify-content-between">
+        <ng-container *ngIf="!isEditing[0]">
+          <div class="flex-grow-1">
+            <ng-container *ngIf="errors.has(errorTypes.IN_PAST) && errors.has(errorTypes.AWAITING_APPROVAL)">
+              <small class="color-blue-wild">{{errors.get(errorTypes.IN_PAST)}}</small>
+            </ng-container>
+            <ng-container
+              *ngIf="!(errors.has(errorTypes.IN_PAST) && errors.has(errorTypes.AWAITING_APPROVAL)) && errors.has(errorTypes.AFTER_LOADING)">
+              <small class="color-blue-wild">{{errors.get(errorTypes.AFTER_LOADING)}}</small>
+            </ng-container>
+            <ng-container
+              *ngIf="!((errors.has(errorTypes.IN_PAST) && errors.has(errorTypes.AWAITING_APPROVAL)) || errors.has(errorTypes.AFTER_LOADING))">
+              <div class="d-flex align-items-center">
+                <button mat-raised-button [class.mat-elevation-z8]="true" class="btn-i btn-i-icon btn-cancel mr-3"
+                  (click)="onDeleteTrip()">Delete Trip
+                </button>
+                <button mat-raised-button [class.mat-elevation-z8]="true" class="btn-i btn-i-icon btn-save"
+                  [class.disabled-half]="selectedTrip?.EmptyCompartments === '0'" (click)="onAssignOrder()">Assign Order
+                </button>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+        <div class="d-flex align-items-center justify-content-end flex-grow-1">
+          <button mat-raised-button *ngIf="!isEditing[0]" [class.mat-elevation-z8]="true"
+            class="btn-i btn-i-icon btn-edit" (click)="onEdit(0)">
+            <i class="fal fa-edit ml-0 mr-1"></i> Edit
+          </button>
+          <button mat-raised-button *ngIf="isEditing[0]" [class.mat-elevation-z8]="true"
+            class="btn-i btn-i-icon btn-cancel mr-3" (click)="onCancelEdit(0)">
+            <i class="far fa-ban mr-1"></i> Cancel
+          </button>
+          <button mat-raised-button *ngIf="isEditing[0]" [class.mat-elevation-z8]="true"
+            class="btn-i btn-i-icon btn-save" (click)="onSaveTrip(selectedTrip)">
+            <i class="fal fa-check ml-0 mr-1"></i> Update
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapse-group mb-3" *ngFor="let item of selectedTrip?.Schedule; let i=index;">
+    <div class="heading d-flex flex-row pl-3">
+      <div class="flex-grow-1 text-ellipsis">
+        <i class="fal fa-gas-pump mr-3"></i>{{item?.StationName}}
+      </div>
+      <div class="col-action">
+        <i (click)="onStationDetails(item?.StationId)" matTooltip="view station" class="fal fa-poll-h"></i>
+      </div>
+
+      <button mat-icon-button (click)="collapseArray[i+1] = !collapseArray[i+1]" class="icon">
+        <mat-icon><i class="fal" [class.fa-angle-down]="!collapseArray[i+1]"
+            [class.fa-angle-up]="collapseArray[i+1]"></i></mat-icon>
+      </button>
+    </div>
+    <div *ngIf="collapseArray[i+1]">
+      <table class="table-schedule">
+        <tbody>
+          <tr>
+            <td class="pr-3">Order Details</td>
+            <td>
+              <i class="fal fa-poll-h cream cursor-pointer" (click)="onOrderDetails(item?.OrderId)"
+                matTooltip="view order"></i>
+            </td>
+          </tr>
+          <tr>
+            <td class="pr-3">Order Status</td>
+            <td>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <ng-select *ngIf="enableEditOrderStatus(i, item.OrderStatus)"
+                    [items]="orderStatusList[i]" [name]="'order-status-list-'+(i)" bindValue="value" bindLabel="label"
+                    [(ngModel)]="item.OrderStatus" [clearable]="false" class="no-bg" [searchable]="false">
+                    <ng-template ng-option-tmp let-itm="item" let-index="index" let-search="searchTerm">
+                      <span [title]="itm.label" class="text-grey">{{itm.label}}</span>
+                    </ng-template>
+                  </ng-select>
+                  <div *ngIf="!enableEditOrderStatus(i, item.OrderStatus)" class="text">{{item.OrderStatus}}</div>
+                </div>
+                <i class="fal fa-question-circle text-blue" matTooltip="editable when unloading all station"></i>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="pr-3">Order Quantity</td>
+            <td>
+              <span class="text">{{item.OrderQuantity}} Litres</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="pr-3">Dest Arr. Time</td>
+            <td>
+              <div class="d-flex input-group align-items-center justify-content-between" *ngIf="isEditing[i+1]">
+                <md2-datepicker class="time-picker-spacing" [(ngModel)]='item.OrderEstimatedTime' [min]="isTomorrow ? tomorrow : today"
+                  [format]="'y-MM-dd (HH:mm)'" [type]="'datetime'" [openOnFocus]="true"
+                  [ngModelOptions]="{standalone: true}"></md2-datepicker>
+                <i class="far fa-calendar-alt ts-calendar-icon text-grey ml-2"></i>
+              </div>
+              <div *ngIf="!isEditing[i+1]" class="text">{{item.OrderEstimatedTime  | date:'yyyy-MM-dd (HH:mm)'}}
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="item['Euro4-97']">
+            <td class="pr-3 product-code-title euro4-97 text-uppercase">Euro4-97</td>
+            <td class="text">{{item['Euro4-97']}} Litres</td>
+          </tr>
+          <tr *ngIf="item['Premium-95']">
+            <td class="pr-3 product-code-title premium-95 text-uppercase">Premium-95</td>
+            <td class="text">{{item['Premium-95']}} Litres</td>
+          </tr>
+          <tr *ngIf="item['B10-Diesel']">
+            <td class="pr-3 product-code-title b10-diesel text-uppercase">B10-Diesel</td>
+            <td class="text">{{item['B10-Diesel']}} Litres</td>
+          </tr>
+          <tr *ngIf="item['Euro5-B7']">
+            <td class="pr-3 product-code-title euro5-b7 text-uppercase">Euro5-B7</td>
+            <td class="text">{{item['Euro5-B7']}} Litres</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="col-action d-flex align-items-center">
+        <div class="d-flex align-items-center" *ngIf="!isEditing[i+1]">
+          <ng-container
+            *ngIf="!((errors.has(errorTypes.IN_PAST) && errors.has(errorTypes.AWAITING_APPROVAL)) || errors.has(errorTypes.AFTER_LOADING))">
+            <button mat-raised-button [class.mat-elevation-z8]="true" class="btn-i btn-i-icon btn-cancel mr-3"
+              (click)="onDisassociateOrder(item)">Disassociate Order
+            </button>
+          </ng-container>
+          <ng-container
+            *ngIf="item?.errors?.hasError && item?.errors?.has(errorTypes.AFTER_LOADING) && !item?.errors?.has(errorTypes.AFTER_UNLOADING)">
+            <button mat-raised-button [class.mat-elevation-z8]="true" class="btn-i btn-i-icon btn-save"
+              (click)="onDivertOrder(item)">Divert Order
+            </button>
+          </ng-container>
+        </div>
+        <div class="d-flex align-items-center justify-content-end flex-grow-1">
+          <button mat-raised-button *ngIf="!isEditing[i+1]" [class.mat-elevation-z8]="true"
+            class="btn-i btn-i-icon btn-edit" (click)="onEdit(i+1)">
+            <i class="fal fa-edit ml-0 mr-1"></i> Edit
+          </button>
+          <button mat-raised-button *ngIf="isEditing[i+1]" [class.mat-elevation-z8]="true"
+            class="btn-i btn-i-icon btn-cancel mr-3" (click)="onCancelEdit(i+1)">
+            <i class="far fa-ban"></i> Cancel
+          </button>
+          <button mat-raised-button *ngIf="isEditing[i+1]" [class.mat-elevation-z8]="true"
+            class="btn-i btn-i-icon btn-save" (click)="onSaveSchedule(item, i+1)">
+            <i class="fal fa-check ml-0 mr-1"></i> Update
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

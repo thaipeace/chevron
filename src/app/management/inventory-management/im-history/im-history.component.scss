@@ -1,0 +1,35 @@
+@import '~src/sass/chevron/variables';
+
+.station-name {
+    font-size: 14px;
+    color: $cl_blue;
+
+    i {
+        font-size: 16px;
+    }
+}
+
+.chart-body {
+    background-color: $cl_blue_medium_dark;
+}
+
+.col-index {
+    min-width: 60px;
+    max-width: 60px;
+}
+
+.col-time {
+    min-width: 130px;
+    max-width: 130px;
+}
+.items{
+    > .item{
+        min-width: 200px;
+    }
+}
+
+.collapse{
+    > *{
+        display: none;
+    }
+}

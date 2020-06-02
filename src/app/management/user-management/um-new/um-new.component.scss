@@ -1,0 +1,10 @@
+@import '~src/sass/chevron/variables';
+
+.list-group-link-unlink {
+  width: 191px;
+  background-color: $cl_border_2 !important;
+
+  ul > li {
+    background-color: $cl_border_1;
+  }
+}

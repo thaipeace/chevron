@@ -1,0 +1,130 @@
+.dnd-list {
+    //border: solid 1px #ccc;
+    min-height: 30px;
+    //background: white;
+    border-radius: 4px;
+    overflow: hidden;
+
+    &.undraggable {
+        &.cdk-drop-list {
+            &-receiving,
+            &-dragging {
+                pointer-events: none;
+                opacity: 0.5;
+            }
+        }
+    }
+
+    &:not(.undraggable).cdk-drop-list {
+
+        &-receiving,
+        &-dragging {
+            border-style: dashed;
+            border-width: 2px;
+        }
+
+    }
+}
+
+
+.dnd-item-box.cdk-drag {
+    box-sizing: border-box;
+    cursor: move;
+    position: relative;
+
+
+    .btn-link {
+        position: relative;
+    }
+
+    &:hover .btn-link::before {
+        content: "";
+        font-weight: 300;
+        font-size: 18px;
+        position: absolute;
+        top: 15%;
+        bottom: 15%;
+        left: 3px;
+        padding: 0 1px;
+        width: 1px;
+        border-right: 2px solid white;
+        border-left: 2px solid white;
+    }
+}
+
+
+.cdk-drag-placeholder {
+    opacity: 0;
+}
+
+.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.dnd-item-box:last-child {
+    border: none;
+}
+
+.dnd-list.cdk-drop-list-dragging .dnd-item-box:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+
+.custom-list {
+    min-width: 250px;
+}
+
+.custom-item-box {
+    white-space: nowrap;
+    padding: 0;
+    padding-left: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5em 1em;
+
+    //&:nth-child(even) {
+    //    background-color: $cl_white_row_2;
+    //}
+    //
+    //&:nth-child(odd) {
+    //    background-color: $cl_white_row_1;
+    //}
+
+
+}
+
+
+.cdk-drag {
+    &.cdk-drag-preview {
+        display: block;
+        padding: 15px 20px !important;
+        box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
+        0 3px 14px 2px rgba(0, 0, 0, 0.12);
+
+        .dragging-hide {
+            display: none !important;
+        }
+
+        > * {
+            width: 100%;
+            display: block;
+        }
+    }
+}
+
+.mode {
+    cursor: pointer;
+    padding: 0.5em 1em;
+}
+
+.selected-mode, .selected-custom-mode, .selected-custom {
+    background: #119ed9 !important;
+    color: white;
+}
+
+.existed-item {
+    opacity: 0.5;
+}
+

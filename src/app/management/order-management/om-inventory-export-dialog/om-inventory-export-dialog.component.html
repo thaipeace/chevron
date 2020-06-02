@@ -1,0 +1,23 @@
+<div [class.mat-elevation-z8]="true">
+  <div mat-dialog-title>
+      <div class="d-flex flex-row title align-items-center">
+          <span class="flex-grow-1">Export</span>
+          <button class="close" mat-icon-button (click)="onCancel()"><i class="fal fa-times"></i></button>
+      </div>
+  </div>
+  <div mat-dialog-content>
+      <input type="text" class="date-picker w-100"
+             #drp="bsDaterangepicker"
+             bsDaterangepicker
+             [bsConfig]="{ rangeInputFormat: 'MMMM Do YYYY, h:mm:ss a' }"
+             [ngModel]="dateRange"
+             (ngModelChange)="onDateChange($event)">
+  </div>
+</div>
+<div class="form-buttons d-flex flex-row">
+  <div class="flex-grow-1"></div>
+  <button mat-raised-button type="button" class="btn-i btn-i-icon btn-save mat-raised-button text-white"
+          (click)="onExport()">
+      <i class="fal fa-cloud-download"></i> Export
+  </button>
+</div>

@@ -1,0 +1,16 @@
+<div class="drop-content d-flex justify-content-center align-items-center h-100" #dropContainer>
+  <div class="text-center p-3 pb-5">
+    <p class="mb-4 text">Drag and drop file to import onto this page <br>or add one using the button</p>
+    <button mat-raised-button [class.mat-elevation-z8]="true" class="btn btn-blue ml-3"
+      (click)="triggerUploadFile($event)">
+      <span><i class="fal fa-file-import ml-0 mr-2"></i>Select file from computer</span>
+    </button>
+    <p class="mt-3" *ngIf="file">[{{file?.fileName}}]</p>
+    <div class="text-center mt-3" *ngIf="errors?.length">
+      <div *ngFor="let error of errors" class="text-red">
+        <b>{{error}}</b>
+      </div>
+    </div>
+    <input type="file" class="invisible" #uploadInput (change)="onClickToUpload($event)">
+  </div>
+</div>

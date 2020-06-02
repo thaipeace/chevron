@@ -1,0 +1,26 @@
+.theme-blue {
+  border-radius: 0;
+  background-color: #2496c9;
+  height: 40px;
+  padding: 10px 15px;
+  .selected-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: #ffffff;
+  }
+  .icon {
+    font-size: 16px;
+    color: #ffffff;
+  }
+}
+
+.border-box {
+  height: 30px;
+  border-radius: 0;
+  border-color: #9fb2bf;
+  padding-left: 10px;
+  padding-bottom: 10px;
+  .selected-text {
+    color: #9fb2bf !important;
+  }
+}

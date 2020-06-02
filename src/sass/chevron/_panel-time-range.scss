@@ -1,0 +1,218 @@
+.panel-time-range-wrapper {
+  $left_width: 130px;
+  $ticks_width: 100px;
+  $tick_width: 25px;
+  $item_height: 42px;
+  $max_height: calc(100vh - 250px);
+
+  background-color: $cl_dark_jungle_green;
+  max-height: $max_height;
+  border-collapse: collapse;
+
+  .left-content {
+    position: -webkit-sticky;
+    position: sticky;
+    left: 0;
+    z-index: 2;
+
+    > .item {
+      color: white;
+      padding: 12px 15px 11px 15px;
+      height: $item_height;
+      width: $left_width;
+      border-top: 1px solid $cl_dark_jungle_green;
+      border-bottom: 1px solid $cl_dark_jungle_green;
+      //border-left: 1px solid $cl_dark_jungle_green;
+      border-right: 2px solid $cl_dark_jungle_green;
+      //cursor: pointer;
+      //&:hover{
+      //    &:not(.title){
+      //        border-top: 1px solid $cl_blue;
+      //        border-bottom: 1px solid $cl_blue;
+      //        border-left: 2px solid $cl_blue;
+      //    }
+      //}
+      .circle {
+        min-width: 20px;
+        height: 20px;
+        text-align: center;
+        background: $cl_blue;
+        border-radius: 50%;
+        padding: 2px 0;
+      }
+
+      &.title {
+
+        position: -webkit-sticky;
+        position: sticky;
+        left: 0;
+        top: 0;
+        font-weight: 500;
+        background-color: $cl_blue !important;
+
+        .sort {
+          opacity: 0;
+
+          &.stick {
+            opacity: 1 !important;
+          }
+        }
+
+        &:hover {
+          .sort {
+            opacity: 0.5;
+          }
+        }
+      }
+
+      &:nth-child(even) {
+        background-color: $cl_border_1;
+      }
+
+      &:nth-child(odd) {
+        background-color: $cl_border_2;
+      }
+    }
+
+    &.left-content-2 {
+      left: $left_width;
+      > .item {
+        width: auto;
+      }
+    }
+  }
+
+  .main-content {
+    height: 100%;
+    line-height: 0;
+
+    .time-range {
+      background-color: $cl_dark_jungle_green;
+      height: $item_height;
+      border-top: 1px solid $cl_dark_jungle_green;
+      border-bottom: 1px solid $cl_dark_jungle_green;
+      border-right: 1px solid $cl_dark_jungle_green;
+      display: inline-block;
+      left: $left_width;
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+
+      .labels {
+        display: inline-block;
+        white-space: nowrap;
+        height: 20px;
+
+        > .label {
+          display: inline-block;
+          width: $ticks_width;
+          text-align: center;
+          position: relative;
+          height: 20px;
+
+          span {
+            width: 40px;
+            position: absolute;
+            top: 5px;
+            right: -20px;
+            line-height: 20px;
+          }
+        }
+      }
+
+      .ticks-group {
+        height: 22px;
+        white-space: nowrap;
+
+        .ticks {
+          width: $ticks_width;
+          display: inline-block;
+          position: relative;
+          height: 22px;
+
+          > .tick {
+            display: inline-block;
+            width: 1px;
+            background-color: white;
+            position: absolute;
+            bottom: 5px;
+
+            &:nth-child(1) {
+              height: 5px;
+              left: calc(1 * #{$tick_width});
+            }
+
+            &:nth-child(2) {
+              height: 7px;
+              left: calc(2 * #{$tick_width});
+            }
+
+            &:nth-child(3) {
+              height: 5px;
+              left: calc(3 * #{$tick_width});
+            }
+
+            &:nth-child(4) {
+              height: 10px;
+              left: calc(4 * #{$tick_width});
+            }
+          }
+        }
+      }
+
+    }
+
+    .groups {
+      > .group {
+        position: relative;
+        height: 42px;
+        border-top: 1px solid $cl_dark_jungle_green;
+        border-bottom: 1px solid $cl_dark_jungle_green;
+        border-right: 1px solid $cl_dark_jungle_green;
+
+        &:nth-child(even) {
+          background-color: $cl_border_2;
+        }
+
+        &:nth-child(odd) {
+          background-color: $cl_border_1;
+        }
+
+        .bar {
+          position: absolute;
+          height: 24px;
+          //width: 500px;
+          background-color: $cl_blue;
+          left: 0;
+          top: 8px;
+          border: 1px solid $cl_blue;
+          cursor: pointer;
+
+          .title{
+            line-height: initial;
+            @extend .text-ellipsis;
+          }
+
+          &.selected, &:hover {
+            border-color: white;
+          }
+
+          .start {
+            color: white;
+            position: absolute;
+            left: 5px;
+            line-height: 24px;
+          }
+
+          .end {
+            color: white;
+            position: absolute;
+            right: 5px;
+            line-height: 24px;
+          }
+        }
+      }
+    }
+  }
+}

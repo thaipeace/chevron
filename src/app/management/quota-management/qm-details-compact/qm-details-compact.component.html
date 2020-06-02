@@ -1,0 +1,92 @@
+<div class="compact-wrapper d-flex flex-column min-h-100">
+  <div class="title">
+    <div class=" d-flex align-items-center flex-row">
+      <span class="text flex-grow-1">Quota</span>
+      <button mat-icon-button (click)="close()" class="icon">
+        <mat-icon><i class="fal fa-times"></i></mat-icon>
+      </button>
+    </div>
+    <hr>
+  </div>
+  <div class="pb-4 mt-3">
+    <div class="d-flex flex-column h-100 table-mini-wrapper">
+      <table class="w-100 ">
+        <thead>
+        <tr>
+          <th>#</th>
+          <th>Product Code</th>
+          <th>Monthly Quota</th>
+          <th>Remaining Quota</th>
+          <th *ngIf="isEditing"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>1</td>
+          <td>B19-Diesel</td>
+          <td>150000</td>
+          <td>1294000</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Premium-95</td>
+          <td>150000</td>
+          <td>1294000</td>
+        </tr>
+        <tr *ngFor="let item of selectedProducts; let $index = index;">
+          <td>{{$index + 1}}</td>
+          <td>{{item?.name}}</td>
+          <td>
+            <span *ngIf="!isEditing">{{item?.quota?.monthly}}</span>
+            <input *ngIf="isEditing" type="number" [(ngModel)]="item.quota.monthly" digitOnly>
+          </td>
+          <td>
+            <span *ngIf="!isEditing">{{item?.quota?.remaining}}</span>
+            <input *ngIf="isEditing" type="number" [(ngModel)]="item.quota.remaining" digitOnly>
+          </td>
+          <td *ngIf="isEditing"><i class="fal fa-trash-alt color-red cursor-pointer" (click)="onRemove(item)"></i>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="flex-grow-1">
+      </div>
+      <div class=" d-flex px-3 py-2 sticky-b sticky-l actions" *ngIf="isEditing">
+        <button mat-raised-button type="button" class="btn btn-blue mr-3 new" [matMenuTriggerFor]="menu">
+          <i class="fal fa-plus"></i>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button (click)="onAdd(item)" mat-menu-item
+                  *ngFor="let item of availableProducts">{{item?.name}}</button>
+        </mat-menu>
+        <div class="flex-grow-1"></div>
+        <div class="d-flex align-items-center" app-table-mini-actions [templateLink]="''" (clearData)="clearData()"
+             (onUpload)="onUpload($event)">
+          <!--<i class="fal fa-cloud-download-alt cursor-pointer" (click)="downloadTemplate()"
+             matTooltip="download template"></i>
+          <button (click)="loadData($event)" mat-button><span class="text-light-green">Load Data</span></button>
+          <button (click)="clearData()" mat-button><span class="color-red">Clear Set</span></button>
+          <input type="file" class="invisible"
+                 #uploadInput
+                 (change)="onClickToUpload($event)">-->
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flex-grow-1"></div>
+  <div class="footer text-right py-3">
+    <hr class="mb-3">
+    <button mat-raised-button *ngIf="!isEditing"
+            class=" btn-edit" (click)="onEdit()">
+      <i class="fal fa-edit ml-0 mr-1"></i> Edit
+    </button>
+    <button mat-raised-button *ngIf="isEditing"
+            class=" btn-cancel mr-3" (click)="onCancelEdit()">
+      <i class="far fa-ban mr-1"></i> Cancel
+    </button>
+    <button mat-raised-button *ngIf="isEditing"
+            class=" btn-save" type="submit" (click)="onUpdate()">
+      <i class="fal fa-check ml-0 mr-1"></i> Update
+    </button>
+  </div>
+</div>

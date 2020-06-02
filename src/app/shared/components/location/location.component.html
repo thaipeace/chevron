@@ -1,0 +1,14 @@
+<ng-container [ngSwitch]="type">
+  <custom-marker *ngSwitchCase="'center'" [position]="position">
+    <img class="icon-center" src="assets/images/Chevron_Logo.svg@2x.png" width="32" height="36">
+  </custom-marker>
+  <custom-marker *ngSwitchCase="'number'" [position]="position">
+    <img class="icon-center" src="assets/images/map/marker.png" width="24" height="34">
+    <b class="map-number">{{number}}</b>
+  </custom-marker>
+  <custom-marker *ngSwitchDefault [position]="position" draggable="true" (initialized$)="onMarkersInit($event)" (click)="clicked()">
+    <div>
+      <img class="icon-location" src="assets/images/map/gas-station-marker.png" width="24" height="34">
+    </div>
+  </custom-marker>
+</ng-container>

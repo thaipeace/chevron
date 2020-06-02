@@ -1,0 +1,113 @@
+<div class="p-3 d-flex flex-column">
+  <div class="actions-bar">
+    <div class="mb-3 d-flex align-items-center">
+      <div class="flex-grow-1">
+        <button mat-raised-button type="button" class="btn btn-blue mr-3" (click)="onNew()"><i class="fal fa-plus"></i>
+          New Delivery Point Group
+        </button>
+        <button mat-raised-button type="button" class="btn btn-blue" (click)="onMapSelected()"
+          [class.disabled-half]="!selectedArray?.length">
+          <i class="fal fa-map-marker-alt"></i>
+          Map Selected
+        </button>
+      </div>
+      <div class="form-group d-flex justify-content-center">
+        <search-box [searchControl]="searchControl"></search-box>
+
+        <mat-paginator class="chevron-paginator ml-3" [pageSize]="pageSizeOptions?.size"
+          [pageSizeOptions]="pageSizeOptions?.sizes">
+        </mat-paginator>
+      </div>
+    </div>
+    <div class="mb-3 d-flex flex-row justify-content-end">
+      <button mat-icon-button (click)="onRefresh()">
+        <i class="fal fa-sync-alt refresh-icon clickable"></i>
+      </button>
+      <span class="flex-grow-1"></span>
+    </div>
+  </div>
+  <perfect-scrollbar class="table-material hoverable flex-grow-1">
+    <table mat-table [dataSource]="tableData" matSort matSortActive="TerminalName" matSortDirection="asc">
+      <ng-container *ngFor="let key of displayedColumns" matColumnDef="{{ key }}" [sticky]="['checkbox'].includes(key)"
+        [stickyEnd]="['actions'].includes(key)" [ngSwitch]="key">
+        <!-- index -->
+        <ng-container *ngSwitchCase="'index'">
+          <th mat-header-cell *matHeaderCellDef class="cell-wrap-content">#</th>
+          <td mat-cell *matCellDef="let row; let $index = index" class="cell-wrap-content">
+            {{tableData?.paginator?._pageIndex * tableData?.paginator?._pageSize + $index + 1}}
+          </td>
+        </ng-container>
+        <ng-container *ngSwitchCase="'checkbox'">
+          <th mat-header-cell *matHeaderCellDef class="cell-wrap-content">
+            <mat-checkbox (change)="onSelectAll($event)" [disabled]="!dataArray?.length"
+              [checked]="selectedArray?.length > 0 && selectedArray?.length === dataArray?.length"
+              [indeterminate]="selectedArray?.length > 0 && selectedArray?.length !== dataArray?.length"
+              (click)="$event.stopPropagation()" class="no-label bg-dark">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row" class="cell-wrap-content">
+            <mat-checkbox (change)="onSelectionChange($event, row)" (click)="$event.stopPropagation()"
+              [checked]="selectedArray.indexOf(row) !== -1" class="no-label bg-dark"></mat-checkbox>
+          </td>
+        </ng-container>
+
+        <!--specific attributes-->
+        <ng-container *ngSwitchCase="'Created'">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ key | mappingLabel }}
+          </th>
+          <td mat-cell *matCellDef="let row">
+            {{row?._data[key] && row?._data[key] !== 'NA' ? (row?._data[key] | date:'yyyy-MM-dd (HH:mm)') : ''}}
+          </td>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Modified'">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ key | mappingLabel }}
+          </th>
+          <td mat-cell *matCellDef="let row">
+            {{row?._data[key] && row?._data[key] !== 'NA' ? (row?._data[key] | date:'yyyy-MM-dd (HH:mm)') : ''}}
+          </td>
+        </ng-container>
+        <!--specific attributes-- END -->
+
+        <!-- actions -->
+        <ng-container *ngSwitchCase="'actions'">
+          <th mat-header-cell *matHeaderCellDef class="cell-wrap-content">
+            <div class="d-flex justify-content-center">
+              <span>Actions</span>
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let row" class="cell-wrap-content ">
+            <div class="d-flex">
+              <div class="color-red">
+                <i matTooltip="delete" class="fal fa-trash-alt" (click)="onDelete(row);$event.stopPropagation();"></i>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- index -->
+
+        <ng-container *ngSwitchDefault>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ key | mappingLabel }}
+          </th>
+          <td mat-cell *matCellDef="let row">{{ row?._data[key] }}</td>
+        </ng-container>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns" [class.selected]="selectedRow === row"
+        (click)="openCompact(row)"></tr>
+    </table>
+
+    <!-- No search result -->
+    <div *ngIf="tableData?.data.length > 0 && tableData?.filteredData.length == 0" class="no-result">
+      No search result found for <b>{{searchControl?.value}}</b>
+    </div>
+    <!-- No data -->
+    <div *ngIf="tableData?.data.length == 0" class="no-result">
+      No data found
+    </div>
+  </perfect-scrollbar>
+</div>

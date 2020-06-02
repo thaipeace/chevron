@@ -1,0 +1,95 @@
+::ng-deep .md2-datepicker-button,
+::ng-deep .md2-datepicker-arrow {
+  display: none !important;
+}
+
+::ng-deep .md2-datepicker-trigger {
+  padding: 0 !important;
+}
+
+::ng-deep .md2-datepicker-input {
+  padding-right: 0 !important;
+  font-size: 12px !important;
+  .md2-floating-placeholder::after {
+    display: none;
+  }
+}
+
+::ng-deep .md2-datepicker-value {
+  cursor: pointer !important;
+}
+
+::ng-deep .time-picker-spacing {
+  //width: 250px;
+  padding-bottom: 3px;
+  padding-top: 3px;
+}
+
+::ng-deep .md2-datepicker-input input {
+  color: rgb(159, 178, 191);
+}
+
+::ng-deep .md2-calendar-previous-button,
+::ng-deep .md2-calendar-period-button,
+::ng-deep .md2-calendar-next-button {
+  color: rgba(0,0,0,1);
+}
+
+.ts-calendar-icon {
+  position: absolute;
+  top: 8px;
+  right: 15px;
+}
+
+.ts-time-wrapper {
+  position: relative;
+}
+
+.time-picker-spacing ::ng-deep .md2-datepicker-input {
+  border: none;
+}
+
+input.order-new::-webkit-inner-spin-button,
+input.order-new::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+input.order-new {
+  -moz-appearance: textfield;
+}
+
+.input-product {
+  .child-item:first-child {
+    padding-top: 0;
+  }
+
+  .child-item {
+    padding-bottom: 3px;
+    padding-top: 3px;
+  }
+
+  .child-item:last-child {
+    padding-bottom: 0;
+  }
+}
+
+.consistent-font {
+  font-size: 12px;
+}
+
+.custom-form {
+  .input-group {
+    align-items: flex-start !important;
+  }
+}
+
+.item {
+  &:last-child {
+    .item-input-group {
+      margin-bottom: 0 !important;
+    }
+  }
+}

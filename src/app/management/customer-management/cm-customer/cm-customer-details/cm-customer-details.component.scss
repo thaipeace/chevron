@@ -1,0 +1,8 @@
+.btn-group {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 !important;
+  &>button {
+    color: #ffffff
+  }
+}

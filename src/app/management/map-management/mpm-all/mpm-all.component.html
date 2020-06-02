@@ -1,0 +1,49 @@
+<ngui-map [zoom]="zoom"
+          [center]="center"
+          [styles]="styles"
+          [streetViewControl]="mapOptions?.streetViewControl"
+          [zoomControl]="mapOptions?.zoomControl"
+          [fullscreenControl]="mapOptions?.fullscreenControl"
+          [mapTypeControl]="mapOptions?.mapTypeControl"
+          [scaleControl]="mapOptions?.scaleControl"
+          (zoom_changed)="onZoomChange($event)"
+          (mapReady$)="onMapReady($event)"
+          class="map-wrapper h-100 w-100">
+
+  <!--stations-->
+  <ng-container *ngFor="let item of stations;">
+    <custom-marker [position]="item?.geoPoint?.toArray()" *ngIf="item?.geoPoint" (click)="onClickStation(item)">
+      <div class="custom-marker">
+        <i class="fal fa-gas-pump icon-station"></i>
+        <img class="icon" src="/assets/images/map/marker.png"/>
+        <div class="capture red" title="{{item?.name}}" *ngIf="zoom > hideZoomLevel">{{item?.name}}</div>
+      </div>
+    </custom-marker>
+  </ng-container>
+
+  <!--regions-->
+  <ng-container *ngFor="let item of regions; let $index = index;">
+    <ng-container *ngIf="item?.coordinates?.length">
+      <custom-marker [position]="item?.coordinates[0]?.toArray()" (click)="onClickRegion(item)">
+        <div class="custom-marker">
+          <i class="fal fa-map-marked-alt icon-region"></i>
+          <img class="icon" src="/assets/images/map/marker_blue.png"/>
+          <div class="capture blue" title="{{item?.name}}" *ngIf="zoom > hideZoomLevel">{{item?.name}}</div>
+        </div>
+      </custom-marker>
+    </ng-container>
+  </ng-container>
+
+  <!--terminals-->
+  <ng-container *ngFor="let item of terminals; let $index = index;">
+    <ng-container *ngIf="item?.coordinates?.length">
+      <custom-marker [position]="item?.coordinates[0]?.toArray()" (click)="onClickTerminal(item)">
+        <div class="custom-marker">
+          <img class="icon-small" src="/assets/images/map/icons/icon-terminal.png"/>
+          <img class="icon" src="/assets/images/map/marker.png"/>
+          <div class="capture red" title="{{item?.name}}" *ngIf="zoom > hideZoomLevel">{{item?.name}}</div>
+        </div>
+      </custom-marker>
+    </ng-container>
+  </ng-container>
+</ngui-map>

@@ -1,0 +1,81 @@
+<div class="p-3 w-100">
+  <div class="dashboard-header">
+    <div class="panel tql-panel flex-grow-1">
+      <div class="panel-heading table-heading d-flex justify-content-between">
+        <div class="title text-blue">Customer Mode</div>
+      </div>
+      <div class="table-wrapper table-scroller h-100">
+        <table class="tql-table">
+          <thead>
+            <tr>
+              <th>Modes</th>
+              <th></th>
+              <th></th>
+              <th>Customers</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <ng-container [ngTemplateOutlet]="modeTemplate"></ng-container>
+              </td>
+              <td>
+                <ng-container [ngTemplateOutlet]="customerModeTemplate"></ng-container>
+              </td>
+              <td>
+                <ng-container [ngTemplateOutlet]="actionButtonTemplate"></ng-container>
+              </td>
+              <td>
+                <ng-container [ngTemplateOutlet]="customerTemplate"></ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #modeTemplate>
+  <section class="mode-list">
+    <div *ngFor="let mode of modes">
+      <div matRipple (click)="changeMode(mode)" [class.selected-mode]="selectedMode === mode" class="mode">
+        {{mode.name}}
+      </div>
+    </div>
+  </section>
+</ng-template>
+
+<ng-template #customerModeTemplate>
+  <section cdkDropList [cdkDropListData]="selectedMode.customers" [id]="selectedMode.id + ''"
+    [cdkDropListConnectedTo]="['customerDropList']" class="dnd-list custom-list"
+    (cdkDropListDropped)="dropCustomerToMode($event)" [cdkDropListEnterPredicate]="customerModePredicate">
+    <div *ngFor="let customer of selectedMode.customers" cdkDrag [cdkDragData]="customer"
+      (click)="changeCustomerMode(customer)" class="dnd-item-box custom-item-box"
+      [class.selected-custom-mode]="selectedCustomerMode === customer">
+      {{customer.name}}
+    </div>
+  </section>
+</ng-template>
+
+<ng-template #actionButtonTemplate>
+  <div class="d-flex">
+    <button mat-raised-button (click)="addCustomerToMode(selectedMode, selectedCustomer)" class="mr-2"
+      [disabled]="!canMoveLeft()">
+      << </button> <button mat-raised-button (click)="removeCustomerToMode(selectedMode, selectedCustomerMode)"
+        [disabled]="!canMoveRight()">>>
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #customerTemplate>
+  <section cdkDropList [id]="'customerDropList'" [cdkDropListData]="customers"
+    [cdkDropListConnectedTo]="[selectedMode.id + '']" class="dnd-list custom-list"
+    (cdkDropListDropped)="dropCustomerToCustomer($event, selectedMode)">
+    <div *ngFor="let customer of customers" cdkDrag [cdkDragData]="customer" class="dnd-item-box custom-item-box"
+      (click)="changeCustomer(customer)" [class.selected-custom]="selectedCustomer === customer"
+      [class.existed-item]="isCustomerExisted(customer, selectedMode.customers)">
+      {{customer.name}}
+    </div>
+  </section>
+</ng-template>

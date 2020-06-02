@@ -1,0 +1,88 @@
+@import '~src/sass/chevron/variables';
+
+.station-tank-line {
+  border-color: $cl_cadet;
+  margin: 0;
+}
+
+.station-heading {
+  border-bottom: $cl_cadet solid 1px;
+}
+
+.button-plus {
+  min-width: 30px;
+  height: 30px;
+  line-height: 30px;
+}
+
+.minw-290 {
+  min-width: 290px;
+}
+
+.height-60 {
+  height: 60px;
+}
+
+.selected-station {
+  background-color: #142134;
+}
+
+.unselected-station {
+  background-color: #1f2b43;
+}
+
+::ng-deep .md2-datepicker-button,
+::ng-deep .md2-datepicker-arrow {
+  display: none !important;
+}
+
+::ng-deep .md2-datepicker-trigger {
+  padding: 0 !important;
+}
+
+::ng-deep .md2-datepicker-input {
+  padding-right: 0 !important;
+  .md2-datepicker-value {
+    color: #9fb2bf !important;
+  }
+}
+
+::ng-deep .md2-datepicker-value {
+  cursor: pointer !important;
+}
+
+::ng-deep .md2-month-content {
+  color: #000 !important;
+}
+
+.ts-calendar-icon {
+  position: absolute;
+  top: 8px;
+  right: 15px;
+  color: #9fb2bf;
+}
+
+.ts-time-wrapper {
+  position: relative;
+  width: 200px;
+  border: 1px solid #9fb2bf;
+  background-color: #3c4d6a;
+}
+
+.time-picker-spacing {
+  width: 100%;
+}
+
+.tql-checkbox input {
+  position: relative !important;
+  height: 0 !important;
+  padding: 0 !important;
+}
+
+.truncate {
+  width: 100px;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

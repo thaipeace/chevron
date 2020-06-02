@@ -1,0 +1,339 @@
+input,
+.select-box,
+input[type="text"],
+input[type="number"],
+input[type="password"] {
+    background-color: $cl_input;
+    border: 1px transparent solid;
+    border-radius: 3px;
+    padding: 10px 15px;
+    outline: none;
+    font-size: 14px;
+    color: white;
+    height: 36px;
+
+    &:focus {
+        border-color: $cl_blue;
+        color: unset;
+        background-color: unset;
+    }
+
+    &::placeholder, &.placeholder {
+        color: $cl_text;
+    }
+
+    &:focus {
+        border-color: rgba(36, 150, 201, 1);
+    }
+
+    &.dark {
+        background-color: $cl_blue_darkest !important;
+    }
+}
+
+//select-menu {
+//  &:not([ng-reflect-model='']) {
+//    .selected-text, .icon {
+//      color: white !important;
+//    }
+//  }
+//
+//  .selected-text, .icon {
+//    color: $cl_text !important;
+//  }
+//}
+
+textarea {
+    resize: none;
+    background-color: $cl_input;
+    border: 1px transparent solid;
+    border-radius: 3px;
+    padding: 10px 15px;
+    outline: none;
+    font-size: 14px;
+    color: white;
+
+    &::placeholder {
+        color: $cl_text;
+    }
+
+    &:focus {
+        border-color: $cl_blue;
+    }
+}
+
+.header {
+    //.form-control {
+    //  font-size: 12px;
+    //height: 24px;
+    //padding: 10px 5px;
+    //}
+}
+
+.login-form {
+
+    input[type="text"],
+    input[type="password"] {
+        height: 36px;
+        width: 100%;
+        border-radius: 3px;
+        overflow: none;
+        background-color: rgba(35, 51, 76, 1);
+        color: white;
+        font-size: 14px;
+    }
+}
+
+.button-group {
+    display: flex;
+    width: 100%;
+    justify-content: space-between
+}
+
+.form-controls {
+    width: 260px;
+}
+
+.error {
+    color: rgba(255, 93, 106, 1);
+    font-style: italic;
+    margin-top: 0.25em;
+}
+
+.form-label {
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.form-text-value {
+    font-weight: bold;
+}
+
+.default-form {
+    //min-width: 400px;
+    height: 100%;
+    background-color: transparent;
+
+    h4 {
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    .item {
+        .value {
+            color: $cl_blue_wild;
+        }
+
+        .label {
+            color: $cl_white;
+            width: 150px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-right: 10px;
+        }
+
+        .control {
+            min-width: 191px;
+        }
+    }
+}
+
+.select-box {
+    cursor: pointer;
+    min-width: 191px;
+    i {
+        color: $cl_text;
+        font-weight: normal;
+        font-size: 12px;
+        margin-right: 4px;
+    }
+
+    .selected-text {
+        font-size: 12px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        color: white;
+    }
+
+    &.placeholder {
+        .selected-text {
+            color: $cl_text;
+        }
+    }
+}
+
+.select-box-menu {
+    background-color: $cl_panel_input_bg !important;
+    width: 200px;
+    margin-top: 2px;
+
+    .input-search {
+
+        input {
+            background-color: $cl_blue_medium_dark;
+            font-size: 0.8rem;
+            height: 30px;
+            width: 100%;
+            padding: 10px;
+        }
+
+        padding: 10px;
+    }
+
+    .actions-group {
+        padding: 0 10px 10px 10px;
+        color: $cl_text;
+        font-size: 0.8rem;
+
+
+        .action {
+            cursor: pointer;
+
+            &:hover {
+                color: $cl_blue;
+            }
+        }
+
+    }
+
+    .divider {
+        position: relative;
+
+        &:after {
+            content: '';
+            position: absolute;
+            width: calc(100% - 20px);
+            border-bottom: 1px solid $cl_cadet;
+            bottom: 0;
+            left: 10px;
+        }
+    }
+
+    .item-list {
+        max-height: 50vh !important;
+        overflow-y: auto;
+
+        .item {
+            font-size: 12px;
+            max-width: 200px;
+            padding-left: 10px;
+            padding-right: 10px;
+
+            .text {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                padding-right: 5px;
+            }
+        }
+    }
+
+    .item-check {
+        min-width: 15px;
+        display: inline-block;
+        color: $cl_white;
+        padding: 0;
+    }
+}
+
+.input-time-group {
+    position: relative;
+
+    .input-time {
+        position: relative;
+    }
+
+    .timer-pick-user-lock-icon {
+        position: absolute;
+        right: 8px;
+        top: 8px;
+    }
+
+    .md2-datepicker-button,
+    .md2-datepicker-arrow {
+        display: none !important;
+    }
+
+    .md2-datepicker-trigger {
+        padding: 0 !important;
+    }
+
+    .md2-datepicker-input {
+        padding-right: 0 !important;
+    }
+
+    .md2-datepicker-value {
+        cursor: pointer !important;
+    }
+
+    .time-picker-spacing {
+        padding-bottom: 3px;
+    }
+
+}
+
+.input-group {
+    .title {
+        @extend .size-12;
+        padding-bottom: 0.5rem;
+    }
+
+    select-menu {
+        .select-box{
+            width: 191px;
+        }
+    }
+}
+
+.mat-slide-toggle {
+    .mat-slide-toggle-bar {
+        background-color: $cl_text;
+    }
+
+    .mat-slide-toggle-ripple {
+        display: none;
+    }
+
+    .mat-slide-toggle-bar {
+        height: 12px;
+        width: 30px;
+
+        .mat-slide-toggle-thumb-container {
+            height: 16px;
+            width: 16px;
+            top: -2px;
+
+            .mat-slide-toggle-thumb {
+                height: 16px;
+                width: 16px;
+            }
+        }
+    }
+
+    &.dark {
+        &.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+            background-color: $cl_grey_dark_light;
+        }
+    }
+
+    &.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+        background-color: $cl_blue;
+    }
+
+    &.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+        background-color: white
+    }
+}
+
+//::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+//  background-color: white
+//}
+//
+//::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+//  background-color: $cl_blue;
+//}
+//
+//::ng-deep .mat-slide-toggle .mat-slide-toggle-ripple {
+//  display: none;
+//}

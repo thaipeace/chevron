@@ -1,0 +1,100 @@
+<div class="d-flex overflow-hidden h-100">
+  <div class="overflow-auto">
+    <div class="table-template p-3">
+      <div class="actions-bar">
+        <div class="mb-3 d-flex align-items-center">
+          <div class="flex-grow-1">
+            <button mat-raised-button type="button" class="btn btn-blue mr-3" (click)="onNew()" *ngIf="!readonly">
+              <i class="fal fa-plus"></i>
+              New Delivery Window
+            </button>
+            <button class="" mat-icon-button (click)="onRefresh()">
+              <i class="fal fa-sync-alt"></i>
+            </button>
+          </div>
+          <div class="datepicker-group">
+            <span (click)="prevDay()" class="cursor-pointer"><i class="fal fa-chevron-left"></i></span>
+            <input type="text" bsDatepicker placement="left" [(ngModel)]="selectedDate"
+              (ngModelChange)="onTimeChange($event)">
+            <span (click)="nextDay()" class="cursor-pointer"><i class="fal fa-chevron-right"></i></span>
+          </div>
+        </div>
+      </div>
+      <div class="overflow-auto">
+        <perfect-scrollbar class="table-material flex-grow-1">
+          <table class="panel-time-range-wrapper d-flex flex-row" cellpadding="0" cellscapcing="0">
+            <tbody>
+              <tr>
+                <td class="left-content left-content-1">
+                  <div class="item title">#
+                  </div>
+                  <div class="item d-flex flex-row" *ngFor="let item of groups; let $index = index;">
+                    <div class="flex-grow-1">{{$index + 1}}</div>
+                  </div>
+                  <div class="item" *ngIf="groups.length ===  0">
+                    No Data
+                  </div>
+                </td>
+                <td class="main-content" [ngStyle]="{'width': (timeRange.length * 100) + 'px'}">
+                  <div class="time-range">
+                    <div class="labels">
+                      <div class="label" *ngFor="let item of timeRange">
+                        <span>{{item?.label}}</span>
+                      </div>
+                    </div>
+                    <div class="ticks-group">
+                      <div class="ticks" *ngFor="let item of timeRange">
+                        <div class="tick"></div>
+                        <div class="tick"></div>
+                        <div class="tick"></div>
+                        <div class="tick"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="groups">
+                    <div class="group" *ngFor="let item of groups">
+                      <ng-container *ngFor="let group of item?.array">
+                        <div class="bar justify-content-center d-flex align-items-center" (click)="openDetails(item)"
+                          [class.selected]="selectedItem === item" [matTooltipClass]="'my-tooltip'" [matTooltip]="group?.name + '\nfrom ' + group?.startTime?.format('(HH:mm)')
+                                 + ' to ' +  group?.endTime?.format('(HH:mm)') "
+                          [ngStyle]="{'left': group?.start + 'px', 'width':(group?.end - group?.start) + 'px'}">
+                          <span class="title">{{group?.name}}</span>
+                          <div class="start" *ngIf="group?.end - group?.start > 200">
+                            {{group?.startTime?.format('HH:mm')}}</div>
+                          <div class="end" *ngIf="group?.end - group?.start > 200">
+                            {{group?.endTime?.format('HH:mm')}}</div>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </perfect-scrollbar>
+      </div>
+      <div class="chart-group-wrapper panel tql-panel my-3">
+        <div class="panel-heading d-flex align-items-center">
+          <span class="title flex-grow-1">Delivery Distribution History</span>
+          <div class="d-flex align-items-center">
+            <small>Show Max Deliveries Threshold</small>
+            <mat-checkbox class="ml-3" [(ngModel)]="showMax" (change)="renderChart(rawData)"></mat-checkbox>
+          </div>
+          <div class="ml-3">
+            <select-menu [items]="periods" [bindLabel]="'name'" [bindValue]="'value'" [ngModel]="selectedTimePeriod"
+              [placeHolder]="'Filter by time period'" matTooltip="Filter by time period"
+              (change)="onTimePeriodChange($event)"></select-menu>
+          </div>
+        </div>
+        <div class="content pt-4" *ngIf="station && chartData && chartData.data">
+          <app-chart-delivery-window [container]="chartData?.container" [categories]="chartData?.categories"
+            [unit]="chartData?.unit" [currentTimePoint]="chartData?.currentTimePoint" [data]="chartData?.data">
+          </app-chart-delivery-window>
+        </div>
+        <div class="content p-3" *ngIf="!chartData">No data</div>
+      </div>
+    </div>
+  </div>
+  <app-sbd-main [containerId]="SIDE_COMPACT_CONTAINER" [className]="'pt-0'"></app-sbd-main>
+</div>

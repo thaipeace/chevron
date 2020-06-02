@@ -1,0 +1,92 @@
+<div class="cl_medium_jungle_green-background px-3">
+  <div class="header d-flex justify-content-between align-items-center py-3">
+    <div>
+      <button mat-raised-button type="button" class="btn btn-blue mr-3" (click)="onExport()"
+        [matTooltip]="'Export data'"><i class="far fa-file-export mr-2"></i> Export
+      </button>
+      <i class="fal fa-sync-alt refresh-icon clickable cursor-pointer" (click)="onRefesh()"></i>
+    </div>
+    <div class="d-flex justify-content-center align-items-center">
+      <search-box [searchControl]="searchControl" class="px-3"></search-box>
+      <mat-paginator class="chevron-paginator ml-3" [length]="tableData?.data.length" [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      <input type="text" class="ml-3 date-picker" bsDaterangepicker placement="left" [(ngModel)]="selectedDate"
+        (ngModelChange)="onTimeChange()" placeholder="Select date" #drp="bsDaterangepicker">
+    </div>
+  </div>
+
+  <div class="table-material">
+    <table mat-table class="mat-elevation-z8 tql-table" [dataSource]="tableData" matSort>
+
+      <ng-container matColumnDef="#">
+        <th mat-header-cell *matHeaderCellDef>
+          <ng-container *ngTemplateOutlet="ind"></ng-container>
+          <ng-template #ind><span>#</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let i = index">
+          <ng-container *ngTemplateOutlet="indV"></ng-container>
+          <ng-template #indV>
+            <div class="text-left">{{i + 1}}</div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="datetime">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="DateTime">
+          <ng-container *ngTemplateOutlet="datetime"></ng-container>
+          <ng-template #datetime><span>Date Time</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngTemplateOutlet="datetimeV"></ng-container>
+          <ng-template #datetimeV>
+            <div class="text-left">
+              {{row.DateTime && row.DateTime!=='NA' ? (row.DateTime | date:'yyyy-MM-dd (HH:mm)') : ''}}
+            </div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="direction">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header="Direction">
+          <ng-container *ngTemplateOutlet="direction"></ng-container>
+          <ng-template #direction><span>Direction</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngTemplateOutlet="directionV"></ng-container>
+          <ng-template #directionV>
+            <div class="text-left">{{row.Direction}}</div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="payload" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef>
+          <ng-container *ngTemplateOutlet="payload"></ng-container>
+          <ng-template #payload><span>Payload</span></ng-template>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngTemplateOutlet="payloadV"></ng-container>
+          <ng-template #payloadV>
+            <div class="text-left">
+              <pre><code class="text-grey">{{row.Payload | json}}</code></pre>
+            </div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: details.length ? true : false;"></tr>
+      <tr mat-row [class.selected]="selectedRow === row" (click)="onClickRow(row)"
+        *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+    <!-- No search result -->
+    <div *ngIf="tableData?.data.length > 0 && tableData?.filteredData.length == 0" class="no-result">
+      No search result found
+    </div>
+    <!-- No data -->
+    <div *ngIf="tableData?.data.length == 0" class="no-result">
+      No data found
+    </div>
+
+  </div>
+
+</div>

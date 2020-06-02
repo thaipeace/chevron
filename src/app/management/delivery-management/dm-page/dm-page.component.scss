@@ -1,0 +1,70 @@
+@import "~src/sass/chevron/variables";
+@import "~src/sass/chevron/typography";
+.one-col {
+  grid-template-columns: 100%
+}
+
+//::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+//    background-color: white
+//}
+//
+//::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+//    background-color: $cl_blue;
+//}
+//
+//::ng-deep .mat-slide-toggle .mat-slide-toggle-ripple {
+//    display: none;
+//}
+@import "~src/sass/chevron/variables";
+// We need to use ::ng-deep to overcome view encapsulation
+::ng-deep {
+  .custom-slider .ng5-slider {
+    margin-top: 20px;
+  }
+  .custom-slider .ng5-slider .ng5-slider-bar {
+    background: $cl_text_grey;
+    height: 1px;
+  }
+  .custom-slider .ng5-slider .ng5-slider-selection {
+    background: orange;
+  }
+  .custom-slider .ng5-slider .ng5-slider-pointer {
+    width: 8px;
+    height: 10px;
+    top: auto;
+    /* to remove the default positioning */
+    bottom: 0;
+    background-color: $cl_blue;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+  }
+  .custom-slider .ng5-slider .ng5-slider-pointer:after {
+    display: none;
+  }
+  .custom-slider .ng5-slider .ng5-slider-bubble {
+    bottom: 14px;
+  }
+  .custom-slider .ng5-slider .ng5-slider-model-value {
+    font-size: 1rem;
+    color: white;
+  }
+  .custom-slider .ng5-slider .ng5-slider-limit {
+    color: $cl_blue_wild;
+    font-size: 1rem;
+  }
+  .custom-slider .ng5-slider .ng5-slider-tick {
+    width: 1px;
+    height: 8px;
+    margin-left: 4px;
+    border-radius: 0;
+    background: $cl_text_grey;
+    top: 3px;
+    .ng5-slider-tick-legend {
+      top: 17px;
+      @extend .size-12;
+    }
+  }
+  .custom-slider .ng5-slider .ng5-slider-tick.ng5-slider-selected {
+    background: orange;
+  }
+}

@@ -1,0 +1,10 @@
+<div class="d-flex justify-content-center">
+  <div class="title-box" [ngStyle]="style">
+    <h3 class="m-0 size-12">{{data?.title}}</h3>
+  </div>
+  <div class="value-box">
+    <div class="diagonal-line"></div>
+    <div class="value size-12" [ngStyle]="{'color': data?.color}">{{data?.value}}</div>
+    <div class="size-12 d-flex align-items-center suffix">{{data?.suffix}}</div>
+  </div>
+</div>

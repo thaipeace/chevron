@@ -1,0 +1,17 @@
+@import '~src/sass/tql/variables';
+
+.login-background {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #121b28;
+}
+
+.layout-title {
+  color: rgba(36, 150, 201, 1);
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 31px;
+}
